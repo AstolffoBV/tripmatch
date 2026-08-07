@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const tripTypes = [
   "Beach",
   "Mountains",
@@ -5,9 +9,14 @@ const tripTypes = [
   "Nature",
   "Culture",
   "Entertainment",
-];
+] as const;
+
+type TripType = (typeof tripTypes)[number];
 
 export default function DiscoverPage() {
+  const [selectedTripType, setSelectedTripType] =
+    useState<TripType | null>(null);
+
   return (
     <main className="min-h-screen px-6 py-16">
       <div className="mx-auto max-w-3xl">
@@ -24,16 +33,34 @@ export default function DiscoverPage() {
         </p>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {tripTypes.map((tripType) => (
-            <button
-              key={tripType}
-              type="button"
-              className="rounded-xl border border-gray-300 px-6 py-8 text-lg font-semibold transition hover:border-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-900"
-            >
-              {tripType}
-            </button>
-          ))}
+          {tripTypes.map((tripType) => {
+            const isSelected = selectedTripType === tripType;
+
+            return (
+              <button
+                key={tripType}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => setSelectedTripType(tripType)}
+                className={`rounded-xl border px-6 py-8 text-lg font-semibold transition ${
+                  isSelected
+                    ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                    : "border-gray-300 hover:border-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-900"
+                }`}
+              >
+                {tripType}
+              </button>
+            );
+          })}
         </div>
+
+        <button
+          type="button"
+          disabled={selectedTripType === null}
+          className="mt-8 rounded-xl bg-black px-6 py-3 font-semibold text-white transition disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 dark:bg-white dark:text-black dark:disabled:bg-gray-700 dark:disabled:text-gray-400"
+        >
+          Continue
+        </button>
       </div>
     </main>
   );
