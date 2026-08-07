@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="min-h-screen flex items-center justify-center">
@@ -11,9 +13,12 @@ export default function Home() {
           Let the destination choose you.
         </p>
 
-        <button className="mt-8 rounded-xl bg-black px-6 py-3 text-white">
+        <Link
+          href="/discover"
+          className="mt-8 inline-block rounded-xl bg-black px-6 py-3 text-white"
+        >
           Find my destination
-        </button>
+        </Link>
       </div>
     </main>
   );
