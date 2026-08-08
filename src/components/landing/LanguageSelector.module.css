@@ -1,0 +1,206 @@
+.root {
+  position: relative;
+  z-index: 30;
+}
+
+.trigger {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.75rem 0.35rem 0.4rem;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  color: var(--hero-text);
+  background-color: var(--control-background);
+  box-shadow:
+    0 12px 34px rgba(3, 10, 14, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  cursor: pointer;
+  outline: none;
+  transition:
+    color 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--hero-text) 38%, transparent);
+  box-shadow:
+    0 16px 42px rgba(3, 10, 14, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.triggerCode {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  flex: none;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 9%, transparent);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.triggerName {
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.chevron {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  opacity: 0.78;
+  transition: transform 180ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 0.7rem);
+  right: 0;
+  width: min(14.5rem, calc(100vw - 2.5rem));
+  margin: 0;
+  padding: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.15rem;
+  color: #fbf8ff;
+  background: rgba(10, 13, 22, 0.82);
+  box-shadow:
+    0 24px 64px rgba(3, 5, 12, 0.34),
+    0 0 32px rgba(198, 151, 221, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  backdrop-filter: blur(22px) saturate(135%);
+  list-style: none;
+  transform-origin: top right;
+  animation: menuReveal 180ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.option {
+  display: grid;
+  min-height: 2.8rem;
+  grid-template-columns: 2.1rem 1fr 1.1rem;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.option:hover,
+.option:focus-visible,
+.option[data-active="true"] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.option:focus-visible {
+  box-shadow: inset 0 0 0 1px rgba(245, 224, 255, 0.32);
+}
+
+.option[aria-selected="true"] {
+  color: #ffffff;
+  background: rgba(222, 177, 242, 0.16);
+}
+
+.optionCode {
+  display: grid;
+  width: 2.1rem;
+  height: 1.8rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.6rem;
+  color: rgba(251, 248, 255, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.optionName {
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+
+.checkmark {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0;
+  transform: scale(0.72);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.option[aria-selected="true"] .checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes menuReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-0.35rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .trigger {
+    gap: 0.4rem;
+    padding-right: 0.65rem;
+  }
+
+  .triggerName {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .chevron,
+  .option,
+  .checkmark {
+    transition-duration: 0ms;
+  }
+
+  .trigger:hover,
+  .trigger[aria-expanded="true"] {
+    transform: none;
+  }
+
+  .menu {
+    animation: none;
+  }
+}
