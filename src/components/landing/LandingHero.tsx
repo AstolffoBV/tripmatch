@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState, type CSSProperties } from "react";
 
+import LanguageSelector from "@/components/language/LanguageSelector";
+import { useLanguage } from "@/components/language/LanguageProvider";
 import {
   landingSceneOrder,
-  landingTranslations,
-  type LandingLanguage,
   type LandingScene,
-} from "@/data/landingTranslations";
+} from "@/data/translations";
 
-import LanguageSelector from "./LanguageSelector";
 import styles from "./LandingHero.module.css";
 import SceneBackground from "./SceneBackground";
 
@@ -68,26 +67,16 @@ const sceneThemes: Record<LandingScene, LandingTheme> = {
   },
 };
 
-const sceneLabelKeys: Record<
-  LandingScene,
-  "sceneBeach" | "sceneMountains" | "sceneCity" | "sceneConcerts"
-> = {
-  beach: "sceneBeach",
-  mountains: "sceneMountains",
-  city: "sceneCity",
-  concert: "sceneConcerts",
-};
-
 export default function LandingHero() {
   const [sceneState, setSceneState] = useState<{
     activeIndex: number;
     outgoingScene: LandingScene | null;
   }>({ activeIndex: 0, outgoingScene: null });
-  const [language, setLanguage] = useState<LandingLanguage>("en");
+  const { language, copy: appCopy, setLanguage } = useLanguage();
 
   const activeScene = landingSceneOrder[sceneState.activeIndex];
-  const copy = landingTranslations[language];
-  const sceneLabel = copy[sceneLabelKeys[activeScene]];
+  const copy = appCopy.landing;
+  const sceneLabel = copy.scenes[activeScene];
 
   useEffect(() => {
     const rotationTimer = window.setInterval(() => {
@@ -137,7 +126,7 @@ export default function LandingHero() {
 
         <LanguageSelector
           value={language}
-          label={copy.languageSelectorLabel}
+          label={appCopy.common.languageSelectorLabel}
           onChange={setLanguage}
           className={styles.languageSelect}
         />

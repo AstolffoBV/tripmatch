@@ -10,16 +10,17 @@ import {
 } from "react";
 
 import {
-  landingLanguages,
-  type LandingLanguage,
-} from "@/data/landingTranslations";
+  supportedLanguages,
+  type LanguageCode,
+} from "@/data/translations";
 
 import selectorStyles from "./LanguageSelector.module.css";
 
 type LanguageSelectorProps = {
-  value: LandingLanguage;
+  value: LanguageCode;
   label: string;
-  onChange: (language: LandingLanguage) => void;
+  onChange: (language: LanguageCode) => void;
+  appearance?: "themed" | "neutral";
   className?: string;
 };
 
@@ -27,6 +28,7 @@ export default function LanguageSelector({
   value,
   label,
   onChange,
+  appearance = "themed",
   className = "",
 }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,9 +40,9 @@ export default function LanguageSelector({
 
   const selectedIndex = Math.max(
     0,
-    landingLanguages.findIndex((language) => language.code === value),
+    supportedLanguages.findIndex((language) => language.code === value),
   );
-  const selectedLanguage = landingLanguages[selectedIndex];
+  const selectedLanguage = supportedLanguages[selectedIndex];
 
   useEffect(() => {
     if (!isOpen) {
@@ -81,7 +83,7 @@ export default function LanguageSelector({
   }
 
   function selectLanguage(index: number) {
-    const language = landingLanguages[index];
+    const language = supportedLanguages[index];
 
     setActiveIndex(index);
     onChange(language.code);
@@ -106,14 +108,14 @@ export default function LanguageSelector({
   ) {
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setActiveIndex((index + 1) % landingLanguages.length);
+      setActiveIndex((index + 1) % supportedLanguages.length);
       return;
     }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
       setActiveIndex(
-        (index - 1 + landingLanguages.length) % landingLanguages.length,
+        (index - 1 + supportedLanguages.length) % supportedLanguages.length,
       );
       return;
     }
@@ -126,7 +128,7 @@ export default function LanguageSelector({
 
     if (event.key === "End") {
       event.preventDefault();
-      setActiveIndex(landingLanguages.length - 1);
+      setActiveIndex(supportedLanguages.length - 1);
       return;
     }
 
@@ -154,7 +156,7 @@ export default function LanguageSelector({
       !event.metaKey
     ) {
       const pressedKey = event.key.toLocaleLowerCase();
-      const matchIndex = landingLanguages.findIndex((language) =>
+      const matchIndex = supportedLanguages.findIndex((language) =>
         language.name.toLocaleLowerCase().startsWith(pressedKey),
       );
 
@@ -179,7 +181,9 @@ export default function LanguageSelector({
   return (
     <div
       ref={rootRef}
-      className={selectorStyles.root}
+      className={`${selectorStyles.root} ${
+        appearance === "neutral" ? selectorStyles.neutral : ""
+      }`}
       onBlur={handleBlur}
     >
       <button
@@ -224,7 +228,7 @@ export default function LanguageSelector({
           aria-label={label}
           className={selectorStyles.menu}
         >
-          {landingLanguages.map((language, index) => {
+          {supportedLanguages.map((language, index) => {
             const isSelected = language.code === value;
             const isActive = index === activeIndex;
 

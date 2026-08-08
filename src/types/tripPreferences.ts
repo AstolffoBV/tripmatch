@@ -7,6 +7,50 @@ export type TripType =
   | "Entertainment"
   | "Concert / Event";
 
+export type TripSubtypeByType = {
+  Beach:
+    | "beach-sandy"
+    | "beach-rocky"
+    | "beach-coves"
+    | "beach-any";
+  Mountains:
+    | "mountains-green"
+    | "mountains-snowy"
+    | "mountains-alpine-lakes"
+    | "mountains-any";
+  City:
+    | "city-historic"
+    | "city-modern"
+    | "city-nightlife"
+    | "city-any";
+  Nature:
+    | "nature-camping"
+    | "nature-camper"
+    | "nature-cabin"
+    | "nature-hiking"
+    | "nature-any";
+  Culture:
+    | "culture-art"
+    | "culture-history"
+    | "culture-architecture"
+    | "culture-traditions"
+    | "culture-any";
+  Entertainment:
+    | "entertainment-theme-parks"
+    | "entertainment-nightlife"
+    | "entertainment-shows"
+    | "entertainment-family"
+    | "entertainment-any";
+  "Concert / Event":
+    | "event-concert"
+    | "event-festival"
+    | "event-sport"
+    | "event-theatre"
+    | "event-any";
+};
+
+export type TripSubtype = TripSubtypeByType[TripType];
+
 export type TravellerGroup = "solo" | "couple" | "family" | "friends" | "other";
 
 export interface TravellerPreferences {
@@ -96,6 +140,7 @@ export type DiscoveryStep = QuestionNumber | "summary";
 
 export interface TripPreferences {
   tripType: TripType | null;
+  tripSubtype: TripSubtype | null;
   travellers: TravellerPreferences;
   budget: BudgetPreferences;
   accommodation: AccommodationType[];

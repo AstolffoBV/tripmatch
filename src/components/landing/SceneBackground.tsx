@@ -1,4 +1,4 @@
-import type { LandingScene } from "@/data/landingTranslations";
+import type { LandingScene } from "@/data/translations";
 
 import styles from "./LandingHero.module.css";
 

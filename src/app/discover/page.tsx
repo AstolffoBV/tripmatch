@@ -1,10 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import Counter from "@/components/discovery/Counter";
+import DiscoverThemeBackground from "@/components/discovery/DiscoverThemeBackground";
 import OptionCard from "@/components/discovery/OptionCard";
 import ProgressBar from "@/components/discovery/ProgressBar";
+import TripTypePanels from "@/components/discovery/TripTypePanels";
+import LanguageSelector from "@/components/language/LanguageSelector";
+import { useLanguage } from "@/components/language/LanguageProvider";
 import {
   accommodationOptions,
   budgetModeOptions,
@@ -16,8 +21,12 @@ import {
   timingModeOptions,
   transportOptions,
   travellerGroupOptions,
-  tripTypeOptions,
 } from "@/data/discoveryOptions";
+import {
+  languageLocales,
+  type Translation,
+} from "@/data/translations";
+import { isTripSubtypeForType } from "@/data/tripTypeThemes";
 import type {
   AccommodationType,
   BudgetMode,
@@ -29,13 +38,17 @@ import type {
   QuestionNumber,
   TimingMode,
   TransportMode,
+  TripSubtypeByType,
+  TripType,
   TravellerGroup,
   TravellerPreferences,
   TripPreferences,
 } from "@/types/tripPreferences";
+import { formatCount, formatMessage } from "@/utils/translations";
 
 const initialPreferences: TripPreferences = {
   tripType: null,
+  tripSubtype: null,
   travellers: {
     groupType: null,
     adults: 0,
@@ -73,13 +86,30 @@ const initialPreferences: TripPreferences = {
 };
 
 const primaryButtonClasses =
-  "rounded-xl bg-black px-6 py-3 font-semibold text-white transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 dark:bg-white dark:text-black dark:focus-visible:outline-white dark:disabled:bg-gray-700 dark:disabled:text-gray-400";
+  "rounded-xl bg-black px-6 py-3 font-semibold text-white transition enabled:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 dark:bg-white dark:text-black dark:focus-visible:outline-white dark:disabled:bg-gray-700 dark:disabled:text-gray-400";
 
 const secondaryButtonClasses =
-  "rounded-xl border border-gray-300 px-6 py-3 font-semibold transition hover:border-gray-500 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-900 dark:focus-visible:outline-white";
+  "cursor-pointer rounded-xl border border-gray-300 px-6 py-3 font-semibold transition hover:border-gray-500 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-900 dark:focus-visible:outline-white";
+
+const themedPrimaryButtonClasses =
+  "inline-flex min-h-12 items-center justify-center rounded-xl bg-white/95 px-6 py-3 font-semibold text-gray-950 shadow-lg shadow-black/15 transition enabled:cursor-pointer enabled:hover:-translate-y-0.5 enabled:hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/45 disabled:shadow-none motion-reduce:transform-none";
+
+const themedSecondaryButtonClasses =
+  "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-white/25 bg-black/20 px-6 py-3 font-semibold text-white/90 shadow-sm backdrop-blur-md transition hover:border-white/45 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transform-none";
 
 const inputClasses =
   "w-full rounded-xl border border-gray-300 bg-transparent px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black dark:border-gray-700 dark:focus:border-white dark:focus:ring-white";
+
+const geolocationErrorMessages = {
+  unavailableInBrowser: "Location is unavailable in this browser.",
+  generic: "We could not get your current location.",
+  permissionDenied:
+    "Location permission was denied. You can enter a city instead.",
+  unavailable:
+    "Your location is currently unavailable. Please try again or enter a city.",
+  timeout:
+    "The location request timed out. Please try again or enter a city.",
+} as const;
 
 function getTravellerCount(travellers: TravellerPreferences) {
   return travellers.adults + travellers.children;
@@ -204,7 +234,13 @@ function isStepComplete(step: QuestionNumber, preferences: TripPreferences) {
 
   switch (step) {
     case 1:
-      return preferences.tripType !== null;
+      return (
+        preferences.tripType !== null &&
+        isTripSubtypeForType(
+          preferences.tripType,
+          preferences.tripSubtype,
+        )
+      );
     case 2:
       return (
         travellers.groupType !== null &&
@@ -253,29 +289,48 @@ function isStepComplete(step: QuestionNumber, preferences: TripPreferences) {
   }
 }
 
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("en-US", {
+function formatNumber(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits: 2,
   }).format(value);
 }
 
-function formatCount(count: number, singular: string, plural = `${singular}s`) {
-  return `${count} ${count === 1 ? singular : plural}`;
+function getLocalizedLocationError(
+  message: string | null,
+  errors: Translation["discover"]["q8"]["errors"],
+) {
+  if (message === geolocationErrorMessages.unavailableInBrowser) {
+    return errors.unavailableInBrowser;
+  }
+
+  if (message === geolocationErrorMessages.permissionDenied) {
+    return errors.permissionDenied;
+  }
+
+  if (message === geolocationErrorMessages.unavailable) {
+    return errors.unavailable;
+  }
+
+  if (message === geolocationErrorMessages.timeout) {
+    return errors.timeout;
+  }
+
+  return errors.generic;
 }
 
 function SummaryItem({
-  number,
+  questionLabel,
   title,
   children,
 }: {
-  number: number;
+  questionLabel: string;
   title: string;
   children: ReactNode;
 }) {
   return (
     <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
       <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-        Question {number}
+        {questionLabel}
       </p>
       <h2 className="mt-1 font-semibold">{title}</h2>
       <div className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
@@ -286,7 +341,10 @@ function SummaryItem({
 }
 
 export default function DiscoverPage() {
+  const { language, copy, setLanguage } = useLanguage();
   const [currentStep, setCurrentStep] = useState<DiscoveryStep>(1);
+  const [highestVisitedQuestion, setHighestVisitedQuestion] =
+    useState<QuestionNumber>(1);
   const [preferences, setPreferences] =
     useState<TripPreferences>(initialPreferences);
   const stepContentRef = useRef<HTMLElement>(null);
@@ -326,6 +384,36 @@ export default function DiscoverPage() {
   const minimumReturnDate = getMinimumReturnDate(
     preferences.timing.departureDate,
   );
+  const commonCopy = copy.common;
+  const discoverCopy = copy.discover;
+  const numberLocale = languageLocales[language];
+
+  function questionLabel(number: QuestionNumber) {
+    return formatMessage(commonCopy.question, { number });
+  }
+
+  function counterLabels(label: string) {
+    return {
+      automaticLabel: commonCopy.setAutomatically,
+      decreaseLabel: formatMessage(commonCopy.decrease, { label }),
+      increaseLabel: formatMessage(commonCopy.increase, { label }),
+    };
+  }
+
+  function selectTripSubtype<Type extends TripType>(
+    tripType: Type,
+    tripSubtype: TripSubtypeByType[Type],
+  ) {
+    if (!isTripSubtypeForType(tripType, tripSubtype)) {
+      return;
+    }
+
+    setPreferences((previous) => ({
+      ...previous,
+      tripType,
+      tripSubtype,
+    }));
+  }
 
   function selectTravellerGroup(nextGroupType: TravellerGroup) {
     setPreferences((previous) => {
@@ -519,7 +607,7 @@ export default function DiscoverPage() {
         origin: {
           ...previous.origin,
           locationStatus: "error",
-          locationError: "Location is unavailable in this browser.",
+          locationError: geolocationErrorMessages.unavailableInBrowser,
         },
       }));
       return;
@@ -539,14 +627,14 @@ export default function DiscoverPage() {
         }));
       },
       (error) => {
-        let message = "We could not get your current location.";
+        let message: string = geolocationErrorMessages.generic;
 
         if (error.code === 1) {
-          message = "Location permission was denied. You can enter a city instead.";
+          message = geolocationErrorMessages.permissionDenied;
         } else if (error.code === 2) {
-          message = "Your location is currently unavailable. Please try again or enter a city.";
+          message = geolocationErrorMessages.unavailable;
         } else if (error.code === 3) {
-          message = "The location request timed out. Please try again or enter a city.";
+          message = geolocationErrorMessages.timeout;
         }
 
         setPreferences((previous) => ({
@@ -580,6 +668,16 @@ export default function DiscoverPage() {
     }));
   }
 
+  function goToStep(nextStep: DiscoveryStep) {
+    setCurrentStep(nextStep);
+
+    if (nextStep !== "summary") {
+      setHighestVisitedQuestion((currentHighest) =>
+        nextStep > currentHighest ? nextStep : currentHighest,
+      );
+    }
+  }
+
   function handleContinue() {
     if (
       currentStep === "summary" ||
@@ -590,12 +688,12 @@ export default function DiscoverPage() {
 
     const currentIndex = questionSequence.indexOf(currentStep);
     const nextQuestion = questionSequence[currentIndex + 1];
-    setCurrentStep(nextQuestion ?? "summary");
+    goToStep(nextQuestion ?? "summary");
   }
 
   function handleBack() {
     if (currentStep === "summary") {
-      setCurrentStep(9);
+      goToStep(9);
       return;
     }
 
@@ -603,7 +701,16 @@ export default function DiscoverPage() {
     const previousQuestion = questionSequence[currentIndex - 1];
 
     if (previousQuestion !== undefined) {
-      setCurrentStep(previousQuestion);
+      goToStep(previousQuestion);
+    }
+  }
+
+  function handleProgressNavigation(question: QuestionNumber) {
+    const destination =
+      question === 7 && skipDurationQuestion ? 6 : question;
+
+    if (destination !== currentStep) {
+      goToStep(destination);
     }
   }
 
@@ -612,23 +719,82 @@ export default function DiscoverPage() {
       ? preferences.budget.total
       : preferences.budget.perTraveller;
   const selectedGroupLabel =
-    travellerGroupOptions.find((option) => option.value === groupType)?.label ??
-    "Not selected";
-  const selectedDuration = durationOptions.find(
-    (option) => option.value === preferences.duration,
-  );
+    groupType === null
+      ? commonCopy.notSelected
+      : discoverCopy.q2.groups[groupType];
+  const selectedDuration =
+    preferences.duration === null
+      ? null
+      : discoverCopy.q7.options[preferences.duration];
   const currentQuestion = currentStep === "summary" ? 9 : currentStep;
   const canContinue =
     currentStep !== "summary" && isStepComplete(currentStep, preferences);
+  const isQuestionOne = currentStep === 1;
+
+  function renderHeader(themed: boolean) {
+    return (
+      <header
+        className={`flex items-center justify-between gap-4 ${
+          themed ? "" : "mb-7"
+        }`}
+      >
+        <Link
+          href="/"
+          aria-label={commonCopy.homeLabel}
+          className={`inline-flex cursor-pointer rounded-md text-lg font-semibold tracking-[-0.03em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 ${
+            themed
+              ? "text-white/95 hover:text-white focus-visible:outline-white"
+              : "text-gray-900 hover:text-gray-500 focus-visible:outline-black dark:text-gray-100 dark:hover:text-gray-400 dark:focus-visible:outline-white"
+          }`}
+        >
+          TripMatch
+        </Link>
+
+        <LanguageSelector
+          value={language}
+          label={commonCopy.languageSelectorLabel}
+          onChange={setLanguage}
+          appearance={themed ? "themed" : "neutral"}
+        />
+      </header>
+    );
+  }
 
   return (
-    <main className="min-h-screen px-4 py-10 sm:px-6 sm:py-16">
-      <div className="mx-auto max-w-3xl">
-        <ProgressBar
-          currentQuestion={currentQuestion}
-          totalQuestions={9}
-          complete={currentStep === "summary"}
+    <main
+      className={
+        isQuestionOne
+          ? "relative isolate min-h-svh overflow-x-clip bg-[#111a1d]"
+          : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+      }
+    >
+      {currentStep === 2 ? (
+        <DiscoverThemeBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
         />
+      ) : null}
+
+      <div
+        className={
+          isQuestionOne
+            ? "relative z-10 w-full"
+            : "relative z-10 mx-auto max-w-3xl"
+        }
+      >
+        {!isQuestionOne ? renderHeader(false) : null}
+
+        {!isQuestionOne ? (
+          <ProgressBar
+            currentQuestion={currentQuestion}
+            highestVisitedQuestion={highestVisitedQuestion}
+            exactDurationNights={
+              skipDurationQuestion ? preferences.timing.exactNights : null
+            }
+            onNavigate={handleProgressNavigation}
+            complete={currentStep === "summary"}
+          />
+        ) : null}
 
         {currentStep === 1 ? (
           <section
@@ -637,31 +803,42 @@ export default function DiscoverPage() {
             aria-labelledby="question-1-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 1
-            </p>
-            <h1 id="question-1-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              What kind of trip are you looking for?
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              Choose the experience you want most.
-            </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {tripTypeOptions.map((tripType) => (
-                <OptionCard
-                  key={tripType}
-                  label={tripType}
-                  selected={preferences.tripType === tripType}
-                  onClick={() =>
-                    setPreferences((previous) => ({
-                      ...previous,
-                      tripType,
-                    }))
+            <TripTypePanels
+              questionLabel={questionLabel(1)}
+              copy={discoverCopy.q1}
+              shellHeader={renderHeader(true)}
+              shellProgress={
+                <ProgressBar
+                  currentQuestion={currentQuestion}
+                  highestVisitedQuestion={highestVisitedQuestion}
+                  exactDurationNights={
+                    skipDurationQuestion
+                      ? preferences.timing.exactNights
+                      : null
                   }
+                  onNavigate={handleProgressNavigation}
+                  appearance="themed"
                 />
-              ))}
-            </div>
+              }
+              shellActions={
+                <>
+                  <Link href="/" className={themedSecondaryButtonClasses}>
+                    {commonCopy.back}
+                  </Link>
+                  <button
+                    type="button"
+                    disabled={!canContinue}
+                    onClick={handleContinue}
+                    className={themedPrimaryButtonClasses}
+                  >
+                    {commonCopy.continue}
+                  </button>
+                </>
+              }
+              selectedTripType={preferences.tripType}
+              selectedTripSubtype={preferences.tripSubtype}
+              onSelect={selectTripSubtype}
+            />
           </section>
         ) : null}
 
@@ -673,17 +850,17 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 2
+              {questionLabel(2)}
             </p>
             <h1 id="question-2-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              Who are you travelling with?
+              {discoverCopy.q2.heading}
             </h1>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {travellerGroupOptions.map((option) => (
                 <OptionCard
                   key={option.value}
-                  label={option.label}
+                  label={discoverCopy.q2.groups[option.value]}
                   selected={groupType === option.value}
                   onClick={() => selectTravellerGroup(option.value)}
                 />
@@ -694,33 +871,46 @@ export default function DiscoverPage() {
               <div className="mt-8 space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Counter
-                    label="Adults"
+                    label={discoverCopy.q2.adults}
+                    {...counterLabels(discoverCopy.q2.adults)}
                     value={travellers.adults}
                     min={groupType === "friends" ? 2 : 0}
                     fixed={adultsAreFixed}
                     onChange={(value) => changeTravellerValue("adults", value)}
                   />
                   <Counter
-                    label="Children"
+                    label={discoverCopy.q2.children}
+                    {...counterLabels(discoverCopy.q2.children)}
                     value={travellers.children}
                     min={groupType === "family" ? 1 : 0}
                     fixed={childrenAreFixed}
                     onChange={(value) => changeTravellerValue("children", value)}
                   />
                   <Counter
-                    label="Pets"
+                    label={discoverCopy.q2.pets}
+                    {...counterLabels(discoverCopy.q2.pets)}
                     value={travellers.pets}
                     onChange={(value) => changeTravellerValue("pets", value)}
                   />
                   <Counter
-                    label={groupType === "family" ? "Suggested bedrooms" : "Rooms"}
+                    label={
+                      groupType === "family"
+                        ? discoverCopy.q2.suggestedBedrooms
+                        : discoverCopy.q2.rooms
+                    }
+                    {...counterLabels(
+                      groupType === "family"
+                        ? discoverCopy.q2.suggestedBedrooms
+                        : discoverCopy.q2.rooms,
+                    )}
                     value={travellers.rooms}
                     min={1}
                     fixed={roomsAndBedsAreFixed}
                     onChange={(value) => changeTravellerValue("rooms", value)}
                   />
                   <Counter
-                    label="Beds"
+                    label={discoverCopy.q2.beds}
+                    {...counterLabels(discoverCopy.q2.beds)}
                     value={travellers.beds}
                     min={1}
                     fixed={roomsAndBedsAreFixed}
@@ -730,27 +920,29 @@ export default function DiscoverPage() {
 
                 {groupType === "family" || groupType === "other" ? (
                   <p className="text-sm text-gray-500">
-                    Anyone under 18 counts as a child.
+                    {discoverCopy.q2.underEighteen}
                   </p>
                 ) : null}
 
                 {groupType === "couple" ? (
                   <div className="rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                    <p className="font-medium">Sleeping setup</p>
+                    <p className="font-medium">{discoverCopy.q2.sleepingSetup}</p>
                     <p className="mt-1 text-gray-600 dark:text-gray-300">
-                      1 × Double bed
+                      1 × {discoverCopy.q2.doubleBed.one}
                     </p>
                   </div>
                 ) : null}
 
                 {groupType === "family" ? (
                   <div className="rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                    <p className="font-medium">Sleeping setup</p>
+                    <p className="font-medium">{discoverCopy.q2.sleepingSetup}</p>
                     <p className="mt-1 text-gray-600 dark:text-gray-300">
-                      1 × Double bed
+                      1 × {discoverCopy.q2.doubleBed.one}
                     </p>
                     <p className="text-gray-600 dark:text-gray-300">
-                      {travellers.children} × Single {travellers.children === 1 ? "bed" : "beds"}
+                      {travellers.children} × {travellers.children === 1
+                        ? discoverCopy.q2.singleBed.one
+                        : discoverCopy.q2.singleBed.other}
                     </p>
                   </div>
                 ) : null}
@@ -767,23 +959,23 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 3
+              {questionLabel(3)}
             </p>
             <h1 id="question-3-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              What&apos;s your budget?
+              {discoverCopy.q3.heading}
             </h1>
             <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              Include transport, accommodation, food and activities for the whole trip.
+              {discoverCopy.q3.subtitle}
             </p>
             <p className="mt-4 text-sm font-medium">
-              {formatCount(travellerCount, "traveller")}
+              {formatCount(travellerCount, commonCopy.nouns.traveller)}
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {budgetModeOptions.map((option) => (
                 <OptionCard
                   key={option.value}
-                  label={option.label}
+                  label={discoverCopy.q3.modes[option.value]}
                   selected={preferences.budget.mode === option.value}
                   onClick={() => selectBudgetMode(option.value)}
                 />
@@ -794,8 +986,8 @@ export default function DiscoverPage() {
               <label>
                 <span className="mb-2 block text-sm font-medium">
                   {preferences.budget.mode === "total"
-                    ? "Total trip budget"
-                    : "Budget per traveller"}
+                    ? discoverCopy.q3.modes.total
+                    : discoverCopy.q3.modes.perTraveller}
                 </span>
                 <input
                   type="number"
@@ -805,12 +997,14 @@ export default function DiscoverPage() {
                   value={activeBudgetAmount ?? ""}
                   onChange={(event) => changeBudgetAmount(event.target.value)}
                   className={inputClasses}
-                  placeholder="12000"
+                  placeholder={discoverCopy.q3.amountPlaceholder}
                 />
               </label>
 
               <label>
-                <span className="mb-2 block text-sm font-medium">Currency</span>
+                <span className="mb-2 block text-sm font-medium">
+                  {discoverCopy.q3.currency}
+                </span>
                 <select
                   value={preferences.budget.currency}
                   onChange={(event) => changeCurrency(event.target.value as Currency)}
@@ -830,7 +1024,13 @@ export default function DiscoverPage() {
             preferences.budget.total !== null &&
             preferences.budget.total > 0 ? (
               <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                ≈ {formatNumber(preferences.budget.perTraveller)} {preferences.budget.currency} average per traveller
+                {formatMessage(discoverCopy.q3.averagePerTraveller, {
+                  amount: formatNumber(
+                    preferences.budget.perTraveller,
+                    numberLocale,
+                  ),
+                  currency: preferences.budget.currency,
+                })}
               </p>
             ) : null}
 
@@ -839,7 +1039,13 @@ export default function DiscoverPage() {
             preferences.budget.perTraveller !== null &&
             preferences.budget.perTraveller > 0 ? (
               <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                ≈ {formatNumber(preferences.budget.total)} {preferences.budget.currency} estimated total
+                {formatMessage(discoverCopy.q3.estimatedTotal, {
+                  amount: formatNumber(
+                    preferences.budget.total,
+                    numberLocale,
+                  ),
+                  currency: preferences.budget.currency,
+                })}
               </p>
             ) : null}
           </section>
@@ -853,23 +1059,23 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 4
+              {questionLabel(4)}
             </p>
             <h1 id="question-4-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              Where would you be happy to stay?
+              {discoverCopy.q4.heading}
             </h1>
             <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              Choose all accommodation types that work for you.
+              {discoverCopy.q4.subtitle}
             </p>
 
             <div className="mt-6 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-              <p>Your group needs approximately:</p>
+              <p>{discoverCopy.q4.groupNeeds}</p>
               <p className="mt-1 font-semibold">
-                {formatCount(travellers.rooms, "bedroom")} · {formatCount(travellers.beds, "bed")}
+                {formatCount(travellers.rooms, commonCopy.nouns.bedroom)} · {formatCount(travellers.beds, commonCopy.nouns.bed)}
               </p>
               {travellers.pets > 0 ? (
                 <p className="mt-2 text-gray-600 dark:text-gray-300">
-                  Pet-friendly accommodation will be required.
+                  {discoverCopy.q4.petFriendlyRequired}
                 </p>
               ) : null}
             </div>
@@ -878,7 +1084,7 @@ export default function DiscoverPage() {
               {accommodationOptions.map((option) => (
                 <OptionCard
                   key={option}
-                  label={option}
+                  label={discoverCopy.q4.options[option]}
                   selected={preferences.accommodation.includes(option)}
                   onClick={() => toggleAccommodation(option)}
                 />
@@ -895,20 +1101,20 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 5
+              {questionLabel(5)}
             </p>
             <h1 id="question-5-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              How would you like to handle meals?
+              {discoverCopy.q5.heading}
             </h1>
             <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              Choose all options that would work for you.
+              {discoverCopy.q5.subtitle}
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {mealOptions.map((option) => (
                 <OptionCard
                   key={option}
-                  label={option}
+                  label={discoverCopy.q5.options[option]}
                   selected={preferences.meals.includes(option)}
                   onClick={() => toggleMeal(option)}
                 />
@@ -925,17 +1131,17 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 6
+              {questionLabel(6)}
             </p>
             <h1 id="question-6-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              When do you want to travel?
+              {discoverCopy.q6.heading}
             </h1>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {timingModeOptions.map((option) => (
                 <OptionCard
                   key={option.value}
-                  label={option.label}
+                  label={discoverCopy.q6.modes[option.value]}
                   selected={preferences.timing.mode === option.value}
                   onClick={() => selectTimingMode(option.value)}
                 />
@@ -946,7 +1152,9 @@ export default function DiscoverPage() {
               <div className="mt-8">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label>
-                    <span className="mb-2 block text-sm font-medium">Departure date</span>
+                    <span className="mb-2 block text-sm font-medium">
+                      {discoverCopy.q6.departureDate}
+                    </span>
                     <input
                       type="date"
                       value={preferences.timing.departureDate}
@@ -955,7 +1163,9 @@ export default function DiscoverPage() {
                     />
                   </label>
                   <label>
-                    <span className="mb-2 block text-sm font-medium">Return date</span>
+                    <span className="mb-2 block text-sm font-medium">
+                      {discoverCopy.q6.returnDate}
+                    </span>
                     <input
                       type="date"
                       min={minimumReturnDate}
@@ -972,7 +1182,10 @@ export default function DiscoverPage() {
 
                 {preferences.timing.exactNights !== null ? (
                   <p className="mt-4 rounded-xl bg-gray-50 p-4 font-semibold dark:bg-gray-900">
-                    {formatCount(preferences.timing.exactNights, "night")}
+                    {formatCount(
+                      preferences.timing.exactNights,
+                      commonCopy.nouns.night,
+                    )}
                   </p>
                 ) : null}
 
@@ -982,7 +1195,7 @@ export default function DiscoverPage() {
                     className="mt-3 text-sm text-red-600 dark:text-red-400"
                     role="alert"
                   >
-                    Return date must be later than departure date.
+                    {discoverCopy.q6.returnDateError}
                   </p>
                 ) : null}
               </div>
@@ -991,29 +1204,33 @@ export default function DiscoverPage() {
             {preferences.timing.mode === "rough" ? (
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 <label>
-                  <span className="mb-2 block text-sm font-medium">Month</span>
+                  <span className="mb-2 block text-sm font-medium">
+                    {discoverCopy.q6.month}
+                  </span>
                   <select
                     value={preferences.timing.month ?? ""}
                     onChange={(event) => changeTravelMonth(event.target.value)}
                     className={inputClasses}
                   >
-                    <option value="">Select a month</option>
+                    <option value="">{discoverCopy.q6.selectMonth}</option>
                     {months.map((month) => (
                       <option key={month} value={month}>
-                        {month}
+                        {discoverCopy.q6.months[month]}
                       </option>
                     ))}
                   </select>
                 </label>
 
                 <label>
-                  <span className="mb-2 block text-sm font-medium">Year</span>
+                  <span className="mb-2 block text-sm font-medium">
+                    {discoverCopy.q6.year}
+                  </span>
                   <select
                     value={preferences.timing.year ?? ""}
                     onChange={(event) => changeTravelYear(event.target.value)}
                     className={inputClasses}
                   >
-                    <option value="">Select a year</option>
+                    <option value="">{discoverCopy.q6.selectYear}</option>
                     {availableYears.map((year) => (
                       <option key={year} value={year}>
                         {year}
@@ -1026,7 +1243,7 @@ export default function DiscoverPage() {
 
             {preferences.timing.mode === "flexible" ? (
               <p className="mt-8 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                No dates are required. You can choose a preferred duration next.
+                {discoverCopy.q6.flexibleHelper}
               </p>
             ) : null}
           </section>
@@ -1040,18 +1257,20 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 7
+              {questionLabel(7)}
             </p>
             <h1 id="question-7-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              How long would you like to stay?
+              {discoverCopy.q7.heading}
             </h1>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {durationOptions.map((option) => (
                 <OptionCard
                   key={option.value}
-                  label={option.label}
-                  description={option.description}
+                  label={discoverCopy.q7.options[option.value].label}
+                  description={
+                    discoverCopy.q7.options[option.value].description
+                  }
                   selected={preferences.duration === option.value}
                   onClick={() =>
                     setPreferences((previous) => ({
@@ -1073,20 +1292,20 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 8
+              {questionLabel(8)}
             </p>
             <h1 id="question-8-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              Where are you travelling from?
+              {discoverCopy.q8.heading}
             </h1>
             <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              We&apos;ll use this later to estimate realistic travel options and costs.
+              {discoverCopy.q8.subtitle}
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {originModeOptions.map((option) => (
                 <OptionCard
                   key={option.value}
-                  label={option.label}
+                  label={discoverCopy.q8.modes[option.value]}
                   selected={preferences.origin.mode === option.value}
                   disabled={
                     option.value === "currentLocation" &&
@@ -1104,12 +1323,14 @@ export default function DiscoverPage() {
             {preferences.origin.mode === "currentLocation" ? (
               <div className="mt-6 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
                 {preferences.origin.locationStatus === "requesting" ? (
-                  <p role="status">Requesting your current location…</p>
+                  <p role="status">{discoverCopy.q8.requestingLocation}</p>
                 ) : null}
 
                 {preferences.origin.locationStatus === "success" ? (
                   <div role="status">
-                    <p className="font-semibold">Current location selected</p>
+                    <p className="font-semibold">
+                      {discoverCopy.q8.currentLocationSelected}
+                    </p>
                     <p className="mt-1 text-gray-500">
                       {preferences.origin.latitude?.toFixed(5)}, {preferences.origin.longitude?.toFixed(5)}
                     </p>
@@ -1118,25 +1339,30 @@ export default function DiscoverPage() {
 
                 {preferences.origin.locationStatus === "error" ? (
                   <p className="text-red-600 dark:text-red-400" role="alert">
-                    {preferences.origin.locationError}
+                    {getLocalizedLocationError(
+                      preferences.origin.locationError,
+                      discoverCopy.q8.errors,
+                    )}
                   </p>
                 ) : null}
 
                 {preferences.origin.locationStatus === "idle" ? (
-                  <p>Click the location option to request browser permission.</p>
+                  <p>{discoverCopy.q8.locationPermissionHelper}</p>
                 ) : null}
               </div>
             ) : null}
 
             {preferences.origin.mode === "manual" ? (
               <label className="mt-6 block">
-                <span className="mb-2 block text-sm font-medium">City and country</span>
+                <span className="mb-2 block text-sm font-medium">
+                  {discoverCopy.q8.cityAndCountry}
+                </span>
                 <input
                   type="text"
                   value={preferences.origin.manualLocation}
                   onChange={(event) => changeManualLocation(event.target.value)}
                   className={inputClasses}
-                  placeholder="Timisoara, Romania"
+                  placeholder={discoverCopy.q8.manualPlaceholder}
                 />
               </label>
             ) : null}
@@ -1151,20 +1377,20 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              Question 9
+              {questionLabel(9)}
             </p>
             <h1 id="question-9-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              How are you willing to get there?
+              {discoverCopy.q9.heading}
             </h1>
             <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              Choose all transport options you&apos;d consider.
+              {discoverCopy.q9.subtitle}
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {transportOptions.map((option) => (
                 <OptionCard
                   key={option}
-                  label={option}
+                  label={discoverCopy.q9.options[option]}
                   selected={preferences.transport.includes(option)}
                   onClick={() => toggleTransport(option)}
                 />
@@ -1173,20 +1399,18 @@ export default function DiscoverPage() {
           </section>
         ) : null}
 
-        {currentStep !== "summary" ? (
+        {currentStep !== "summary" && currentStep !== 1 ? (
           <div className="mt-10 flex flex-wrap gap-4 border-t border-gray-200 pt-6 dark:border-gray-800">
-            {currentStep !== 1 ? (
-              <button type="button" onClick={handleBack} className={secondaryButtonClasses}>
-                Back
-              </button>
-            ) : null}
+            <button type="button" onClick={handleBack} className={secondaryButtonClasses}>
+              {commonCopy.back}
+            </button>
             <button
               type="button"
               disabled={!canContinue}
               onClick={handleContinue}
               className={primaryButtonClasses}
             >
-              Continue
+              {commonCopy.continue}
             </button>
           </div>
         ) : null}
@@ -1199,92 +1423,171 @@ export default function DiscoverPage() {
             className="outline-none"
           >
             <h1 id="summary-title" className="text-3xl font-bold sm:text-4xl">
-              Your base trip preferences
+              {discoverCopy.summary.heading}
             </h1>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <SummaryItem number={1} title="Trip type">
-                <p>{preferences.tripType}</p>
+              <SummaryItem
+                questionLabel={questionLabel(1)}
+                title={discoverCopy.summary.categories[1]}
+              >
+                <p>
+                  {preferences.tripType === null
+                    ? commonCopy.notSelected
+                    : discoverCopy.q1.options[preferences.tripType]}
+                </p>
               </SummaryItem>
 
-              <SummaryItem number={2} title="Travellers">
+              <SummaryItem
+                questionLabel={questionLabel(2)}
+                title={discoverCopy.summary.categories[2]}
+              >
                 <p>{selectedGroupLabel}</p>
                 <p>
-                  {formatCount(travellers.adults, "adult")} · {formatCount(travellers.children, "child", "children")} · {formatCount(travellers.pets, "pet")}
+                  {formatCount(travellers.adults, commonCopy.nouns.adult)} · {formatCount(travellers.children, commonCopy.nouns.child)} · {formatCount(travellers.pets, commonCopy.nouns.pet)}
                 </p>
                 <p>
-                  {formatCount(travellers.rooms, "bedroom")} · {formatCount(travellers.beds, "bed")}
+                  {formatCount(travellers.rooms, commonCopy.nouns.bedroom)} · {formatCount(travellers.beds, commonCopy.nouns.bed)}
                 </p>
               </SummaryItem>
 
-              <SummaryItem number={3} title="Budget">
+              <SummaryItem
+                questionLabel={questionLabel(3)}
+                title={discoverCopy.summary.categories[3]}
+              >
                 <p>
-                  Entered as {preferences.budget.mode === "total" ? "total trip budget" : "budget per traveller"}
+                  {formatMessage(discoverCopy.summary.enteredAs, {
+                    mode: discoverCopy.q3.modes[preferences.budget.mode],
+                  })}
                 </p>
                 <p>
-                  {formatNumber(preferences.budget.total ?? 0)} {preferences.budget.currency} total
+                  {formatMessage(discoverCopy.summary.totalAmount, {
+                    amount: formatNumber(
+                      preferences.budget.total ?? 0,
+                      numberLocale,
+                    ),
+                    currency: preferences.budget.currency,
+                  })}
                 </p>
                 <p>
-                  {formatNumber(preferences.budget.perTraveller ?? 0)} {preferences.budget.currency} per traveller
+                  {formatMessage(discoverCopy.summary.perTravellerAmount, {
+                    amount: formatNumber(
+                      preferences.budget.perTraveller ?? 0,
+                      numberLocale,
+                    ),
+                    currency: preferences.budget.currency,
+                  })}
                 </p>
               </SummaryItem>
 
-              <SummaryItem number={4} title="Accommodation">
-                <p>{preferences.accommodation.join(", ")}</p>
-                {travellers.pets > 0 ? <p>Pet-friendly accommodation required</p> : null}
+              <SummaryItem
+                questionLabel={questionLabel(4)}
+                title={discoverCopy.summary.categories[4]}
+              >
+                <p>
+                  {preferences.accommodation
+                    .map((option) => discoverCopy.q4.options[option])
+                    .join(", ")}
+                </p>
+                {travellers.pets > 0 ? (
+                  <p>{discoverCopy.summary.petFriendlyRequired}</p>
+                ) : null}
               </SummaryItem>
 
-              <SummaryItem number={5} title="Meals">
-                <p>{preferences.meals.join(", ")}</p>
+              <SummaryItem
+                questionLabel={questionLabel(5)}
+                title={discoverCopy.summary.categories[5]}
+              >
+                <p>
+                  {preferences.meals
+                    .map((option) => discoverCopy.q5.options[option])
+                    .join(", ")}
+                </p>
               </SummaryItem>
 
-              <SummaryItem number={6} title="When">
+              <SummaryItem
+                questionLabel={questionLabel(6)}
+                title={discoverCopy.summary.categories[6]}
+              >
                 {preferences.timing.mode === "exact" ? (
-                  <p>{preferences.timing.departureDate} to {preferences.timing.returnDate}</p>
+                  <p>
+                    {formatMessage(discoverCopy.summary.dateRange, {
+                      departure: preferences.timing.departureDate,
+                      return: preferences.timing.returnDate,
+                    })}
+                  </p>
                 ) : null}
                 {preferences.timing.mode === "rough" ? (
-                  <p>{preferences.timing.month} {preferences.timing.year}</p>
+                  <p>
+                    {preferences.timing.month === null
+                      ? ""
+                      : discoverCopy.q6.months[preferences.timing.month]}{" "}
+                    {preferences.timing.year}
+                  </p>
                 ) : null}
-                {preferences.timing.mode === "flexible" ? <p>Flexible dates</p> : null}
+                {preferences.timing.mode === "flexible" ? (
+                  <p>{discoverCopy.summary.flexibleDates}</p>
+                ) : null}
               </SummaryItem>
 
-              <SummaryItem number={7} title="Duration">
+              <SummaryItem
+                questionLabel={questionLabel(7)}
+                title={discoverCopy.summary.categories[7]}
+              >
                 {hasExactDuration(preferences) ? (
-                  <p>{formatCount(preferences.timing.exactNights ?? 0, "night")} (calculated from exact dates)</p>
+                  <p>
+                    {formatCount(
+                      preferences.timing.exactNights ?? 0,
+                      commonCopy.nouns.night,
+                    )}{" "}
+                    ({discoverCopy.summary.calculatedFromExactDates})
+                  </p>
                 ) : (
                   <p>{selectedDuration?.label} — {selectedDuration?.description}</p>
                 )}
               </SummaryItem>
 
-              <SummaryItem number={8} title="Origin">
+              <SummaryItem
+                questionLabel={questionLabel(8)}
+                title={discoverCopy.summary.categories[8]}
+              >
                 {preferences.origin.mode === "manual" ? (
                   <p>{preferences.origin.manualLocation.trim()}</p>
                 ) : (
                   <p>
-                    Current location ({preferences.origin.latitude?.toFixed(5)}, {preferences.origin.longitude?.toFixed(5)})
+                    {formatMessage(discoverCopy.summary.currentLocation, {
+                      coordinates: `${preferences.origin.latitude?.toFixed(5)}, ${preferences.origin.longitude?.toFixed(5)}`,
+                    })}
                   </p>
                 )}
               </SummaryItem>
 
-              <SummaryItem number={9} title="Transport">
-                <p>{preferences.transport.join(", ")}</p>
+              <SummaryItem
+                questionLabel={questionLabel(9)}
+                title={discoverCopy.summary.categories[9]}
+              >
+                <p>
+                  {preferences.transport
+                    .map((option) => discoverCopy.q9.options[option])
+                    .join(", ")}
+                </p>
               </SummaryItem>
             </div>
 
             <p className="mt-8 rounded-xl bg-gray-50 p-4 text-sm text-gray-600 dark:bg-gray-900 dark:text-gray-300">
-              Next, TripMatch will use these preferences to evaluate realistic destinations and transport options.
+              {discoverCopy.summary.nextStepNote}
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
               <button
                 type="button"
-                onClick={() => setCurrentStep(9)}
+                onClick={() => goToStep(9)}
                 className={secondaryButtonClasses}
               >
-                Back
+                {commonCopy.back}
               </button>
               <button type="button" disabled className={primaryButtonClasses}>
-                Continue to destination matching
+                {discoverCopy.summary.continueToMatching}
               </button>
             </div>
           </section>

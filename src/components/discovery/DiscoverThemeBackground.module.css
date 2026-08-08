@@ -1,0 +1,50 @@
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 12% 10%,
+      color-mix(in srgb, var(--ambience-accent) 20%, transparent),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 92% 24%,
+      color-mix(in srgb, var(--ambience-via) 14%, transparent),
+      transparent 31rem
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--ambience-from) 8%, transparent),
+      transparent 42%,
+      color-mix(in srgb, var(--ambience-to) 7%, transparent)
+    );
+  opacity: 0.78;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 58%,
+    transparent 96%
+  );
+  mask-image: linear-gradient(to bottom, black 0%, black 58%, transparent 96%);
+}
+
+.background::after {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 34%,
+    color-mix(in srgb, var(--background) 97%, transparent) 0%,
+    color-mix(in srgb, var(--background) 72%, transparent) 42%,
+    transparent 78%
+  );
+  content: "";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .background {
+    transition: none;
+  }
+}

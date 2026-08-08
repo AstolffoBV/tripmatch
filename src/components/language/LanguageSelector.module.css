@@ -3,6 +3,13 @@
   z-index: 30;
 }
 
+.neutral {
+  --hero-text: #111827;
+  --control-background: rgba(255, 255, 255, 0.76);
+  --control-border: rgba(17, 24, 39, 0.18);
+  --focus-ring: #111827;
+}
+
 .trigger {
   display: inline-flex;
   min-height: 2.75rem;
@@ -173,6 +180,15 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .neutral {
+    --hero-text: #f3f4f6;
+    --control-background: rgba(17, 24, 39, 0.76);
+    --control-border: rgba(243, 244, 246, 0.2);
+    --focus-ring: #f9fafb;
   }
 }
 
