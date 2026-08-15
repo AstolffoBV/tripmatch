@@ -130,6 +130,8 @@ type QuestionTwoTranslation = {
 type QuestionThreeTranslation = {
   heading: string;
   subtitle: string;
+  budgetType: string;
+  yourBudget: string;
   modes: Record<BudgetMode, string>;
   currency: string;
   amountPlaceholder: string;
@@ -395,6 +397,8 @@ export const translations = {
         heading: "What's your budget?",
         subtitle:
           "Include transport, accommodation, food and activities for the whole trip.",
+        budgetType: "Budget type",
+        yourBudget: "Your budget",
         modes: {
           total: "Total trip budget",
           perTraveller: "Budget per traveller",
@@ -709,6 +713,8 @@ export const translations = {
         heading: "Care este bugetul tău?",
         subtitle:
           "Include transportul, cazarea, mâncarea și activitățile pentru întreaga călătorie.",
+        budgetType: "Tipul bugetului",
+        yourBudget: "Bugetul tău",
         modes: {
           total: "Buget total pentru călătorie",
           perTraveller: "Buget per călător",
@@ -1021,6 +1027,8 @@ export const translations = {
         heading: "¿Cuál es tu presupuesto?",
         subtitle:
           "Incluye el transporte, el alojamiento, la comida y las actividades de todo el viaje.",
+        budgetType: "Tipo de presupuesto",
+        yourBudget: "Tu presupuesto",
         modes: {
           total: "Presupuesto total del viaje",
           perTraveller: "Presupuesto por viajero",
@@ -1331,6 +1339,8 @@ export const translations = {
         heading: "Wie hoch ist dein Budget?",
         subtitle:
           "Berücksichtige Transport, Unterkunft, Verpflegung und Aktivitäten für die gesamte Reise.",
+        budgetType: "Budgetart",
+        yourBudget: "Dein Budget",
         modes: {
           total: "Gesamtbudget für die Reise",
           perTraveller: "Budget pro Person",
@@ -1650,6 +1660,8 @@ export const translations = {
         heading: "Quel est votre budget ?",
         subtitle:
           "Incluez le transport, l’hébergement, les repas et les activités pour l’ensemble du voyage.",
+        budgetType: "Type de budget",
+        yourBudget: "Votre budget",
         modes: {
           total: "Budget total du voyage",
           perTraveller: "Budget par voyageur",

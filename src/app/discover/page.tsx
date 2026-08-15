@@ -7,13 +7,13 @@ import DiscoverThemeBackground from "@/components/discovery/DiscoverThemeBackgro
 import OptionCard from "@/components/discovery/OptionCard";
 import ProgressBar from "@/components/discovery/ProgressBar";
 import QuestionTwo from "@/components/discovery/QuestionTwo";
+import QuestionThree from "@/components/discovery/QuestionThree";
+import QuestionThreeBackground from "@/components/discovery/QuestionThreeBackground";
 import TripTypePanels from "@/components/discovery/TripTypePanels";
 import LanguageSelector from "@/components/language/LanguageSelector";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import {
   accommodationOptions,
-  budgetModeOptions,
-  currencies,
   durationOptions,
   mealOptions,
   months,
@@ -723,6 +723,27 @@ export default function DiscoverPage() {
     preferences.budget.mode === "total"
       ? preferences.budget.total
       : preferences.budget.perTraveller;
+  const budgetEquivalentText =
+    preferences.budget.mode === "total" &&
+    preferences.budget.perTraveller !== null &&
+    preferences.budget.total !== null &&
+    preferences.budget.total > 0
+      ? formatMessage(discoverCopy.q3.averagePerTraveller, {
+          amount: formatNumber(
+            preferences.budget.perTraveller,
+            numberLocale,
+          ),
+          currency: preferences.budget.currency,
+        })
+      : preferences.budget.mode === "perTraveller" &&
+          preferences.budget.total !== null &&
+          preferences.budget.perTraveller !== null &&
+          preferences.budget.perTraveller > 0
+        ? formatMessage(discoverCopy.q3.estimatedTotal, {
+            amount: formatNumber(preferences.budget.total, numberLocale),
+            currency: preferences.budget.currency,
+          })
+        : null;
   const selectedGroupLabel =
     groupType === null
       ? commonCopy.notSelected
@@ -736,6 +757,7 @@ export default function DiscoverPage() {
     currentStep !== "summary" && isStepComplete(currentStep, preferences);
   const isQuestionOne = currentStep === 1;
   const isQuestionTwo = currentStep === 2;
+  const isQuestionThree = currentStep === 3;
 
   function renderHeader(themed: boolean) {
     return (
@@ -773,11 +795,20 @@ export default function DiscoverPage() {
           ? "relative isolate min-h-svh overflow-x-clip bg-[#111a1d]"
           : isQuestionTwo
             ? "relative isolate min-h-screen overflow-x-clip bg-[#f4f9f7] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
-            : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+            : isQuestionThree
+              ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+              : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
         <DiscoverThemeBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
+      {currentStep === 3 ? (
+        <QuestionThreeBackground
           tripType={preferences.tripType}
           tripSubtype={preferences.tripSubtype}
         />
@@ -789,7 +820,9 @@ export default function DiscoverPage() {
             ? "relative z-10 w-full"
             : isQuestionTwo
               ? "relative z-10 mx-auto max-w-[58rem]"
-              : "relative z-10 mx-auto max-w-3xl"
+              : isQuestionThree
+                ? "relative z-10 mx-auto max-w-[58rem]"
+                : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -881,96 +914,20 @@ export default function DiscoverPage() {
             aria-labelledby="question-3-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(3)}
-            </p>
-            <h1 id="question-3-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q3.heading}
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              {discoverCopy.q3.subtitle}
-            </p>
-            <p className="mt-4 text-sm font-medium">
-              {formatCount(travellerCount, commonCopy.nouns.traveller)}
-            </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {budgetModeOptions.map((option) => (
-                <OptionCard
-                  key={option.value}
-                  label={discoverCopy.q3.modes[option.value]}
-                  selected={preferences.budget.mode === option.value}
-                  onClick={() => selectBudgetMode(option.value)}
-                />
-              ))}
-            </div>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-[1fr_140px]">
-              <label>
-                <span className="mb-2 block text-sm font-medium">
-                  {preferences.budget.mode === "total"
-                    ? discoverCopy.q3.modes.total
-                    : discoverCopy.q3.modes.perTraveller}
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  inputMode="decimal"
-                  value={activeBudgetAmount ?? ""}
-                  onChange={(event) => changeBudgetAmount(event.target.value)}
-                  className={inputClasses}
-                  placeholder={discoverCopy.q3.amountPlaceholder}
-                />
-              </label>
-
-              <label>
-                <span className="mb-2 block text-sm font-medium">
-                  {discoverCopy.q3.currency}
-                </span>
-                <select
-                  value={preferences.budget.currency}
-                  onChange={(event) => changeCurrency(event.target.value as Currency)}
-                  className={inputClasses}
-                >
-                  {currencies.map((currency) => (
-                    <option key={currency} value={currency}>
-                      {currency}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            {preferences.budget.mode === "total" &&
-            preferences.budget.perTraveller !== null &&
-            preferences.budget.total !== null &&
-            preferences.budget.total > 0 ? (
-              <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                {formatMessage(discoverCopy.q3.averagePerTraveller, {
-                  amount: formatNumber(
-                    preferences.budget.perTraveller,
-                    numberLocale,
-                  ),
-                  currency: preferences.budget.currency,
-                })}
-              </p>
-            ) : null}
-
-            {preferences.budget.mode === "perTraveller" &&
-            preferences.budget.total !== null &&
-            preferences.budget.perTraveller !== null &&
-            preferences.budget.perTraveller > 0 ? (
-              <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                {formatMessage(discoverCopy.q3.estimatedTotal, {
-                  amount: formatNumber(
-                    preferences.budget.total,
-                    numberLocale,
-                  ),
-                  currency: preferences.budget.currency,
-                })}
-              </p>
-            ) : null}
+            <QuestionThree
+              questionLabel={questionLabel(3)}
+              copy={discoverCopy.q3}
+              budget={preferences.budget}
+              activeAmount={activeBudgetAmount}
+              travellerLabel={formatCount(
+                travellerCount,
+                commonCopy.nouns.traveller,
+              )}
+              equivalentText={budgetEquivalentText}
+              onSelectMode={selectBudgetMode}
+              onChangeAmount={changeBudgetAmount}
+              onChangeCurrency={changeCurrency}
+            />
           </section>
         ) : null}
 
@@ -1325,7 +1282,7 @@ export default function DiscoverPage() {
         {currentStep !== "summary" && currentStep !== 1 ? (
           <div
             className={`flex flex-wrap gap-4 border-t pt-6 ${
-              currentStep === 2
+              currentStep === 2 || currentStep === 3
                 ? "mt-8 border-[#cfe0dc] dark:border-white/10"
                 : "mt-10 border-gray-200 dark:border-gray-800"
             }`}
@@ -1334,7 +1291,7 @@ export default function DiscoverPage() {
               type="button"
               onClick={handleBack}
               className={
-                currentStep === 2
+                currentStep === 2 || currentStep === 3
                   ? editorialSecondaryButtonClasses
                   : secondaryButtonClasses
               }
@@ -1346,7 +1303,7 @@ export default function DiscoverPage() {
               disabled={!canContinue}
               onClick={handleContinue}
               className={
-                currentStep === 2
+                currentStep === 2 || currentStep === 3
                   ? editorialPrimaryButtonClasses
                   : primaryButtonClasses
               }

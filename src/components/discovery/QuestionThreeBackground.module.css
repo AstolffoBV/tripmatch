@@ -1,0 +1,91 @@
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      color-mix(in srgb, var(--budget-accent) 10%, transparent),
+      transparent 26rem
+    ),
+    radial-gradient(
+      circle at 10% 86%,
+      color-mix(in srgb, var(--budget-via) 7%, transparent),
+      transparent 29rem
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--budget-from) 4%, #fbfcf8) 0%,
+      #f5faf8 50%,
+      color-mix(in srgb, var(--budget-to) 4%, #eef8f7) 100%
+    );
+}
+
+.orbit,
+.horizon {
+  position: absolute;
+  display: block;
+}
+
+.orbit {
+  top: 10rem;
+  right: -7rem;
+  width: min(27rem, 44vw);
+  aspect-ratio: 1;
+  border: 1px solid
+    color-mix(in srgb, var(--budget-accent) 14%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4rem
+      color-mix(in srgb, var(--budget-accent) 2.25%, transparent),
+    0 0 0 9rem color-mix(in srgb, var(--budget-via) 1.5%, transparent);
+}
+
+.horizon {
+  right: 18%;
+  bottom: -13rem;
+  width: 52rem;
+  height: 25rem;
+  border: 1px solid
+    color-mix(in srgb, var(--budget-accent) 11%, transparent);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50% 50% 0 0;
+  transform: rotate(4deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  .background {
+    background:
+      radial-gradient(
+        circle at 82% 18%,
+        color-mix(in srgb, var(--budget-accent) 13%, transparent),
+        transparent 26rem
+      ),
+      radial-gradient(
+        circle at 10% 86%,
+        color-mix(in srgb, var(--budget-via) 9%, transparent),
+        transparent 29rem
+      ),
+      linear-gradient(150deg, #0b2429 0%, #071a1f 52%, #0a2025 100%);
+  }
+
+  .orbit,
+  .horizon {
+    opacity: 0.52;
+  }
+}
+
+@media (max-width: 640px) {
+  .orbit {
+    top: 14rem;
+    right: -11rem;
+    width: 23rem;
+  }
+
+  .horizon {
+    right: -22rem;
+  }
+}
