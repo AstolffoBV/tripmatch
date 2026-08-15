@@ -6,41 +6,96 @@
   pointer-events: none;
   background:
     radial-gradient(
-      circle at 12% 10%,
-      color-mix(in srgb, var(--ambience-accent) 20%, transparent),
-      transparent 34rem
+      circle at 8% 18%,
+      color-mix(in srgb, var(--ambience-accent) 16%, transparent),
+      transparent 28rem
     ),
     radial-gradient(
-      circle at 92% 24%,
-      color-mix(in srgb, var(--ambience-via) 14%, transparent),
-      transparent 31rem
+      circle at 92% 28%,
+      color-mix(in srgb, var(--ambience-via) 13%, transparent),
+      transparent 30rem
     ),
     linear-gradient(
-      150deg,
-      color-mix(in srgb, var(--ambience-from) 8%, transparent),
-      transparent 42%,
-      color-mix(in srgb, var(--ambience-to) 7%, transparent)
+      155deg,
+      color-mix(in srgb, var(--ambience-from) 7%, #fbfcf8) 0%,
+      #f4f9f7 48%,
+      color-mix(in srgb, var(--ambience-to) 6%, #edf7f7) 100%
     );
-  opacity: 0.78;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    black 0%,
-    black 58%,
-    transparent 96%
+}
+
+.background::before,
+.background::after {
+  position: absolute;
+  content: "";
+}
+
+.background::before {
+  top: 9rem;
+  right: -9rem;
+  width: min(32rem, 52vw);
+  aspect-ratio: 1;
+  border: 1px solid
+    color-mix(in srgb, var(--ambience-accent) 18%, transparent);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--ambience-accent) 8%, transparent),
+    transparent 67%
   );
-  mask-image: linear-gradient(to bottom, black 0%, black 58%, transparent 96%);
+  box-shadow:
+    0 0 0 3rem
+      color-mix(in srgb, var(--ambience-accent) 2.5%, transparent),
+    0 0 0 8rem
+      color-mix(in srgb, var(--ambience-via) 2%, transparent);
 }
 
 .background::after {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 34%,
-    color-mix(in srgb, var(--background) 97%, transparent) 0%,
-    color-mix(in srgb, var(--background) 72%, transparent) 42%,
-    transparent 78%
-  );
-  content: "";
+  bottom: -10rem;
+  left: -12%;
+  width: 74%;
+  height: 23rem;
+  border: 1px solid
+    color-mix(in srgb, var(--ambience-accent) 14%, transparent);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50% 55% 0 0;
+  opacity: 0.8;
+  transform: rotate(-5deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  .background {
+    background:
+      radial-gradient(
+        circle at 8% 18%,
+        color-mix(in srgb, var(--ambience-accent) 17%, transparent),
+        transparent 28rem
+      ),
+      radial-gradient(
+        circle at 92% 28%,
+        color-mix(in srgb, var(--ambience-via) 12%, transparent),
+        transparent 30rem
+      ),
+      linear-gradient(155deg, #0b2429 0%, #071a1f 52%, #0b2026 100%);
+  }
+
+  .background::before,
+  .background::after {
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 640px) {
+  .background::before {
+    top: 12rem;
+    right: -10rem;
+    width: 24rem;
+  }
+
+  .background::after {
+    left: -30%;
+    width: 110%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

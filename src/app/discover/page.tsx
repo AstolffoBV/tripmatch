@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import Counter from "@/components/discovery/Counter";
 import DiscoverThemeBackground from "@/components/discovery/DiscoverThemeBackground";
 import OptionCard from "@/components/discovery/OptionCard";
 import ProgressBar from "@/components/discovery/ProgressBar";
+import QuestionTwo from "@/components/discovery/QuestionTwo";
 import TripTypePanels from "@/components/discovery/TripTypePanels";
 import LanguageSelector from "@/components/language/LanguageSelector";
 import { useLanguage } from "@/components/language/LanguageProvider";
@@ -20,7 +20,6 @@ import {
   originModeOptions,
   timingModeOptions,
   transportOptions,
-  travellerGroupOptions,
 } from "@/data/discoveryOptions";
 import {
   languageLocales,
@@ -96,6 +95,12 @@ const themedPrimaryButtonClasses =
 
 const themedSecondaryButtonClasses =
   "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-white/25 bg-black/20 px-6 py-3 font-semibold text-white/90 shadow-sm backdrop-blur-md transition hover:border-white/45 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transform-none";
+
+const editorialPrimaryButtonClasses =
+  "rounded-xl bg-[#123f46] px-6 py-3 font-semibold text-white shadow-sm transition enabled:cursor-pointer enabled:hover:-translate-y-0.5 enabled:hover:bg-[#0d343a] enabled:hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] disabled:cursor-not-allowed disabled:bg-[#cfddda] disabled:text-[#718784] disabled:shadow-none motion-reduce:transform-none dark:bg-[#72d0c9] dark:text-[#092e33] dark:enabled:hover:bg-[#8bddd6] dark:disabled:bg-white/12 dark:disabled:text-white/35";
+
+const editorialSecondaryButtonClasses =
+  "cursor-pointer rounded-xl border border-[#bfd3cf] bg-white/55 px-6 py-3 font-semibold text-[#173d42] shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transform-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10";
 
 const inputClasses =
   "w-full rounded-xl border border-gray-300 bg-transparent px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black dark:border-gray-700 dark:focus:border-white dark:focus:ring-white";
@@ -730,6 +735,7 @@ export default function DiscoverPage() {
   const canContinue =
     currentStep !== "summary" && isStepComplete(currentStep, preferences);
   const isQuestionOne = currentStep === 1;
+  const isQuestionTwo = currentStep === 2;
 
   function renderHeader(themed: boolean) {
     return (
@@ -765,7 +771,9 @@ export default function DiscoverPage() {
       className={
         isQuestionOne
           ? "relative isolate min-h-svh overflow-x-clip bg-[#111a1d]"
-          : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+          : isQuestionTwo
+            ? "relative isolate min-h-screen overflow-x-clip bg-[#f4f9f7] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+            : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
@@ -779,7 +787,9 @@ export default function DiscoverPage() {
         className={
           isQuestionOne
             ? "relative z-10 w-full"
-            : "relative z-10 mx-auto max-w-3xl"
+            : isQuestionTwo
+              ? "relative z-10 mx-auto max-w-[58rem]"
+              : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -849,105 +859,18 @@ export default function DiscoverPage() {
             aria-labelledby="question-2-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(2)}
-            </p>
-            <h1 id="question-2-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q2.heading}
-            </h1>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {travellerGroupOptions.map((option) => (
-                <OptionCard
-                  key={option.value}
-                  label={discoverCopy.q2.groups[option.value]}
-                  selected={groupType === option.value}
-                  onClick={() => selectTravellerGroup(option.value)}
-                />
-              ))}
-            </div>
-
-            {groupType !== null ? (
-              <div className="mt-8 space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Counter
-                    label={discoverCopy.q2.adults}
-                    {...counterLabels(discoverCopy.q2.adults)}
-                    value={travellers.adults}
-                    min={groupType === "friends" ? 2 : 0}
-                    fixed={adultsAreFixed}
-                    onChange={(value) => changeTravellerValue("adults", value)}
-                  />
-                  <Counter
-                    label={discoverCopy.q2.children}
-                    {...counterLabels(discoverCopy.q2.children)}
-                    value={travellers.children}
-                    min={groupType === "family" ? 1 : 0}
-                    fixed={childrenAreFixed}
-                    onChange={(value) => changeTravellerValue("children", value)}
-                  />
-                  <Counter
-                    label={discoverCopy.q2.pets}
-                    {...counterLabels(discoverCopy.q2.pets)}
-                    value={travellers.pets}
-                    onChange={(value) => changeTravellerValue("pets", value)}
-                  />
-                  <Counter
-                    label={
-                      groupType === "family"
-                        ? discoverCopy.q2.suggestedBedrooms
-                        : discoverCopy.q2.rooms
-                    }
-                    {...counterLabels(
-                      groupType === "family"
-                        ? discoverCopy.q2.suggestedBedrooms
-                        : discoverCopy.q2.rooms,
-                    )}
-                    value={travellers.rooms}
-                    min={1}
-                    fixed={roomsAndBedsAreFixed}
-                    onChange={(value) => changeTravellerValue("rooms", value)}
-                  />
-                  <Counter
-                    label={discoverCopy.q2.beds}
-                    {...counterLabels(discoverCopy.q2.beds)}
-                    value={travellers.beds}
-                    min={1}
-                    fixed={roomsAndBedsAreFixed}
-                    onChange={(value) => changeTravellerValue("beds", value)}
-                  />
-                </div>
-
-                {groupType === "family" || groupType === "other" ? (
-                  <p className="text-sm text-gray-500">
-                    {discoverCopy.q2.underEighteen}
-                  </p>
-                ) : null}
-
-                {groupType === "couple" ? (
-                  <div className="rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                    <p className="font-medium">{discoverCopy.q2.sleepingSetup}</p>
-                    <p className="mt-1 text-gray-600 dark:text-gray-300">
-                      1 × {discoverCopy.q2.doubleBed.one}
-                    </p>
-                  </div>
-                ) : null}
-
-                {groupType === "family" ? (
-                  <div className="rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                    <p className="font-medium">{discoverCopy.q2.sleepingSetup}</p>
-                    <p className="mt-1 text-gray-600 dark:text-gray-300">
-                      1 × {discoverCopy.q2.doubleBed.one}
-                    </p>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {travellers.children} × {travellers.children === 1
-                        ? discoverCopy.q2.singleBed.one
-                        : discoverCopy.q2.singleBed.other}
-                    </p>
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
+            <QuestionTwo
+              questionLabel={questionLabel(2)}
+              copy={discoverCopy.q2}
+              travellers={travellers}
+              groupType={groupType}
+              adultsAreFixed={adultsAreFixed}
+              childrenAreFixed={childrenAreFixed}
+              roomsAndBedsAreFixed={roomsAndBedsAreFixed}
+              counterLabels={counterLabels}
+              onSelectGroup={selectTravellerGroup}
+              onChangeTraveller={changeTravellerValue}
+            />
           </section>
         ) : null}
 
@@ -1400,15 +1323,33 @@ export default function DiscoverPage() {
         ) : null}
 
         {currentStep !== "summary" && currentStep !== 1 ? (
-          <div className="mt-10 flex flex-wrap gap-4 border-t border-gray-200 pt-6 dark:border-gray-800">
-            <button type="button" onClick={handleBack} className={secondaryButtonClasses}>
+          <div
+            className={`flex flex-wrap gap-4 border-t pt-6 ${
+              currentStep === 2
+                ? "mt-8 border-[#cfe0dc] dark:border-white/10"
+                : "mt-10 border-gray-200 dark:border-gray-800"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={handleBack}
+              className={
+                currentStep === 2
+                  ? editorialSecondaryButtonClasses
+                  : secondaryButtonClasses
+              }
+            >
               {commonCopy.back}
             </button>
             <button
               type="button"
               disabled={!canContinue}
               onClick={handleContinue}
-              className={primaryButtonClasses}
+              className={
+                currentStep === 2
+                  ? editorialPrimaryButtonClasses
+                  : primaryButtonClasses
+              }
             >
               {commonCopy.continue}
             </button>

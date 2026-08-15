@@ -110,7 +110,11 @@ type QuestionOneTranslation = {
 
 type QuestionTwoTranslation = {
   heading: string;
+  subtitle: string;
   groups: Record<TravellerGroup, string>;
+  groupDescriptions: Record<TravellerGroup, string>;
+  yourGroup: string;
+  yourSetup: string;
   adults: string;
   children: string;
   pets: string;
@@ -359,6 +363,7 @@ export const translations = {
       },
       q2: {
         heading: "Who are you travelling with?",
+        subtitle: "Choose your group and fine-tune the details below.",
         groups: {
           solo: "Solo",
           couple: "Couple",
@@ -366,6 +371,15 @@ export const translations = {
           friends: "Friends",
           other: "Other",
         },
+        groupDescriptions: {
+          solo: "Just me",
+          couple: "Two travellers",
+          family: "Adults & children",
+          friends: "Travelling together",
+          other: "Custom group",
+        },
+        yourGroup: "Your group",
+        yourSetup: "Your setup",
         adults: "Adults",
         children: "Children",
         pets: "Pets",
@@ -660,6 +674,7 @@ export const translations = {
       },
       q2: {
         heading: "Cu cine călătorești?",
+        subtitle: "Alege grupul și ajustează detaliile de mai jos.",
         groups: {
           solo: "Doar eu",
           couple: "Cuplu",
@@ -667,6 +682,15 @@ export const translations = {
           friends: "Prieteni",
           other: "Altă variantă",
         },
+        groupDescriptions: {
+          solo: "O singură persoană",
+          couple: "Doi călători",
+          family: "Adulți și copii",
+          friends: "Călătorim împreună",
+          other: "Grup personalizat",
+        },
+        yourGroup: "Grupul tău",
+        yourSetup: "Configurația ta",
         adults: "Adulți",
         children: "Copii",
         pets: "Animale de companie",
@@ -965,6 +989,7 @@ export const translations = {
       },
       q2: {
         heading: "¿Con quién viajas?",
+        subtitle: "Elige tu grupo y ajusta los detalles a continuación.",
         groups: {
           solo: "Solo/a",
           couple: "En pareja",
@@ -972,6 +997,15 @@ export const translations = {
           friends: "Con amigos",
           other: "Otro",
         },
+        groupDescriptions: {
+          solo: "Solo yo",
+          couple: "Dos viajeros",
+          family: "Adultos y niños",
+          friends: "Viajar juntos",
+          other: "Grupo personalizado",
+        },
+        yourGroup: "Tu grupo",
+        yourSetup: "Tu configuración",
         adults: "Adultos",
         children: "Niños",
         pets: "Mascotas",
@@ -1265,6 +1299,7 @@ export const translations = {
       },
       q2: {
         heading: "Mit wem reist du?",
+        subtitle: "Wähle deine Reisegruppe und passe unten die Details an.",
         groups: {
           solo: "Allein",
           couple: "Paar",
@@ -1272,6 +1307,15 @@ export const translations = {
           friends: "Freunde",
           other: "Andere",
         },
+        groupDescriptions: {
+          solo: "Nur ich",
+          couple: "Zwei Reisende",
+          family: "Erwachsene & Kinder",
+          friends: "Gemeinsam unterwegs",
+          other: "Individuelle Gruppe",
+        },
+        yourGroup: "Deine Reisegruppe",
+        yourSetup: "Deine Aufteilung",
         adults: "Erwachsene",
         children: "Kinder",
         pets: "Haustiere",
@@ -1572,6 +1616,8 @@ export const translations = {
       },
       q2: {
         heading: "Avec qui voyagez-vous ?",
+        subtitle:
+          "Choisissez votre groupe, puis ajustez les détails ci-dessous.",
         groups: {
           solo: "En solo",
           couple: "En couple",
@@ -1579,6 +1625,15 @@ export const translations = {
           friends: "Entre amis",
           other: "Autre",
         },
+        groupDescriptions: {
+          solo: "Une personne",
+          couple: "Deux voyageurs",
+          family: "Adultes et enfants",
+          friends: "Voyager ensemble",
+          other: "Groupe personnalisé",
+        },
+        yourGroup: "Votre groupe",
+        yourSetup: "Votre configuration",
         adults: "Adultes",
         children: "Enfants",
         pets: "Animaux de compagnie",
