@@ -1,0 +1,112 @@
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 14% 22%,
+      color-mix(in srgb, var(--stay-accent) 9%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 88% 72%,
+      color-mix(in srgb, var(--stay-via) 7%, transparent),
+      transparent 31rem
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--stay-from) 3.5%, #fbfcf8) 0%,
+      #f5faf8 48%,
+      color-mix(in srgb, var(--stay-to) 4%, #edf8f6) 100%
+    );
+}
+
+.sun,
+.arch,
+.horizon {
+  position: absolute;
+  display: block;
+}
+
+.sun {
+  top: 9rem;
+  left: -5rem;
+  width: min(19rem, 34vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--stay-accent) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--stay-accent) 9%, transparent);
+}
+
+.arch {
+  top: 7rem;
+  right: -6rem;
+  width: min(29rem, 43vw);
+  height: 38rem;
+  border: 1px solid color-mix(in srgb, var(--stay-accent) 13%, transparent);
+  border-bottom: 0;
+  border-radius: 15rem 15rem 0 0;
+  box-shadow:
+    0 0 0 4.5rem color-mix(in srgb, var(--stay-accent) 2.4%, transparent),
+    0 0 0 9rem color-mix(in srgb, var(--stay-via) 1.4%, transparent);
+  transform: rotate(3deg);
+}
+
+.horizon {
+  right: 18%;
+  bottom: 4.5rem;
+  width: 46rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--stay-accent) 14%, transparent),
+    transparent
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  .background {
+    background:
+      radial-gradient(
+        circle at 14% 22%,
+        color-mix(in srgb, var(--stay-accent) 12%, transparent),
+        transparent 25rem
+      ),
+      radial-gradient(
+        circle at 88% 72%,
+        color-mix(in srgb, var(--stay-via) 9%, transparent),
+        transparent 31rem
+      ),
+      linear-gradient(145deg, #0b2429 0%, #071a1f 48%, #0a2025 100%);
+  }
+
+  .sun,
+  .arch,
+  .horizon {
+    opacity: 0.54;
+  }
+}
+
+@media (max-width: 640px) {
+  .sun {
+    top: 12rem;
+    left: -9rem;
+    width: 19rem;
+  }
+
+  .arch {
+    top: 17rem;
+    right: -15rem;
+    width: 26rem;
+    height: 34rem;
+  }
+
+  .horizon {
+    right: -14rem;
+    bottom: 7rem;
+    width: 34rem;
+  }
+}

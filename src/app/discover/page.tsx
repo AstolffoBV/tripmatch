@@ -6,6 +6,10 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import DiscoverThemeBackground from "@/components/discovery/DiscoverThemeBackground";
 import OptionCard from "@/components/discovery/OptionCard";
 import ProgressBar from "@/components/discovery/ProgressBar";
+import QuestionFour from "@/components/discovery/QuestionFour";
+import QuestionFourBackground from "@/components/discovery/QuestionFourBackground";
+import QuestionFive from "@/components/discovery/QuestionFive";
+import QuestionFiveBackground from "@/components/discovery/QuestionFiveBackground";
 import QuestionTwo from "@/components/discovery/QuestionTwo";
 import QuestionThree from "@/components/discovery/QuestionThree";
 import QuestionThreeBackground from "@/components/discovery/QuestionThreeBackground";
@@ -13,9 +17,7 @@ import TripTypePanels from "@/components/discovery/TripTypePanels";
 import LanguageSelector from "@/components/language/LanguageSelector";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import {
-  accommodationOptions,
   durationOptions,
-  mealOptions,
   months,
   originModeOptions,
   timingModeOptions,
@@ -758,6 +760,8 @@ export default function DiscoverPage() {
   const isQuestionOne = currentStep === 1;
   const isQuestionTwo = currentStep === 2;
   const isQuestionThree = currentStep === 3;
+  const isQuestionFour = currentStep === 4;
+  const isQuestionFive = currentStep === 5;
 
   function renderHeader(themed: boolean) {
     return (
@@ -797,7 +801,11 @@ export default function DiscoverPage() {
             ? "relative isolate min-h-screen overflow-x-clip bg-[#f4f9f7] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
             : isQuestionThree
               ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
-              : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+              : isQuestionFour
+                ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                : isQuestionFive
+                  ? "relative isolate min-h-screen overflow-x-clip bg-[#f6faf7] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                  : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
@@ -814,6 +822,20 @@ export default function DiscoverPage() {
         />
       ) : null}
 
+      {currentStep === 4 ? (
+        <QuestionFourBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
+      {currentStep === 5 ? (
+        <QuestionFiveBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
       <div
         className={
           isQuestionOne
@@ -822,7 +844,11 @@ export default function DiscoverPage() {
               ? "relative z-10 mx-auto max-w-[58rem]"
               : isQuestionThree
                 ? "relative z-10 mx-auto max-w-[58rem]"
-                : "relative z-10 mx-auto max-w-3xl"
+                : isQuestionFour
+                  ? "relative z-10 mx-auto max-w-[58rem]"
+                  : isQuestionFive
+                    ? "relative z-10 mx-auto max-w-[58rem]"
+                    : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -938,38 +964,21 @@ export default function DiscoverPage() {
             aria-labelledby="question-4-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(4)}
-            </p>
-            <h1 id="question-4-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q4.heading}
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              {discoverCopy.q4.subtitle}
-            </p>
-
-            <div className="mt-6 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-              <p>{discoverCopy.q4.groupNeeds}</p>
-              <p className="mt-1 font-semibold">
-                {formatCount(travellers.rooms, commonCopy.nouns.bedroom)} · {formatCount(travellers.beds, commonCopy.nouns.bed)}
-              </p>
-              {travellers.pets > 0 ? (
-                <p className="mt-2 text-gray-600 dark:text-gray-300">
-                  {discoverCopy.q4.petFriendlyRequired}
-                </p>
-              ) : null}
-            </div>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {accommodationOptions.map((option) => (
-                <OptionCard
-                  key={option}
-                  label={discoverCopy.q4.options[option]}
-                  selected={preferences.accommodation.includes(option)}
-                  onClick={() => toggleAccommodation(option)}
-                />
-              ))}
-            </div>
+            <QuestionFour
+              questionLabel={questionLabel(4)}
+              copy={discoverCopy.q4}
+              selectedAccommodations={preferences.accommodation}
+              bedroomLabel={formatCount(
+                travellers.rooms,
+                commonCopy.nouns.bedroom,
+              )}
+              bedLabel={formatCount(
+                travellers.beds,
+                commonCopy.nouns.bed,
+              )}
+              petFriendlyRequired={travellers.pets > 0}
+              onToggle={toggleAccommodation}
+            />
           </section>
         ) : null}
 
@@ -980,26 +989,12 @@ export default function DiscoverPage() {
             aria-labelledby="question-5-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(5)}
-            </p>
-            <h1 id="question-5-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q5.heading}
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              {discoverCopy.q5.subtitle}
-            </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {mealOptions.map((option) => (
-                <OptionCard
-                  key={option}
-                  label={discoverCopy.q5.options[option]}
-                  selected={preferences.meals.includes(option)}
-                  onClick={() => toggleMeal(option)}
-                />
-              ))}
-            </div>
+            <QuestionFive
+              questionLabel={questionLabel(5)}
+              copy={discoverCopy.q5}
+              selectedMeals={preferences.meals}
+              onToggle={toggleMeal}
+            />
           </section>
         ) : null}
 
@@ -1282,7 +1277,10 @@ export default function DiscoverPage() {
         {currentStep !== "summary" && currentStep !== 1 ? (
           <div
             className={`flex flex-wrap gap-4 border-t pt-6 ${
-              currentStep === 2 || currentStep === 3
+              currentStep === 2 ||
+              currentStep === 3 ||
+              currentStep === 4 ||
+              currentStep === 5
                 ? "mt-8 border-[#cfe0dc] dark:border-white/10"
                 : "mt-10 border-gray-200 dark:border-gray-800"
             }`}
@@ -1291,7 +1289,10 @@ export default function DiscoverPage() {
               type="button"
               onClick={handleBack}
               className={
-                currentStep === 2 || currentStep === 3
+                currentStep === 2 ||
+                currentStep === 3 ||
+                currentStep === 4 ||
+                currentStep === 5
                   ? editorialSecondaryButtonClasses
                   : secondaryButtonClasses
               }
@@ -1303,7 +1304,10 @@ export default function DiscoverPage() {
               disabled={!canContinue}
               onClick={handleContinue}
               className={
-                currentStep === 2 || currentStep === 3
+                currentStep === 2 ||
+                currentStep === 3 ||
+                currentStep === 4 ||
+                currentStep === 5
                   ? editorialPrimaryButtonClasses
                   : primaryButtonClasses
               }

@@ -142,7 +142,12 @@ type QuestionThreeTranslation = {
 type QuestionFourTranslation = {
   heading: string;
   subtitle: string;
+  selectionHint: string;
+  requirementsLabel: string;
+  stayOptions: string;
+  orLabel: string;
   options: Record<AccommodationType, string>;
+  optionDescriptions: Record<AccommodationType, string>;
   groupNeeds: string;
   petFriendlyRequired: string;
 };
@@ -150,7 +155,11 @@ type QuestionFourTranslation = {
 type QuestionFiveTranslation = {
   heading: string;
   subtitle: string;
+  mealStyle: string;
+  selectionHint: string;
+  orLabel: string;
   options: Record<MealPreference, string>;
+  optionDescriptions: Record<MealPreference, string>;
 };
 
 type QuestionSixTranslation = {
@@ -412,6 +421,10 @@ export const translations = {
       q4: {
         heading: "Where would you be happy to stay?",
         subtitle: "Choose all accommodation types that work for you.",
+        selectionHint: "Choose all that apply.",
+        requirementsLabel: "Based on your group",
+        stayOptions: "Stay options",
+        orLabel: "or",
         options: {
           Hotel: "Hotel",
           Resort: "Resort",
@@ -421,6 +434,15 @@ export const translations = {
           Camping: "Camping",
           "No preference": "No preference",
         },
+        optionDescriptions: {
+          Hotel: "Classic & convenient",
+          Resort: "Amenities & relaxation",
+          Apartment: "Flexible & spacious",
+          "Villa / Holiday home": "Private stay",
+          Hostel: "Social & budget-friendly",
+          Camping: "Outdoor experience",
+          "No preference": "I'm open to any type of stay",
+        },
         groupNeeds: "Your group needs approximately:",
         petFriendlyRequired:
           "Pet-friendly accommodation will be required.",
@@ -428,6 +450,9 @@ export const translations = {
       q5: {
         heading: "How would you like to handle meals?",
         subtitle: "Choose all options that would work for you.",
+        mealStyle: "Meal style",
+        selectionHint: "Choose all that apply.",
+        orLabel: "or",
         options: {
           "All inclusive": "All inclusive",
           "Half board": "Half board",
@@ -435,6 +460,14 @@ export const translations = {
           "Mostly eat at restaurants": "Mostly eat at restaurants",
           "Self-catering / cook myself": "Self-catering / cook myself",
           "No preference": "No preference",
+        },
+        optionDescriptions: {
+          "All inclusive": "Everything taken care of",
+          "Half board": "Breakfast + one main meal",
+          "Breakfast included": "Start the day covered",
+          "Mostly eat at restaurants": "Explore local food",
+          "Self-catering / cook myself": "Flexible & independent",
+          "No preference": "I'm flexible about meals",
         },
       },
       q6: {
@@ -728,6 +761,10 @@ export const translations = {
       q4: {
         heading: "Unde ți-ar plăcea să te cazezi?",
         subtitle: "Alege toate tipurile de cazare care ți se potrivesc.",
+        selectionHint: "Alege toate variantele potrivite.",
+        requirementsLabel: "Pe baza grupului tău",
+        stayOptions: "Opțiuni de cazare",
+        orLabel: "sau",
         options: {
           Hotel: "Hotel",
           Resort: "Resort",
@@ -737,6 +774,15 @@ export const translations = {
           Camping: "Camping",
           "No preference": "Fără preferințe",
         },
+        optionDescriptions: {
+          Hotel: "Clasic și confortabil",
+          Resort: "Facilități și relaxare",
+          Apartment: "Flexibil și spațios",
+          "Villa / Holiday home": "Cazare privată",
+          Hostel: "Social și accesibil",
+          Camping: "Experiență în natură",
+          "No preference": "Orice tip de cazare mi se potrivește",
+        },
         groupNeeds: "Grupul tău are nevoie de aproximativ:",
         petFriendlyRequired:
           "Este necesară o cazare care acceptă animale de companie.",
@@ -744,6 +790,9 @@ export const translations = {
       q5: {
         heading: "Cum ai vrea să organizezi mesele?",
         subtitle: "Alege toate opțiunile care ți se potrivesc.",
+        mealStyle: "Stilul meselor",
+        selectionHint: "Alege toate variantele potrivite.",
+        orLabel: "sau",
         options: {
           "All inclusive": "All-inclusive",
           "Half board": "Demipensiune",
@@ -751,6 +800,14 @@ export const translations = {
           "Mostly eat at restaurants": "Mai ales la restaurant",
           "Self-catering / cook myself": "Cu bucătărie / gătesc eu",
           "No preference": "Fără preferințe",
+        },
+        optionDescriptions: {
+          "All inclusive": "Totul este deja organizat",
+          "Half board": "Mic dejun + o masă principală",
+          "Breakfast included": "Începe ziua fără griji",
+          "Mostly eat at restaurants": "Descoperă gastronomia locală",
+          "Self-catering / cook myself": "Flexibil și independent",
+          "No preference": "Sunt flexibil(ă) în privința meselor",
         },
       },
       q6: {
@@ -1042,6 +1099,10 @@ export const translations = {
       q4: {
         heading: "¿Dónde te gustaría alojarte?",
         subtitle: "Elige todos los tipos de alojamiento que te vengan bien.",
+        selectionHint: "Elige todas las opciones que correspondan.",
+        requirementsLabel: "Según tu grupo",
+        stayOptions: "Opciones de alojamiento",
+        orLabel: "o",
         options: {
           Hotel: "Hotel",
           Resort: "Complejo turístico",
@@ -1051,12 +1112,24 @@ export const translations = {
           Camping: "Camping",
           "No preference": "Sin preferencia",
         },
+        optionDescriptions: {
+          Hotel: "Clásico y práctico",
+          Resort: "Comodidades y relajación",
+          Apartment: "Flexible y espacioso",
+          "Villa / Holiday home": "Estancia privada",
+          Hostel: "Social y económico",
+          Camping: "Experiencia al aire libre",
+          "No preference": "Cualquier tipo de alojamiento me va bien",
+        },
         groupNeeds: "Tu grupo necesita aproximadamente:",
         petFriendlyRequired: "Se necesita un alojamiento que admita mascotas.",
       },
       q5: {
         heading: "¿Cómo prefieres organizar las comidas?",
         subtitle: "Elige todas las opciones que te vengan bien.",
+        mealStyle: "Estilo de comidas",
+        selectionHint: "Elige todas las opciones que correspondan.",
+        orLabel: "o",
         options: {
           "All inclusive": "Todo incluido",
           "Half board": "Media pensión",
@@ -1065,6 +1138,14 @@ export const translations = {
           "Self-catering / cook myself":
             "Alojamiento con cocina / cocinar por mi cuenta",
           "No preference": "Sin preferencia",
+        },
+        optionDescriptions: {
+          "All inclusive": "Todo está resuelto",
+          "Half board": "Desayuno + una comida principal",
+          "Breakfast included": "Empieza el día con todo listo",
+          "Mostly eat at restaurants": "Descubre la gastronomía local",
+          "Self-catering / cook myself": "Flexible e independiente",
+          "No preference": "Soy flexible con las comidas",
         },
       },
       q6: {
@@ -1354,6 +1435,10 @@ export const translations = {
       q4: {
         heading: "Wo würdest du gerne übernachten?",
         subtitle: "Wähle alle Unterkunftsarten, die für dich infrage kommen.",
+        selectionHint: "Wähle alle passenden Optionen.",
+        requirementsLabel: "Basierend auf deiner Reisegruppe",
+        stayOptions: "Unterkunftsoptionen",
+        orLabel: "oder",
         options: {
           Hotel: "Hotel",
           Resort: "Resort",
@@ -1363,6 +1448,15 @@ export const translations = {
           Camping: "Camping",
           "No preference": "Keine Präferenz",
         },
+        optionDescriptions: {
+          Hotel: "Klassisch & komfortabel",
+          Resort: "Komfort & Erholung",
+          Apartment: "Flexibel & geräumig",
+          "Villa / Holiday home": "Privater Aufenthalt",
+          Hostel: "Gesellig & preiswert",
+          Camping: "Naturerlebnis",
+          "No preference": "Ich bin für jede Unterkunft offen",
+        },
         groupNeeds: "Deine Gruppe benötigt ungefähr:",
         petFriendlyRequired:
           "Eine haustierfreundliche Unterkunft ist erforderlich.",
@@ -1370,6 +1464,9 @@ export const translations = {
       q5: {
         heading: "Wie möchtest du dich während der Reise verpflegen?",
         subtitle: "Wähle alle Optionen, die für dich infrage kommen.",
+        mealStyle: "Verpflegung",
+        selectionHint: "Wähle alle passenden Optionen.",
+        orLabel: "oder",
         options: {
           "All inclusive": "All-inclusive",
           "Half board": "Halbpension",
@@ -1377,6 +1474,14 @@ export const translations = {
           "Mostly eat at restaurants": "Überwiegend im Restaurant essen",
           "Self-catering / cook myself": "Selbstversorgung / selbst kochen",
           "No preference": "Keine Präferenz",
+        },
+        optionDescriptions: {
+          "All inclusive": "Alles ist organisiert",
+          "Half board": "Frühstück + eine Hauptmahlzeit",
+          "Breakfast included": "Gut versorgt in den Tag starten",
+          "Mostly eat at restaurants": "Lokale Küche entdecken",
+          "Self-catering / cook myself": "Flexibel & unabhängig",
+          "No preference": "Bei den Mahlzeiten bin ich flexibel",
         },
       },
       q6: {
@@ -1676,6 +1781,10 @@ export const translations = {
         heading: "Où souhaiteriez-vous séjourner ?",
         subtitle:
           "Choisissez tous les types d’hébergement qui vous conviennent.",
+        selectionHint: "Choisissez toutes les options qui conviennent.",
+        requirementsLabel: "Selon votre groupe",
+        stayOptions: "Options d’hébergement",
+        orLabel: "ou",
         options: {
           Hotel: "Hôtel",
           Resort: "Complexe hôtelier",
@@ -1685,6 +1794,15 @@ export const translations = {
           Camping: "Camping",
           "No preference": "Aucune préférence",
         },
+        optionDescriptions: {
+          Hotel: "Classique et pratique",
+          Resort: "Services et détente",
+          Apartment: "Flexible et spacieux",
+          "Villa / Holiday home": "Séjour privé",
+          Hostel: "Convivial et économique",
+          Camping: "Expérience en plein air",
+          "No preference": "Tous les types d’hébergement me conviennent",
+        },
         groupNeeds: "Votre groupe a besoin d’environ :",
         petFriendlyRequired:
           "Un hébergement acceptant les animaux sera nécessaire.",
@@ -1692,6 +1810,9 @@ export const translations = {
       q5: {
         heading: "Comment souhaitez-vous organiser vos repas ?",
         subtitle: "Choisissez toutes les options qui vous conviennent.",
+        mealStyle: "Formule repas",
+        selectionHint: "Choisissez toutes les options qui conviennent.",
+        orLabel: "ou",
         options: {
           "All inclusive": "Tout compris",
           "Half board": "Demi-pension",
@@ -1701,6 +1822,14 @@ export const translations = {
           "Self-catering / cook myself":
             "Hébergement avec cuisine / cuisiner moi-même",
           "No preference": "Aucune préférence",
+        },
+        optionDescriptions: {
+          "All inclusive": "Tout est pris en charge",
+          "Half board": "Petit-déjeuner + un repas principal",
+          "Breakfast included": "Commencez la journée l’esprit tranquille",
+          "Mostly eat at restaurants": "Découvrez la cuisine locale",
+          "Self-catering / cook myself": "Flexibilité et autonomie",
+          "No preference": "Je suis flexible pour les repas",
         },
       },
       q6: {
