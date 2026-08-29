@@ -1,6 +1,7 @@
 import type {
   AccommodationType,
   BudgetMode,
+  DateFlexibilityDays,
   DurationPreference,
   MealPreference,
   OriginMode,
@@ -164,14 +165,29 @@ type QuestionFiveTranslation = {
 
 type QuestionSixTranslation = {
   heading: string;
+  travelTiming: string;
   modes: Record<TimingMode, string>;
+  modeTitles: Record<TimingMode, string>;
+  modeDescriptions: Record<TimingMode, string>;
+  yourDates: string;
   departureDate: string;
   returnDate: string;
+  dateFlexibility: string;
+  dateFlexibilityHelper: string;
+  dateFlexibilityOptions: Record<DateFlexibilityDays, string>;
+  flexibilitySummary: {
+    fixed: string;
+    one: string;
+    other: string;
+  };
+  roughTiming: string;
   month: string;
   year: string;
   selectMonth: string;
   selectYear: string;
   returnDateError: string;
+  flexibleDates: string;
+  flexibleTitle: string;
   flexibleHelper: string;
   months: Record<TravelMonth, string>;
 };
@@ -472,20 +488,49 @@ export const translations = {
       },
       q6: {
         heading: "When do you want to travel?",
+        travelTiming: "Travel timing",
         modes: {
           exact: "I know my exact dates",
           rough: "I know roughly when",
           flexible: "I'm flexible",
         },
+        modeTitles: {
+          exact: "Exact dates",
+          rough: "Roughly when",
+          flexible: "Flexible",
+        },
+        modeDescriptions: {
+          exact: "I already know when",
+          rough: "I know the month",
+          flexible: "Dates can move",
+        },
+        yourDates: "Your dates",
         departureDate: "Departure date",
         returnDate: "Return date",
+        dateFlexibility: "Date flexibility",
+        dateFlexibilityHelper: "Can your whole trip shift a little?",
+        dateFlexibilityOptions: {
+          0: "Exact dates",
+          1: "±1 day",
+          2: "±2 days",
+          3: "±3 days",
+          7: "±7 days",
+        },
+        flexibilitySummary: {
+          fixed: "{nights} · Fixed dates",
+          one: "{nights} · Can shift up to {days} day earlier or later",
+          other: "{nights} · Can shift up to {days} days earlier or later",
+        },
+        roughTiming: "Rough timing",
         month: "Month",
         year: "Year",
         selectMonth: "Select a month",
         selectYear: "Select a year",
         returnDateError: "Return date must be later than departure date.",
+        flexibleDates: "Flexible dates",
+        flexibleTitle: "Your dates are open",
         flexibleHelper:
-          "No dates are required. You can choose a preferred duration next.",
+          "We'll use your preferred trip duration to find options that fit.",
         months: {
           January: "January",
           February: "February",
@@ -812,21 +857,52 @@ export const translations = {
       },
       q6: {
         heading: "Când vrei să călătorești?",
+        travelTiming: "Perioada călătoriei",
         modes: {
           exact: "Știu datele exacte",
           rough: "Știu aproximativ când",
           flexible: "Sunt flexibil(ă)",
         },
+        modeTitles: {
+          exact: "Date exacte",
+          rough: "Perioadă aproximativă",
+          flexible: "Flexibil",
+        },
+        modeDescriptions: {
+          exact: "Știu deja când",
+          rough: "Știu luna",
+          flexible: "Datele se pot schimba",
+        },
+        yourDates: "Datele tale",
         departureDate: "Data plecării",
         returnDate: "Data întoarcerii",
+        dateFlexibility: "Flexibilitatea datelor",
+        dateFlexibilityHelper:
+          "Poate fi mutată puțin întreaga călătorie?",
+        dateFlexibilityOptions: {
+          0: "Date exacte",
+          1: "±1 zi",
+          2: "±2 zile",
+          3: "±3 zile",
+          7: "±7 zile",
+        },
+        flexibilitySummary: {
+          fixed: "{nights} · Date fixe",
+          one: "{nights} · Se poate muta cu până la {days} zi mai devreme sau mai târziu",
+          other:
+            "{nights} · Se poate muta cu până la {days} zile mai devreme sau mai târziu",
+        },
+        roughTiming: "Perioadă aproximativă",
         month: "Lună",
         year: "An",
         selectMonth: "Selectează o lună",
         selectYear: "Selectează un an",
         returnDateError:
           "Data întoarcerii trebuie să fie ulterioară datei plecării.",
+        flexibleDates: "Date flexibile",
+        flexibleTitle: "Datele tale sunt flexibile",
         flexibleHelper:
-          "Nu trebuie să alegi date. Poți selecta durata preferată la pasul următor.",
+          "Vom folosi durata preferată a călătoriei pentru a găsi opțiuni potrivite.",
         months: {
           January: "Ianuarie",
           February: "Februarie",
@@ -1150,21 +1226,51 @@ export const translations = {
       },
       q6: {
         heading: "¿Cuándo quieres viajar?",
+        travelTiming: "Fechas del viaje",
         modes: {
           exact: "Sé las fechas exactas",
           rough: "Sé aproximadamente cuándo",
           flexible: "Soy flexible",
         },
+        modeTitles: {
+          exact: "Fechas exactas",
+          rough: "Fecha aproximada",
+          flexible: "Flexible",
+        },
+        modeDescriptions: {
+          exact: "Ya sé cuándo",
+          rough: "Sé el mes",
+          flexible: "Las fechas pueden cambiar",
+        },
+        yourDates: "Tus fechas",
         departureDate: "Fecha de salida",
         returnDate: "Fecha de regreso",
+        dateFlexibility: "Flexibilidad de fechas",
+        dateFlexibilityHelper: "¿Puede desplazarse un poco todo el viaje?",
+        dateFlexibilityOptions: {
+          0: "Fechas exactas",
+          1: "±1 día",
+          2: "±2 días",
+          3: "±3 días",
+          7: "±7 días",
+        },
+        flexibilitySummary: {
+          fixed: "{nights} · Fechas fijas",
+          one: "{nights} · Puede desplazarse hasta {days} día antes o después",
+          other:
+            "{nights} · Puede desplazarse hasta {days} días antes o después",
+        },
+        roughTiming: "Fecha aproximada",
         month: "Mes",
         year: "Año",
         selectMonth: "Selecciona un mes",
         selectYear: "Selecciona un año",
         returnDateError:
           "La fecha de regreso debe ser posterior a la fecha de salida.",
+        flexibleDates: "Fechas flexibles",
+        flexibleTitle: "Tus fechas están abiertas",
         flexibleHelper:
-          "No es necesario indicar fechas. Puedes elegir la duración que prefieras a continuación.",
+          "Usaremos la duración que prefieras para encontrar opciones que encajen.",
         months: {
           January: "Enero",
           February: "Febrero",
@@ -1486,21 +1592,52 @@ export const translations = {
       },
       q6: {
         heading: "Wann möchtest du reisen?",
+        travelTiming: "Reisezeitraum",
         modes: {
           exact: "Ich kenne meine genauen Reisedaten",
           rough: "Ich weiß ungefähr, wann",
           flexible: "Ich bin flexibel",
         },
+        modeTitles: {
+          exact: "Genaue Daten",
+          rough: "Ungefährer Zeitraum",
+          flexible: "Flexibel",
+        },
+        modeDescriptions: {
+          exact: "Ich weiß bereits, wann",
+          rough: "Ich kenne den Monat",
+          flexible: "Die Daten können sich verschieben",
+        },
+        yourDates: "Deine Reisedaten",
         departureDate: "Abreisedatum",
         returnDate: "Rückreisedatum",
+        dateFlexibility: "Datumsflexibilität",
+        dateFlexibilityHelper:
+          "Kann sich deine gesamte Reise etwas verschieben?",
+        dateFlexibilityOptions: {
+          0: "Feste Daten",
+          1: "±1 Tag",
+          2: "±2 Tage",
+          3: "±3 Tage",
+          7: "±7 Tage",
+        },
+        flexibilitySummary: {
+          fixed: "{nights} · Feste Reisedaten",
+          one: "{nights} · Kann um bis zu {days} Tag nach vorne oder hinten verschoben werden",
+          other:
+            "{nights} · Kann um bis zu {days} Tage nach vorne oder hinten verschoben werden",
+        },
+        roughTiming: "Ungefährer Zeitraum",
         month: "Monat",
         year: "Jahr",
         selectMonth: "Monat auswählen",
         selectYear: "Jahr auswählen",
         returnDateError:
           "Das Rückreisedatum muss nach dem Abreisedatum liegen.",
+        flexibleDates: "Flexible Daten",
+        flexibleTitle: "Deine Reisedaten sind offen",
         flexibleHelper:
-          "Du musst keine Reisedaten angeben. Als Nächstes kannst du deine bevorzugte Dauer auswählen.",
+          "Wir nutzen deine bevorzugte Reisedauer, um passende Optionen zu finden.",
         months: {
           January: "Januar",
           February: "Februar",
@@ -1834,21 +1971,52 @@ export const translations = {
       },
       q6: {
         heading: "Quand souhaitez-vous voyager ?",
+        travelTiming: "Période du voyage",
         modes: {
           exact: "Je connais mes dates exactes",
           rough: "Je sais approximativement quand",
           flexible: "Je suis flexible",
         },
+        modeTitles: {
+          exact: "Dates exactes",
+          rough: "Période approximative",
+          flexible: "Flexible",
+        },
+        modeDescriptions: {
+          exact: "Je sais déjà quand",
+          rough: "Je connais le mois",
+          flexible: "Les dates peuvent changer",
+        },
+        yourDates: "Vos dates",
         departureDate: "Date de départ",
         returnDate: "Date de retour",
+        dateFlexibility: "Flexibilité des dates",
+        dateFlexibilityHelper:
+          "Votre voyage entier peut-il être légèrement décalé ?",
+        dateFlexibilityOptions: {
+          0: "Dates exactes",
+          1: "±1 jour",
+          2: "±2 jours",
+          3: "±3 jours",
+          7: "±7 jours",
+        },
+        flexibilitySummary: {
+          fixed: "{nights} · Dates fixes",
+          one: "{nights} · Peut être décalé jusqu’à {days} jour avant ou après",
+          other:
+            "{nights} · Peut être décalé jusqu’à {days} jours avant ou après",
+        },
+        roughTiming: "Période approximative",
         month: "Mois",
         year: "Année",
         selectMonth: "Sélectionnez un mois",
         selectYear: "Sélectionnez une année",
         returnDateError:
           "La date de retour doit être postérieure à la date de départ.",
+        flexibleDates: "Dates flexibles",
+        flexibleTitle: "Vos dates restent ouvertes",
         flexibleHelper:
-          "Aucune date n’est requise. Vous pourrez choisir la durée souhaitée à l’étape suivante.",
+          "Nous utiliserons la durée souhaitée pour trouver des options adaptées.",
         months: {
           January: "Janvier",
           February: "Février",

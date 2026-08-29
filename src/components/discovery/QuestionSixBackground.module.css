@@ -1,0 +1,123 @@
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 13% 20%,
+      color-mix(in srgb, var(--timing-accent) 8%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 90% 78%,
+      color-mix(in srgb, var(--timing-via) 7%, transparent),
+      transparent 30rem
+    ),
+    linear-gradient(
+      148deg,
+      color-mix(in srgb, var(--timing-from) 3%, #fdfcf8) 0%,
+      #f5faf8 49%,
+      color-mix(in srgb, var(--timing-to) 4%, #edf8f6) 100%
+    );
+}
+
+.orbit,
+.calendar,
+.timeline {
+  position: absolute;
+  display: block;
+}
+
+.orbit {
+  top: 10rem;
+  left: -7rem;
+  width: min(20rem, 34vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--timing-accent) 10%, transparent);
+  box-shadow: 0 0 0 5rem color-mix(in srgb, var(--timing-via) 1.5%, transparent);
+}
+
+.calendar {
+  top: 13rem;
+  right: -7rem;
+  width: min(27rem, 41vw);
+  height: 31rem;
+  border: 1px solid color-mix(in srgb, var(--timing-accent) 12%, transparent);
+  border-radius: 4rem;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1px),
+      color-mix(in srgb, var(--timing-accent) 6%, transparent) calc(25% - 1px),
+      color-mix(in srgb, var(--timing-accent) 6%, transparent) 25%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent calc(25% - 1px),
+      color-mix(in srgb, var(--timing-accent) 5%, transparent) calc(25% - 1px),
+      color-mix(in srgb, var(--timing-accent) 5%, transparent) 25%
+    );
+  transform: rotate(5deg);
+}
+
+.timeline {
+  right: 12%;
+  bottom: 5rem;
+  width: 48rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--timing-accent) 14%, transparent),
+    transparent
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  .background {
+    background:
+      radial-gradient(
+        circle at 13% 20%,
+        color-mix(in srgb, var(--timing-accent) 12%, transparent),
+        transparent 25rem
+      ),
+      radial-gradient(
+        circle at 90% 78%,
+        color-mix(in srgb, var(--timing-via) 9%, transparent),
+        transparent 30rem
+      ),
+      linear-gradient(148deg, #0b2429 0%, #071a1f 49%, #0a2025 100%);
+  }
+
+  .orbit,
+  .calendar,
+  .timeline {
+    opacity: 0.54;
+  }
+}
+
+@media (max-width: 640px) {
+  .orbit {
+    top: 14rem;
+    left: -10rem;
+    width: 20rem;
+  }
+
+  .calendar {
+    top: 24rem;
+    right: -16rem;
+    width: 27rem;
+    height: 31rem;
+  }
+
+  .timeline {
+    right: -17rem;
+    bottom: 7rem;
+    width: 36rem;
+  }
+}

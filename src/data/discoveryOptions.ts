@@ -2,6 +2,7 @@ import type {
   AccommodationType,
   BudgetMode,
   Currency,
+  DateFlexibilityDays,
   DurationPreference,
   MealPreference,
   OriginMode,
@@ -67,6 +68,14 @@ export const timingModeOptions = [
   { value: "rough", label: "I know roughly when" },
   { value: "flexible", label: "I'm flexible" },
 ] as const satisfies readonly LabeledOption<TimingMode>[];
+
+export const dateFlexibilityOptions = [
+  0,
+  1,
+  2,
+  3,
+  7,
+] as const satisfies readonly DateFlexibilityDays[];
 
 export const months = [
   "January",

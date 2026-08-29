@@ -10,6 +10,8 @@ import QuestionFour from "@/components/discovery/QuestionFour";
 import QuestionFourBackground from "@/components/discovery/QuestionFourBackground";
 import QuestionFive from "@/components/discovery/QuestionFive";
 import QuestionFiveBackground from "@/components/discovery/QuestionFiveBackground";
+import QuestionSix from "@/components/discovery/QuestionSix";
+import QuestionSixBackground from "@/components/discovery/QuestionSixBackground";
 import QuestionTwo from "@/components/discovery/QuestionTwo";
 import QuestionThree from "@/components/discovery/QuestionThree";
 import QuestionThreeBackground from "@/components/discovery/QuestionThreeBackground";
@@ -20,7 +22,6 @@ import {
   durationOptions,
   months,
   originModeOptions,
-  timingModeOptions,
   transportOptions,
 } from "@/data/discoveryOptions";
 import {
@@ -33,6 +34,7 @@ import type {
   BudgetMode,
   BudgetPreferences,
   Currency,
+  DateFlexibilityDays,
   DiscoveryStep,
   MealPreference,
   OriginMode,
@@ -50,6 +52,7 @@ import { formatCount, formatMessage } from "@/utils/translations";
 const initialPreferences: TripPreferences = {
   tripType: null,
   tripSubtype: null,
+
   travellers: {
     groupType: null,
     adults: 0,
@@ -58,14 +61,17 @@ const initialPreferences: TripPreferences = {
     rooms: 0,
     beds: 0,
   },
+
   budget: {
     mode: "total",
     currency: "RON",
     total: null,
     perTraveller: null,
   },
+
   accommodation: [],
   meals: [],
+
   timing: {
     mode: null,
     departureDate: "",
@@ -73,8 +79,11 @@ const initialPreferences: TripPreferences = {
     month: null,
     year: null,
     exactNights: null,
+    dateFlexibilityDays: 0,
   },
+
   duration: null,
+
   origin: {
     mode: null,
     manualLocation: "",
@@ -83,6 +92,7 @@ const initialPreferences: TripPreferences = {
     locationStatus: "idle",
     locationError: null,
   },
+
   transport: [],
 };
 
@@ -569,6 +579,16 @@ export default function DiscoverPage() {
     });
   }
 
+  function changeDateFlexibility(days: DateFlexibilityDays) {
+    setPreferences((previous) => ({
+      ...previous,
+      timing: {
+        ...previous.timing,
+        dateFlexibilityDays: days,
+      },
+    }));
+  }
+
   function changeTravelMonth(value: string) {
     const month = months.find((item) => item === value) ?? null;
 
@@ -762,6 +782,7 @@ export default function DiscoverPage() {
   const isQuestionThree = currentStep === 3;
   const isQuestionFour = currentStep === 4;
   const isQuestionFive = currentStep === 5;
+  const isQuestionSix = currentStep === 6;
 
   function renderHeader(themed: boolean) {
     return (
@@ -805,7 +826,9 @@ export default function DiscoverPage() {
                 ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
                 : isQuestionFive
                   ? "relative isolate min-h-screen overflow-x-clip bg-[#f6faf7] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
-                  : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+                  : isQuestionSix
+                    ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                    : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
@@ -836,6 +859,13 @@ export default function DiscoverPage() {
         />
       ) : null}
 
+      {currentStep === 6 ? (
+        <QuestionSixBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
       <div
         className={
           isQuestionOne
@@ -848,7 +878,9 @@ export default function DiscoverPage() {
                   ? "relative z-10 mx-auto max-w-[58rem]"
                   : isQuestionFive
                     ? "relative z-10 mx-auto max-w-[58rem]"
-                    : "relative z-10 mx-auto max-w-3xl"
+                    : isQuestionSix
+                      ? "relative z-10 mx-auto max-w-[58rem]"
+                      : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -1005,122 +1037,27 @@ export default function DiscoverPage() {
             aria-labelledby="question-6-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(6)}
-            </p>
-            <h1 id="question-6-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q6.heading}
-            </h1>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {timingModeOptions.map((option) => (
-                <OptionCard
-                  key={option.value}
-                  label={discoverCopy.q6.modes[option.value]}
-                  selected={preferences.timing.mode === option.value}
-                  onClick={() => selectTimingMode(option.value)}
-                />
-              ))}
-            </div>
-
-            {preferences.timing.mode === "exact" ? (
-              <div className="mt-8">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label>
-                    <span className="mb-2 block text-sm font-medium">
-                      {discoverCopy.q6.departureDate}
-                    </span>
-                    <input
-                      type="date"
-                      value={preferences.timing.departureDate}
-                      onChange={(event) => changeExactDate("departureDate", event.target.value)}
-                      className={inputClasses}
-                    />
-                  </label>
-                  <label>
-                    <span className="mb-2 block text-sm font-medium">
-                      {discoverCopy.q6.returnDate}
-                    </span>
-                    <input
-                      type="date"
-                      min={minimumReturnDate}
-                      value={preferences.timing.returnDate}
-                      onChange={(event) => changeExactDate("returnDate", event.target.value)}
-                      aria-invalid={exactDatesAreInvalid}
-                      aria-describedby={
-                        exactDatesAreInvalid ? "return-date-error" : undefined
-                      }
-                      className={inputClasses}
-                    />
-                  </label>
-                </div>
-
-                {preferences.timing.exactNights !== null ? (
-                  <p className="mt-4 rounded-xl bg-gray-50 p-4 font-semibold dark:bg-gray-900">
-                    {formatCount(
+            <QuestionSix
+              questionLabel={questionLabel(6)}
+              copy={discoverCopy.q6}
+              timing={preferences.timing}
+              availableYears={availableYears}
+              minimumReturnDate={minimumReturnDate}
+              exactDatesAreInvalid={exactDatesAreInvalid}
+              exactNightsLabel={
+                preferences.timing.exactNights === null
+                  ? null
+                  : formatCount(
                       preferences.timing.exactNights,
                       commonCopy.nouns.night,
-                    )}
-                  </p>
-                ) : null}
-
-                {exactDatesAreInvalid ? (
-                  <p
-                    id="return-date-error"
-                    className="mt-3 text-sm text-red-600 dark:text-red-400"
-                    role="alert"
-                  >
-                    {discoverCopy.q6.returnDateError}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-
-            {preferences.timing.mode === "rough" ? (
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                <label>
-                  <span className="mb-2 block text-sm font-medium">
-                    {discoverCopy.q6.month}
-                  </span>
-                  <select
-                    value={preferences.timing.month ?? ""}
-                    onChange={(event) => changeTravelMonth(event.target.value)}
-                    className={inputClasses}
-                  >
-                    <option value="">{discoverCopy.q6.selectMonth}</option>
-                    {months.map((month) => (
-                      <option key={month} value={month}>
-                        {discoverCopy.q6.months[month]}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label>
-                  <span className="mb-2 block text-sm font-medium">
-                    {discoverCopy.q6.year}
-                  </span>
-                  <select
-                    value={preferences.timing.year ?? ""}
-                    onChange={(event) => changeTravelYear(event.target.value)}
-                    className={inputClasses}
-                  >
-                    <option value="">{discoverCopy.q6.selectYear}</option>
-                    {availableYears.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            ) : null}
-
-            {preferences.timing.mode === "flexible" ? (
-              <p className="mt-8 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                {discoverCopy.q6.flexibleHelper}
-              </p>
-            ) : null}
+                    )
+              }
+              onSelectMode={selectTimingMode}
+              onChangeExactDate={changeExactDate}
+              onChangeDateFlexibility={changeDateFlexibility}
+              onChangeMonth={changeTravelMonth}
+              onChangeYear={changeTravelYear}
+            />
           </section>
         ) : null}
 
@@ -1280,7 +1217,8 @@ export default function DiscoverPage() {
               currentStep === 2 ||
               currentStep === 3 ||
               currentStep === 4 ||
-              currentStep === 5
+              currentStep === 5 ||
+              currentStep === 6
                 ? "mt-8 border-[#cfe0dc] dark:border-white/10"
                 : "mt-10 border-gray-200 dark:border-gray-800"
             }`}
@@ -1292,7 +1230,8 @@ export default function DiscoverPage() {
                 currentStep === 2 ||
                 currentStep === 3 ||
                 currentStep === 4 ||
-                currentStep === 5
+                currentStep === 5 ||
+                currentStep === 6
                   ? editorialSecondaryButtonClasses
                   : secondaryButtonClasses
               }
@@ -1307,7 +1246,8 @@ export default function DiscoverPage() {
                 currentStep === 2 ||
                 currentStep === 3 ||
                 currentStep === 4 ||
-                currentStep === 5
+                currentStep === 5 ||
+                currentStep === 6
                   ? editorialPrimaryButtonClasses
                   : primaryButtonClasses
               }

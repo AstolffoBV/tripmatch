@@ -90,6 +90,7 @@ export type MealPreference =
   | "No preference";
 
 export type TimingMode = "exact" | "rough" | "flexible";
+export type DateFlexibilityDays = 0 | 1 | 2 | 3 | 7;
 
 export type TravelMonth =
   | "January"
@@ -112,6 +113,7 @@ export interface TimingPreferences {
   month: TravelMonth | null;
   year: number | null;
   exactNights: number | null;
+  dateFlexibilityDays: DateFlexibilityDays;
 }
 
 export type DurationPreference =
