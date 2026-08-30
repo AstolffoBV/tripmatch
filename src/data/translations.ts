@@ -256,7 +256,16 @@ type QuestionEightTranslation = {
 type QuestionNineTranslation = {
   heading: string;
   subtitle: string;
+  startingFrom: string;
+  sectionLabel: string;
+  sectionHelper: string;
+  openToAnything: string;
   options: Record<TransportMode, string>;
+  descriptions: Record<TransportMode, string>;
+  accessibility: {
+    selectAll: string;
+    clearAll: string;
+  };
 };
 
 type SummaryTranslation = {
@@ -657,14 +666,30 @@ export const translations = {
         },
       },
       q9: {
-        heading: "How are you willing to get there?",
-        subtitle: "Choose all transport options you'd consider.",
+        heading: "How would you like to get there?",
+        subtitle:
+          "Choose every way you'd be happy to travel. We'll use this to find realistic destinations from your starting point.",
+        startingFrom: "Starting from",
+        sectionLabel: "Travel options",
+        sectionHelper: "Select all that work for you",
+        openToAnything: "I'm open to anything",
         options: {
           Car: "Car",
           Plane: "Plane",
           Train: "Train",
           Coach: "Coach",
           Ferry: "Ferry",
+        },
+        descriptions: {
+          Car: "Freedom to stop along the way",
+          Plane: "Best for longer distances",
+          Train: "Comfortable city-to-city travel",
+          Coach: "Budget-friendly overland travel",
+          Ferry: "Great for islands and sea crossings",
+        },
+        accessibility: {
+          selectAll: "Select all travel options",
+          clearAll: "Clear all travel options",
         },
       },
       summary: {
@@ -1077,13 +1102,28 @@ export const translations = {
       q9: {
         heading: "Cum ai vrea să ajungi acolo?",
         subtitle:
-          "Alege toate mijloacele de transport pe care le-ai lua în considerare.",
+          "Alege toate opțiunile de transport care ți se potrivesc. Le vom folosi pentru a găsi destinații realiste pornind de la punctul tău de plecare.",
+        startingFrom: "Plecare din",
+        sectionLabel: "Opțiuni de transport",
+        sectionHelper: "Selectează toate opțiunile care ți se potrivesc",
+        openToAnything: "Orice variantă îmi convine",
         options: {
           Car: "Mașină",
           Plane: "Avion",
           Train: "Tren",
           Coach: "Autocar",
           Ferry: "Feribot",
+        },
+        descriptions: {
+          Car: "Libertatea de a opri pe drum",
+          Plane: "Ideal pentru distanțe mai lungi",
+          Train: "Călătorie confortabilă între orașe",
+          Coach: "Călătorie terestră accesibilă",
+          Ferry: "Ideal pentru insule și traversări maritime",
+        },
+        accessibility: {
+          selectAll: "Selectează toate opțiunile de transport",
+          clearAll: "Deselectează toate opțiunile de transport",
         },
       },
       summary: {
@@ -1485,14 +1525,30 @@ export const translations = {
         },
       },
       q9: {
-        heading: "¿Cómo quieres llegar hasta allí?",
-        subtitle: "Elige todos los medios de transporte que considerarías.",
+        heading: "¿Cómo te gustaría llegar?",
+        subtitle:
+          "Elige todas las opciones de transporte que te resulten cómodas. Las usaremos para encontrar destinos realistas desde tu punto de partida.",
+        startingFrom: "Salida desde",
+        sectionLabel: "Opciones de transporte",
+        sectionHelper: "Selecciona todas las que te interesen",
+        openToAnything: "Cualquier opción me va bien",
         options: {
           Car: "Coche",
           Plane: "Avión",
           Train: "Tren",
           Coach: "Autocar",
           Ferry: "Ferry",
+        },
+        descriptions: {
+          Car: "Libertad para parar durante el trayecto",
+          Plane: "Ideal para distancias más largas",
+          Train: "Viajes cómodos de ciudad a ciudad",
+          Coach: "Viajes económicos por carretera",
+          Ferry: "Ideal para islas y travesías marítimas",
+        },
+        accessibility: {
+          selectAll: "Seleccionar todas las opciones de transporte",
+          clearAll: "Deseleccionar todas las opciones de transporte",
         },
       },
       summary: {
@@ -1896,13 +1952,29 @@ export const translations = {
       },
       q9: {
         heading: "Wie möchtest du dorthin reisen?",
-        subtitle: "Wähle alle Verkehrsmittel, die für dich infrage kommen.",
+        subtitle:
+          "Wähle alle Verkehrsmittel, mit denen du gerne reisen würdest. Wir nutzen sie, um realistische Reiseziele ab deinem Startpunkt zu finden.",
+        startingFrom: "Start in",
+        sectionLabel: "Reiseoptionen",
+        sectionHelper: "Wähle alles aus, was für dich passt",
+        openToAnything: "Ich bin für alles offen",
         options: {
           Car: "Auto",
           Plane: "Flugzeug",
           Train: "Zug",
           Coach: "Fernbus",
           Ferry: "Fähre",
+        },
+        descriptions: {
+          Car: "Freiheit für Stopps unterwegs",
+          Plane: "Ideal für längere Strecken",
+          Train: "Bequem von Stadt zu Stadt",
+          Coach: "Preisgünstig über Land reisen",
+          Ferry: "Ideal für Inseln und Überfahrten",
+        },
+        accessibility: {
+          selectAll: "Alle Reiseoptionen auswählen",
+          clearAll: "Auswahl aller Reiseoptionen aufheben",
         },
       },
       summary: {
@@ -2319,13 +2391,28 @@ export const translations = {
       q9: {
         heading: "Comment souhaitez-vous vous y rendre ?",
         subtitle:
-          "Choisissez tous les moyens de transport que vous envisageriez.",
+          "Choisissez tous les modes de transport qui vous conviennent. Nous les utiliserons pour trouver des destinations réalistes depuis votre point de départ.",
+        startingFrom: "Au départ de",
+        sectionLabel: "Options de transport",
+        sectionHelper: "Sélectionnez toutes celles qui vous conviennent",
+        openToAnything: "Toutes les options me conviennent",
         options: {
           Car: "Voiture",
           Plane: "Avion",
           Train: "Train",
           Coach: "Autocar",
           Ferry: "Ferry",
+        },
+        descriptions: {
+          Car: "La liberté de faire des haltes en chemin",
+          Plane: "Idéal pour les longues distances",
+          Train: "Voyager confortablement de ville en ville",
+          Coach: "Voyager par voie terrestre à petit prix",
+          Ferry: "Idéal pour les îles et les traversées maritimes",
+        },
+        accessibility: {
+          selectAll: "Sélectionner toutes les options de transport",
+          clearAll: "Désélectionner toutes les options de transport",
         },
       },
       summary: {

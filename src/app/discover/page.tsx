@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import DiscoverThemeBackground from "@/components/discovery/DiscoverThemeBackground";
-import OptionCard from "@/components/discovery/OptionCard";
 import ProgressBar from "@/components/discovery/ProgressBar";
 import QuestionFour from "@/components/discovery/QuestionFour";
 import QuestionFourBackground from "@/components/discovery/QuestionFourBackground";
@@ -16,6 +15,8 @@ import QuestionSeven from "@/components/discovery/QuestionSeven";
 import QuestionSevenBackground from "@/components/discovery/QuestionSevenBackground";
 import QuestionEight from "@/components/discovery/QuestionEight";
 import QuestionEightBackground from "@/components/discovery/QuestionEightBackground";
+import QuestionNine from "@/components/discovery/QuestionNine";
+import QuestionNineBackground from "@/components/discovery/QuestionNineBackground";
 import QuestionTwo from "@/components/discovery/QuestionTwo";
 import QuestionThree from "@/components/discovery/QuestionThree";
 import QuestionThreeBackground from "@/components/discovery/QuestionThreeBackground";
@@ -906,6 +907,19 @@ export default function DiscoverPage() {
     }));
   }
 
+  function toggleAllTransports() {
+    setPreferences((previous) => {
+      const allSelected = transportOptions.every((option) =>
+        previous.transport.includes(option),
+      );
+
+      return {
+        ...previous,
+        transport: allSelected ? [] : [...transportOptions],
+      };
+    });
+  }
+
   function goToStep(nextStep: DiscoveryStep) {
     setCurrentStep(nextStep);
 
@@ -996,6 +1010,7 @@ export default function DiscoverPage() {
   const isQuestionSix = currentStep === 6;
   const isQuestionSeven = currentStep === 7;
   const isQuestionEight = currentStep === 8;
+  const isQuestionNine = currentStep === 9;
   const durationContextLabel =
     preferences.timing.mode === "rough" &&
     preferences.timing.month !== null &&
@@ -1060,7 +1075,9 @@ export default function DiscoverPage() {
                       ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
                       : isQuestionEight
                         ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
-                        : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+                        : isQuestionNine
+                          ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                          : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
@@ -1112,6 +1129,13 @@ export default function DiscoverPage() {
         />
       ) : null}
 
+      {currentStep === 9 ? (
+        <QuestionNineBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
       <div
         className={
           isQuestionOne
@@ -1130,7 +1154,9 @@ export default function DiscoverPage() {
                         ? "relative z-10 mx-auto max-w-[58rem]"
                         : isQuestionEight
                           ? "relative z-10 mx-auto max-w-[58rem]"
-                          : "relative z-10 mx-auto max-w-3xl"
+                          : isQuestionNine
+                            ? "relative z-10 mx-auto max-w-[58rem]"
+                            : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -1362,26 +1388,14 @@ export default function DiscoverPage() {
             aria-labelledby="question-9-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(9)}
-            </p>
-            <h1 id="question-9-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q9.heading}
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              {discoverCopy.q9.subtitle}
-            </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {transportOptions.map((option) => (
-                <OptionCard
-                  key={option}
-                  label={discoverCopy.q9.options[option]}
-                  selected={preferences.transport.includes(option)}
-                  onClick={() => toggleTransport(option)}
-                />
-              ))}
-            </div>
+            <QuestionNine
+              questionLabel={questionLabel(9)}
+              copy={discoverCopy.q9}
+              selectedTransports={preferences.transport}
+              originLabel={preferences.origin.resolvedLocation.trim() || null}
+              onToggle={toggleTransport}
+              onToggleAll={toggleAllTransports}
+            />
           </section>
         ) : null}
 
@@ -1394,7 +1408,8 @@ export default function DiscoverPage() {
               currentStep === 5 ||
               currentStep === 6 ||
               currentStep === 7 ||
-              currentStep === 8
+              currentStep === 8 ||
+              currentStep === 9
                 ? "mt-8 border-[#cfe0dc] dark:border-white/10"
                 : "mt-10 border-gray-200 dark:border-gray-800"
             }`}
@@ -1409,7 +1424,8 @@ export default function DiscoverPage() {
                 currentStep === 5 ||
                 currentStep === 6 ||
                 currentStep === 7 ||
-                currentStep === 8
+                currentStep === 8 ||
+                currentStep === 9
                   ? editorialSecondaryButtonClasses
                   : secondaryButtonClasses
               }
@@ -1427,7 +1443,8 @@ export default function DiscoverPage() {
                 currentStep === 5 ||
                 currentStep === 6 ||
                 currentStep === 7 ||
-                currentStep === 8
+                currentStep === 8 ||
+                currentStep === 9
                   ? editorialPrimaryButtonClasses
                   : primaryButtonClasses
               }
