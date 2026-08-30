@@ -1,0 +1,158 @@
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 11% 24%,
+      color-mix(in srgb, var(--duration-accent) 8%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 88% 76%,
+      color-mix(in srgb, var(--duration-via) 7%, transparent),
+      transparent 30rem
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--duration-from) 3%, #fdfcf8) 0%,
+      #f5faf8 50%,
+      color-mix(in srgb, var(--duration-to) 4%, #edf8f6) 100%
+    );
+}
+
+.arc,
+.timeline,
+.progression {
+  position: absolute;
+  display: block;
+}
+
+.arc {
+  right: -9rem;
+  bottom: -15rem;
+  width: min(37rem, 54vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--duration-accent) 12%, transparent);
+  box-shadow:
+    0 0 0 5rem color-mix(in srgb, var(--duration-via) 2%, transparent),
+    0 0 0 10rem color-mix(in srgb, var(--duration-accent) 1.2%, transparent);
+}
+
+.timeline {
+  top: 16rem;
+  left: -8rem;
+  width: min(42rem, 55vw);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--duration-accent) 13%, transparent),
+    transparent
+  );
+}
+
+.timeline::before,
+.timeline::after {
+  position: absolute;
+  top: 50%;
+  width: 0.45rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--duration-accent) 18%, transparent);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.timeline::before {
+  left: 38%;
+}
+
+.timeline::after {
+  left: 72%;
+}
+
+.progression {
+  top: 25%;
+  right: 4%;
+  width: min(20rem, 30vw);
+  opacity: 0.58;
+}
+
+.progression i {
+  display: block;
+  height: 1px;
+  margin-top: 1.15rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--duration-accent) 15%, transparent),
+    transparent
+  );
+}
+
+.progression i:nth-child(1) {
+  width: 24%;
+}
+
+.progression i:nth-child(2) {
+  width: 39%;
+}
+
+.progression i:nth-child(3) {
+  width: 56%;
+}
+
+.progression i:nth-child(4) {
+  width: 76%;
+}
+
+.progression i:nth-child(5) {
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .background {
+    background:
+      radial-gradient(
+        circle at 11% 24%,
+        color-mix(in srgb, var(--duration-accent) 12%, transparent),
+        transparent 25rem
+      ),
+      radial-gradient(
+        circle at 88% 76%,
+        color-mix(in srgb, var(--duration-via) 9%, transparent),
+        transparent 30rem
+      ),
+      linear-gradient(150deg, #0b2429 0%, #071a1f 50%, #0a2025 100%);
+  }
+
+  .arc,
+  .timeline,
+  .progression {
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 640px) {
+  .arc {
+    right: -17rem;
+    bottom: -7rem;
+    width: 31rem;
+  }
+
+  .timeline {
+    top: 20rem;
+    left: -14rem;
+    width: 28rem;
+  }
+
+  .progression {
+    top: 29rem;
+    right: -5rem;
+    width: 17rem;
+  }
+}

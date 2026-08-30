@@ -1,0 +1,177 @@
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 11% 24%,
+      color-mix(in srgb, var(--origin-accent) 8%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 88% 74%,
+      color-mix(in srgb, var(--origin-via) 7%, transparent),
+      transparent 30rem
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--origin-from) 3%, #fdfcf8) 0%,
+      #f5faf8 50%,
+      color-mix(in srgb, var(--origin-to) 4%, #edf8f6) 100%
+    );
+}
+
+.grid,
+.contour,
+.route {
+  position: absolute;
+  display: block;
+}
+
+.grid {
+  top: 5rem;
+  right: -4rem;
+  width: min(36rem, 48vw);
+  aspect-ratio: 1.2;
+  opacity: 0.34;
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--origin-accent) 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--origin-accent) 8%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 3rem 3rem;
+  mask-image: radial-gradient(circle at center, #000 12%, transparent 70%);
+}
+
+.contour {
+  border: 1px solid color-mix(in srgb, var(--origin-accent) 12%, transparent);
+  border-radius: 45% 55% 63% 37% / 47% 35% 65% 53%;
+}
+
+.contour::before,
+.contour::after {
+  position: absolute;
+  border: inherit;
+  border-radius: inherit;
+  content: "";
+}
+
+.contour::before {
+  inset: 2.2rem;
+  transform: rotate(7deg);
+}
+
+.contour::after {
+  inset: 4.4rem;
+  transform: rotate(-9deg);
+}
+
+.contourOne {
+  right: -9rem;
+  bottom: -13rem;
+  width: min(38rem, 54vw);
+  aspect-ratio: 1;
+  transform: rotate(15deg);
+}
+
+.contourTwo {
+  top: 17rem;
+  left: -13rem;
+  width: 29rem;
+  aspect-ratio: 1.15;
+  opacity: 0.68;
+  transform: rotate(-24deg);
+}
+
+.route {
+  top: 15rem;
+  left: 7%;
+  width: min(25rem, 35vw);
+  height: 7rem;
+  border-top: 1px dashed
+    color-mix(in srgb, var(--origin-accent) 16%, transparent);
+  border-radius: 50%;
+  transform: rotate(-7deg);
+}
+
+.route i {
+  position: absolute;
+  top: -0.28rem;
+  width: 0.52rem;
+  aspect-ratio: 1;
+  border: 1px solid
+    color-mix(in srgb, var(--origin-accent) 20%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--origin-accent) 5%, #f5faf8);
+}
+
+.route i:nth-child(1) {
+  left: 4%;
+}
+
+.route i:nth-child(2) {
+  left: 49%;
+}
+
+.route i:nth-child(3) {
+  right: 4%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .background {
+    background:
+      radial-gradient(
+        circle at 11% 24%,
+        color-mix(in srgb, var(--origin-accent) 12%, transparent),
+        transparent 25rem
+      ),
+      radial-gradient(
+        circle at 88% 74%,
+        color-mix(in srgb, var(--origin-via) 9%, transparent),
+        transparent 30rem
+      ),
+      linear-gradient(150deg, #0b2429 0%, #071a1f 50%, #0a2025 100%);
+  }
+
+  .grid,
+  .contour,
+  .route {
+    opacity: 0.48;
+  }
+
+  .route i {
+    background: #0b2429;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    top: 14rem;
+    right: -13rem;
+    width: 29rem;
+  }
+
+  .contourOne {
+    right: -20rem;
+    bottom: -6rem;
+    width: 34rem;
+  }
+
+  .contourTwo {
+    top: 29rem;
+    left: -20rem;
+  }
+
+  .route {
+    top: 20rem;
+    left: -6rem;
+    width: 18rem;
+  }
+}

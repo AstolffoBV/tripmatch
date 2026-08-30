@@ -129,6 +129,9 @@ export type LocationRequestStatus = "idle" | "requesting" | "success" | "error";
 export interface OriginPreferences {
   mode: OriginMode | null;
   manualLocation: string;
+  manualLatitude: number | null;
+  manualLongitude: number | null;
+  resolvedLocation: string;
   latitude: number | null;
   longitude: number | null;
   locationStatus: LocationRequestStatus;

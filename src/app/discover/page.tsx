@@ -12,6 +12,10 @@ import QuestionFive from "@/components/discovery/QuestionFive";
 import QuestionFiveBackground from "@/components/discovery/QuestionFiveBackground";
 import QuestionSix from "@/components/discovery/QuestionSix";
 import QuestionSixBackground from "@/components/discovery/QuestionSixBackground";
+import QuestionSeven from "@/components/discovery/QuestionSeven";
+import QuestionSevenBackground from "@/components/discovery/QuestionSevenBackground";
+import QuestionEight from "@/components/discovery/QuestionEight";
+import QuestionEightBackground from "@/components/discovery/QuestionEightBackground";
 import QuestionTwo from "@/components/discovery/QuestionTwo";
 import QuestionThree from "@/components/discovery/QuestionThree";
 import QuestionThreeBackground from "@/components/discovery/QuestionThreeBackground";
@@ -19,9 +23,7 @@ import TripTypePanels from "@/components/discovery/TripTypePanels";
 import LanguageSelector from "@/components/language/LanguageSelector";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import {
-  durationOptions,
   months,
-  originModeOptions,
   transportOptions,
 } from "@/data/discoveryOptions";
 import {
@@ -29,6 +31,8 @@ import {
   type Translation,
 } from "@/data/translations";
 import { isTripSubtypeForType } from "@/data/tripTypeThemes";
+import { reverseGeocodeLocation } from "@/services/location/client";
+import type { LocationResult } from "@/types/location";
 import type {
   AccommodationType,
   BudgetMode,
@@ -87,6 +91,9 @@ const initialPreferences: TripPreferences = {
   origin: {
     mode: null,
     manualLocation: "",
+    manualLatitude: null,
+    manualLongitude: null,
+    resolvedLocation: "",
     latitude: null,
     longitude: null,
     locationStatus: "idle",
@@ -114,9 +121,6 @@ const editorialPrimaryButtonClasses =
 const editorialSecondaryButtonClasses =
   "cursor-pointer rounded-xl border border-[#bfd3cf] bg-white/55 px-6 py-3 font-semibold text-[#173d42] shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transform-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10";
 
-const inputClasses =
-  "w-full rounded-xl border border-gray-300 bg-transparent px-4 py-3 outline-none transition focus:border-black focus:ring-1 focus:ring-black dark:border-gray-700 dark:focus:border-white dark:focus:ring-white";
-
 const geolocationErrorMessages = {
   unavailableInBrowser: "Location is unavailable in this browser.",
   generic: "We could not get your current location.",
@@ -126,6 +130,8 @@ const geolocationErrorMessages = {
     "Your location is currently unavailable. Please try again or enter a city.",
   timeout:
     "The location request timed out. Please try again or enter a city.",
+  reverseGeocode:
+    "We found the coordinates but could not identify the location.",
 } as const;
 
 function getTravellerCount(travellers: TravellerPreferences) {
@@ -289,18 +295,30 @@ function isStepComplete(step: QuestionNumber, preferences: TripPreferences) {
       return preferences.timing.mode === "flexible";
     case 7:
       return preferences.duration !== null;
-    case 8:
-      if (preferences.origin.mode === "currentLocation") {
+    case 8: {
+      const origin = preferences.origin;
+      const hasResolvedLocation =
+        origin.latitude !== null &&
+        Number.isFinite(origin.latitude) &&
+        origin.longitude !== null &&
+        Number.isFinite(origin.longitude) &&
+        origin.resolvedLocation.trim().length > 0;
+
+      if (origin.mode === "currentLocation") {
         return (
-          preferences.origin.locationStatus === "success" &&
-          preferences.origin.latitude !== null &&
-          preferences.origin.longitude !== null
+          origin.locationStatus === "success" && hasResolvedLocation
         );
       }
+
       return (
-        preferences.origin.mode === "manual" &&
-        preferences.origin.manualLocation.trim().length > 0
+        origin.mode === "manual" &&
+        origin.locationStatus === "success" &&
+        hasResolvedLocation &&
+        origin.manualLocation.trim().length > 0 &&
+        origin.manualLatitude === origin.latitude &&
+        origin.manualLongitude === origin.longitude
       );
+    }
     case 9:
       return preferences.transport.length > 0;
   }
@@ -330,6 +348,10 @@ function getLocalizedLocationError(
 
   if (message === geolocationErrorMessages.timeout) {
     return errors.timeout;
+  }
+
+  if (message === geolocationErrorMessages.reverseGeocode) {
+    return errors.reverseGeocode;
   }
 
   return errors.generic;
@@ -366,6 +388,8 @@ export default function DiscoverPage() {
     useState<TripPreferences>(initialPreferences);
   const stepContentRef = useRef<HTMLElement>(null);
   const previousStepRef = useRef<DiscoveryStep>(currentStep);
+  const originRequestIdRef = useRef(0);
+  const originGeocodingAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (previousStepRef.current !== currentStep) {
@@ -374,6 +398,10 @@ export default function DiscoverPage() {
 
     previousStepRef.current = currentStep;
   }, [currentStep]);
+
+  useEffect(() => {
+    return () => originGeocodingAbortRef.current?.abort();
+  }, []);
 
   const travellers = preferences.travellers;
   const travellerCount = getTravellerCount(travellers);
@@ -609,13 +637,43 @@ export default function DiscoverPage() {
   }
 
   function selectOriginMode(mode: OriginMode) {
+    if (mode === "currentLocation") {
+      requestCurrentLocation();
+      return;
+    }
+
+    originRequestIdRef.current += 1;
+    originGeocodingAbortRef.current?.abort();
+    originGeocodingAbortRef.current = null;
+
     setPreferences((previous) => ({
       ...previous,
-      origin: { ...previous.origin, mode },
+      origin: {
+        ...previous.origin,
+        mode: "manual",
+        latitude: previous.origin.manualLatitude,
+        longitude: previous.origin.manualLongitude,
+        resolvedLocation:
+          previous.origin.manualLatitude !== null &&
+          previous.origin.manualLongitude !== null
+            ? previous.origin.manualLocation
+            : "",
+        locationStatus:
+          previous.origin.manualLatitude !== null &&
+          previous.origin.manualLongitude !== null
+            ? "success"
+            : "idle",
+        locationError: null,
+      },
     }));
   }
 
   function requestCurrentLocation() {
+    const requestId = originRequestIdRef.current + 1;
+    originRequestIdRef.current = requestId;
+    originGeocodingAbortRef.current?.abort();
+    originGeocodingAbortRef.current = null;
+
     setPreferences((previous) => ({
       ...previous,
       origin: {
@@ -623,37 +681,131 @@ export default function DiscoverPage() {
         mode: "currentLocation",
         latitude: null,
         longitude: null,
+        resolvedLocation: "",
         locationStatus: "requesting",
         locationError: null,
       },
     }));
 
     if (!("geolocation" in navigator)) {
-      setPreferences((previous) => ({
-        ...previous,
-        origin: {
-          ...previous.origin,
-          locationStatus: "error",
-          locationError: geolocationErrorMessages.unavailableInBrowser,
-        },
-      }));
+      setPreferences((previous) => {
+        if (
+          previous.origin.mode !== "currentLocation" ||
+          originRequestIdRef.current !== requestId
+        ) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          origin: {
+            ...previous.origin,
+            locationStatus: "error",
+            locationError: geolocationErrorMessages.unavailableInBrowser,
+          },
+        };
+      });
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setPreferences((previous) => ({
-          ...previous,
-          origin: {
-            ...previous.origin,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            locationStatus: "success",
-            locationError: null,
-          },
-        }));
+      async (position) => {
+        if (originRequestIdRef.current !== requestId) {
+          return;
+        }
+
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        setPreferences((previous) => {
+          if (previous.origin.mode !== "currentLocation") {
+            return previous;
+          }
+
+          return {
+            ...previous,
+            origin: {
+              ...previous.origin,
+              latitude,
+              longitude,
+              locationStatus: "requesting",
+              locationError: null,
+            },
+          };
+        });
+
+        const controller = new AbortController();
+        originGeocodingAbortRef.current = controller;
+
+        try {
+          const result = await reverseGeocodeLocation(
+            latitude,
+            longitude,
+            language,
+            controller.signal,
+          );
+
+          if (
+            result === null ||
+            controller.signal.aborted ||
+            originRequestIdRef.current !== requestId
+          ) {
+            if (result === null) {
+              throw new Error("No location was returned for these coordinates.");
+            }
+
+            return;
+          }
+
+          setPreferences((previous) => {
+            if (
+              previous.origin.mode !== "currentLocation" ||
+              originRequestIdRef.current !== requestId
+            ) {
+              return previous;
+            }
+
+            return {
+              ...previous,
+              origin: {
+                ...previous.origin,
+                latitude,
+                longitude,
+                resolvedLocation: result.label,
+                locationStatus: "success",
+                locationError: null,
+              },
+            };
+          });
+        } catch (error) {
+          if (
+            (error instanceof DOMException && error.name === "AbortError") ||
+            originRequestIdRef.current !== requestId
+          ) {
+            return;
+          }
+
+          setPreferences((previous) => {
+            if (previous.origin.mode !== "currentLocation") {
+              return previous;
+            }
+
+            return {
+              ...previous,
+              origin: {
+                ...previous.origin,
+                locationStatus: "error",
+                locationError: geolocationErrorMessages.reverseGeocode,
+              },
+            };
+          });
+        }
       },
       (error) => {
+        if (originRequestIdRef.current !== requestId) {
+          return;
+        }
+
         let message: string = geolocationErrorMessages.generic;
 
         if (error.code === 1) {
@@ -664,28 +816,87 @@ export default function DiscoverPage() {
           message = geolocationErrorMessages.timeout;
         }
 
-        setPreferences((previous) => ({
-          ...previous,
-          origin: {
-            ...previous.origin,
-            locationStatus: "error",
-            locationError: message,
-          },
-        }));
+        setPreferences((previous) => {
+          if (previous.origin.mode !== "currentLocation") {
+            return previous;
+          }
+
+          return {
+            ...previous,
+            origin: {
+              ...previous.origin,
+              locationStatus: "error",
+              locationError: message,
+            },
+          };
+        });
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
     );
   }
 
-  function changeManualLocation(manualLocation: string) {
-    setPreferences((previous) => ({
-      ...previous,
-      origin: {
-        ...previous.origin,
-        mode: "manual",
-        manualLocation,
-      },
-    }));
+  function selectManualLocation(location: LocationResult) {
+    originRequestIdRef.current += 1;
+    originGeocodingAbortRef.current?.abort();
+    originGeocodingAbortRef.current = null;
+
+    setPreferences((previous) => {
+      if (previous.origin.mode !== "manual") {
+        return previous;
+      }
+
+      return {
+        ...previous,
+        origin: {
+          ...previous.origin,
+          manualLocation: location.label,
+          manualLatitude: location.latitude,
+          manualLongitude: location.longitude,
+          resolvedLocation: location.label,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          locationStatus: "success",
+          locationError: null,
+        },
+      };
+    });
+  }
+
+  function startManualMapResolution(latitude: number, longitude: number) {
+    setPreferences((previous) => {
+      if (previous.origin.mode !== "manual") {
+        return previous;
+      }
+
+      return {
+        ...previous,
+        origin: {
+          ...previous.origin,
+          latitude,
+          longitude,
+          resolvedLocation: "",
+          locationStatus: "requesting",
+          locationError: null,
+        },
+      };
+    });
+  }
+
+  function failManualMapResolution() {
+    setPreferences((previous) => {
+      if (previous.origin.mode !== "manual") {
+        return previous;
+      }
+
+      return {
+        ...previous,
+        origin: {
+          ...previous.origin,
+          locationStatus: "error",
+          locationError: geolocationErrorMessages.reverseGeocode,
+        },
+      };
+    });
   }
 
   function toggleTransport(option: TransportMode) {
@@ -783,6 +994,23 @@ export default function DiscoverPage() {
   const isQuestionFour = currentStep === 4;
   const isQuestionFive = currentStep === 5;
   const isQuestionSix = currentStep === 6;
+  const isQuestionSeven = currentStep === 7;
+  const isQuestionEight = currentStep === 8;
+  const durationContextLabel =
+    preferences.timing.mode === "rough" &&
+    preferences.timing.month !== null &&
+    preferences.timing.year !== null
+      ? `${discoverCopy.q6.months[preferences.timing.month]} ${preferences.timing.year}`
+      : preferences.timing.mode === "flexible"
+        ? discoverCopy.q6.flexibleDates
+        : null;
+  const localizedLocationError =
+    preferences.origin.locationError === null
+      ? null
+      : getLocalizedLocationError(
+          preferences.origin.locationError,
+          discoverCopy.q8.errors,
+        );
 
   function renderHeader(themed: boolean) {
     return (
@@ -828,7 +1056,11 @@ export default function DiscoverPage() {
                   ? "relative isolate min-h-screen overflow-x-clip bg-[#f6faf7] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
                   : isQuestionSix
                     ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
-                    : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+                    : isQuestionSeven
+                      ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                      : isQuestionEight
+                        ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                        : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
@@ -866,6 +1098,20 @@ export default function DiscoverPage() {
         />
       ) : null}
 
+      {currentStep === 7 ? (
+        <QuestionSevenBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
+      {currentStep === 8 ? (
+        <QuestionEightBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
       <div
         className={
           isQuestionOne
@@ -880,7 +1126,11 @@ export default function DiscoverPage() {
                     ? "relative z-10 mx-auto max-w-[58rem]"
                     : isQuestionSix
                       ? "relative z-10 mx-auto max-w-[58rem]"
-                      : "relative z-10 mx-auto max-w-3xl"
+                      : isQuestionSeven
+                        ? "relative z-10 mx-auto max-w-[58rem]"
+                        : isQuestionEight
+                          ? "relative z-10 mx-auto max-w-[58rem]"
+                          : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -1068,31 +1318,18 @@ export default function DiscoverPage() {
             aria-labelledby="question-7-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(7)}
-            </p>
-            <h1 id="question-7-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q7.heading}
-            </h1>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              {durationOptions.map((option) => (
-                <OptionCard
-                  key={option.value}
-                  label={discoverCopy.q7.options[option.value].label}
-                  description={
-                    discoverCopy.q7.options[option.value].description
-                  }
-                  selected={preferences.duration === option.value}
-                  onClick={() =>
-                    setPreferences((previous) => ({
-                      ...previous,
-                      duration: option.value,
-                    }))
-                  }
-                />
-              ))}
-            </div>
+            <QuestionSeven
+              questionLabel={questionLabel(7)}
+              copy={discoverCopy.q7}
+              selectedDuration={preferences.duration}
+              contextLabel={durationContextLabel}
+              onSelect={(duration) =>
+                setPreferences((previous) => ({
+                  ...previous,
+                  duration,
+                }))
+              }
+            />
           </section>
         ) : null}
 
@@ -1103,81 +1340,18 @@ export default function DiscoverPage() {
             aria-labelledby="question-8-title"
             className="outline-none"
           >
-            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-              {questionLabel(8)}
-            </p>
-            <h1 id="question-8-title" className="mt-3 text-3xl font-bold sm:text-4xl">
-              {discoverCopy.q8.heading}
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
-              {discoverCopy.q8.subtitle}
-            </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              {originModeOptions.map((option) => (
-                <OptionCard
-                  key={option.value}
-                  label={discoverCopy.q8.modes[option.value]}
-                  selected={preferences.origin.mode === option.value}
-                  disabled={
-                    option.value === "currentLocation" &&
-                    preferences.origin.locationStatus === "requesting"
-                  }
-                  onClick={
-                    option.value === "currentLocation"
-                      ? requestCurrentLocation
-                      : () => selectOriginMode(option.value)
-                  }
-                />
-              ))}
-            </div>
-
-            {preferences.origin.mode === "currentLocation" ? (
-              <div className="mt-6 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
-                {preferences.origin.locationStatus === "requesting" ? (
-                  <p role="status">{discoverCopy.q8.requestingLocation}</p>
-                ) : null}
-
-                {preferences.origin.locationStatus === "success" ? (
-                  <div role="status">
-                    <p className="font-semibold">
-                      {discoverCopy.q8.currentLocationSelected}
-                    </p>
-                    <p className="mt-1 text-gray-500">
-                      {preferences.origin.latitude?.toFixed(5)}, {preferences.origin.longitude?.toFixed(5)}
-                    </p>
-                  </div>
-                ) : null}
-
-                {preferences.origin.locationStatus === "error" ? (
-                  <p className="text-red-600 dark:text-red-400" role="alert">
-                    {getLocalizedLocationError(
-                      preferences.origin.locationError,
-                      discoverCopy.q8.errors,
-                    )}
-                  </p>
-                ) : null}
-
-                {preferences.origin.locationStatus === "idle" ? (
-                  <p>{discoverCopy.q8.locationPermissionHelper}</p>
-                ) : null}
-              </div>
-            ) : null}
-
-            {preferences.origin.mode === "manual" ? (
-              <label className="mt-6 block">
-                <span className="mb-2 block text-sm font-medium">
-                  {discoverCopy.q8.cityAndCountry}
-                </span>
-                <input
-                  type="text"
-                  value={preferences.origin.manualLocation}
-                  onChange={(event) => changeManualLocation(event.target.value)}
-                  className={inputClasses}
-                  placeholder={discoverCopy.q8.manualPlaceholder}
-                />
-              </label>
-            ) : null}
+            <QuestionEight
+              questionLabel={questionLabel(8)}
+              copy={discoverCopy.q8}
+              language={language}
+              origin={preferences.origin}
+              localizedLocationError={localizedLocationError}
+              onRequestCurrentLocation={requestCurrentLocation}
+              onChooseManual={() => selectOriginMode("manual")}
+              onSelectManualLocation={selectManualLocation}
+              onManualMapMoveStart={startManualMapResolution}
+              onManualMapMoveError={failManualMapResolution}
+            />
           </section>
         ) : null}
 
@@ -1218,7 +1392,9 @@ export default function DiscoverPage() {
               currentStep === 3 ||
               currentStep === 4 ||
               currentStep === 5 ||
-              currentStep === 6
+              currentStep === 6 ||
+              currentStep === 7 ||
+              currentStep === 8
                 ? "mt-8 border-[#cfe0dc] dark:border-white/10"
                 : "mt-10 border-gray-200 dark:border-gray-800"
             }`}
@@ -1231,7 +1407,9 @@ export default function DiscoverPage() {
                 currentStep === 3 ||
                 currentStep === 4 ||
                 currentStep === 5 ||
-                currentStep === 6
+                currentStep === 6 ||
+                currentStep === 7 ||
+                currentStep === 8
                   ? editorialSecondaryButtonClasses
                   : secondaryButtonClasses
               }
@@ -1247,7 +1425,9 @@ export default function DiscoverPage() {
                 currentStep === 3 ||
                 currentStep === 4 ||
                 currentStep === 5 ||
-                currentStep === 6
+                currentStep === 6 ||
+                currentStep === 7 ||
+                currentStep === 8
                   ? editorialPrimaryButtonClasses
                   : primaryButtonClasses
               }
@@ -1393,15 +1573,7 @@ export default function DiscoverPage() {
                 questionLabel={questionLabel(8)}
                 title={discoverCopy.summary.categories[8]}
               >
-                {preferences.origin.mode === "manual" ? (
-                  <p>{preferences.origin.manualLocation.trim()}</p>
-                ) : (
-                  <p>
-                    {formatMessage(discoverCopy.summary.currentLocation, {
-                      coordinates: `${preferences.origin.latitude?.toFixed(5)}, ${preferences.origin.longitude?.toFixed(5)}`,
-                    })}
-                  </p>
-                )}
+                <p>{preferences.origin.resolvedLocation.trim()}</p>
               </SummaryItem>
 
               <SummaryItem

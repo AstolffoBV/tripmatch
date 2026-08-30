@@ -199,24 +199,57 @@ type DurationOptionTranslation = {
 
 type QuestionSevenTranslation = {
   heading: string;
+  subtitle: string;
+  stayLength: string;
+  daysLabel: string;
   options: Record<DurationPreference, DurationOptionTranslation>;
 };
 
 type QuestionEightTranslation = {
   heading: string;
   subtitle: string;
-  modes: Record<OriginMode, string>;
-  cityAndCountry: string;
-  manualPlaceholder: string;
-  requestingLocation: string;
-  currentLocationSelected: string;
-  locationPermissionHelper: string;
+  startingPoint: string;
+  modes: Record<OriginMode, { label: string; description: string }>;
+  current: {
+    locatingLabel: string;
+    locating: string;
+    selectedLabel: string;
+    resolvedStatus: string;
+    approximate: string;
+    permissionHelper: string;
+    retry: string;
+    chooseManual: string;
+  };
+  manual: {
+    heading: string;
+    searchLabel: string;
+    searchPlaceholder: string;
+    searchHint: string;
+    queryTooShort: string;
+    searching: string;
+    resultsLabel: string;
+    noResults: string;
+    selectedLabel: string;
+    mapHelper: string;
+    resolving: string;
+    mapLoading: string;
+  };
   errors: {
     unavailableInBrowser: string;
     generic: string;
     permissionDenied: string;
     unavailable: string;
     timeout: string;
+    reverseGeocode: string;
+    search: string;
+    map: string;
+  };
+  accessibility: {
+    retryCurrent: string;
+    chooseManual: string;
+    selectSuggestion: string;
+    map: string;
+    centerPin: string;
   };
 };
 
@@ -548,6 +581,9 @@ export const translations = {
       },
       q7: {
         heading: "How long would you like to stay?",
+        subtitle: "Choose the trip length that feels right.",
+        stayLength: "Stay length",
+        daysLabel: "days",
         options: {
           weekend: { label: "Weekend", description: "2–3 days" },
           short: { label: "Short trip", description: "4–5 days" },
@@ -560,25 +596,64 @@ export const translations = {
         heading: "Where are you travelling from?",
         subtitle:
           "We'll use this later to estimate realistic travel options and costs.",
+        startingPoint: "Starting point",
         modes: {
-          currentLocation: "Use my current location",
-          manual: "Enter a city manually",
+          currentLocation: {
+            label: "Current location",
+            description: "Use this device",
+          },
+          manual: {
+            label: "Choose manually",
+            description: "Search or place a pin",
+          },
         },
-        cityAndCountry: "City and country",
-        manualPlaceholder: "Timisoara, Romania",
-        requestingLocation: "Requesting your current location…",
-        currentLocationSelected: "Current location selected",
-        locationPermissionHelper:
-          "Click the location option to request browser permission.",
+        current: {
+          locatingLabel: "Locating you",
+          locating: "Finding your approximate starting point…",
+          selectedLabel: "Current location",
+          resolvedStatus: "Current location found.",
+          approximate: "Approximate location",
+          permissionHelper:
+            "Your browser will ask for permission to use this device’s location.",
+          retry: "Try again",
+          chooseManual: "Choose manually instead",
+        },
+        manual: {
+          heading: "Choose your starting point",
+          searchLabel: "Search for a location",
+          searchPlaceholder: "Search city, area or place",
+          searchHint: "Enter at least 3 characters.",
+          queryTooShort: "Type at least 3 characters to search.",
+          searching: "Searching locations…",
+          resultsLabel: "Location suggestions",
+          noResults: "No matching locations found.",
+          selectedLabel: "Selected location",
+          mapHelper: "Drag the map to fine-tune your starting point.",
+          resolving: "Updating the selected location…",
+          mapLoading: "Loading map…",
+        },
         errors: {
           unavailableInBrowser: "Location is unavailable in this browser.",
           generic: "We could not get your current location.",
           permissionDenied:
-            "Location permission was denied. You can enter a city instead.",
+            "Location permission was denied. You can choose a location manually instead.",
           unavailable:
-            "Your location is currently unavailable. Please try again or enter a city.",
+            "Your location is currently unavailable. Try again or choose manually.",
           timeout:
-            "The location request timed out. Please try again or enter a city.",
+            "The location request timed out. Try again or choose manually.",
+          reverseGeocode:
+            "We found the coordinates but could not identify the location. Try again or choose manually.",
+          search:
+            "We couldn't search for locations right now. Please try again.",
+          map:
+            "The map could not be loaded. You can still choose a location from the search results.",
+        },
+        accessibility: {
+          retryCurrent: "Try current location again",
+          chooseManual: "Choose a location manually",
+          selectSuggestion: "Select {location}",
+          map: "Interactive map for fine-tuning your starting point",
+          centerPin: "Selected point at the center of the map",
         },
       },
       q9: {
@@ -920,6 +995,9 @@ export const translations = {
       },
       q7: {
         heading: "Cât timp ai vrea să stai?",
+        subtitle: "Alege durata călătoriei care ți se potrivește.",
+        stayLength: "Durata sejurului",
+        daysLabel: "zile",
         options: {
           weekend: { label: "Weekend", description: "2–3 zile" },
           short: { label: "Călătorie scurtă", description: "4–5 zile" },
@@ -935,26 +1013,65 @@ export const translations = {
         heading: "De unde pleci?",
         subtitle:
           "Vom folosi această informație mai târziu pentru a estima opțiuni și costuri de călătorie realiste.",
+        startingPoint: "Punct de plecare",
         modes: {
-          currentLocation: "Folosește locația mea actuală",
-          manual: "Introdu manual un oraș",
+          currentLocation: {
+            label: "Locația actuală",
+            description: "Folosește acest dispozitiv",
+          },
+          manual: {
+            label: "Alege manual",
+            description: "Caută sau fixează un punct",
+          },
         },
-        cityAndCountry: "Oraș și țară",
-        manualPlaceholder: "Timișoara, România",
-        requestingLocation: "Se solicită locația ta actuală…",
-        currentLocationSelected: "Locația actuală a fost selectată",
-        locationPermissionHelper:
-          "Apasă opțiunea de localizare pentru a solicita permisiunea browserului.",
+        current: {
+          locatingLabel: "Te localizăm",
+          locating: "Căutăm punctul tău aproximativ de plecare…",
+          selectedLabel: "Locația actuală",
+          resolvedStatus: "Locația actuală a fost găsită.",
+          approximate: "Locație aproximativă",
+          permissionHelper:
+            "Browserul va solicita permisiunea de a folosi locația acestui dispozitiv.",
+          retry: "Încearcă din nou",
+          chooseManual: "Alege manual în schimb",
+        },
+        manual: {
+          heading: "Alege punctul de plecare",
+          searchLabel: "Caută o locație",
+          searchPlaceholder: "Caută un oraș, o zonă sau un loc",
+          searchHint: "Introdu cel puțin 3 caractere.",
+          queryTooShort: "Introdu cel puțin 3 caractere pentru a căuta.",
+          searching: "Se caută locații…",
+          resultsLabel: "Sugestii de locații",
+          noResults: "Nu am găsit locații potrivite.",
+          selectedLabel: "Locație selectată",
+          mapHelper: "Trage harta pentru a ajusta punctul de plecare.",
+          resolving: "Actualizăm locația selectată…",
+          mapLoading: "Se încarcă harta…",
+        },
         errors: {
           unavailableInBrowser:
             "Localizarea nu este disponibilă în acest browser.",
           generic: "Nu am putut obține locația ta actuală.",
           permissionDenied:
-            "Permisiunea de localizare a fost refuzată. Poți introduce un oraș.",
+            "Permisiunea de localizare a fost refuzată. Poți alege manual o locație.",
           unavailable:
-            "Locația ta nu este disponibilă momentan. Încearcă din nou sau introdu un oraș.",
+            "Locația ta nu este disponibilă momentan. Încearcă din nou sau alege manual.",
           timeout:
-            "Solicitarea locației a expirat. Încearcă din nou sau introdu un oraș.",
+            "Solicitarea locației a expirat. Încearcă din nou sau alege manual.",
+          reverseGeocode:
+            "Am găsit coordonatele, dar nu am putut identifica locația. Încearcă din nou sau alege manual.",
+          search:
+            "Nu putem căuta locații momentan. Încearcă din nou.",
+          map:
+            "Harta nu a putut fi încărcată. Poți alege în continuare o locație din rezultatele căutării.",
+        },
+        accessibility: {
+          retryCurrent: "Încearcă din nou localizarea actuală",
+          chooseManual: "Alege manual o locație",
+          selectSuggestion: "Selectează {location}",
+          map: "Hartă interactivă pentru ajustarea punctului de plecare",
+          centerPin: "Punctul selectat din centrul hărții",
         },
       },
       q9: {
@@ -1288,6 +1405,9 @@ export const translations = {
       },
       q7: {
         heading: "¿Cuánto tiempo te gustaría quedarte?",
+        subtitle: "Elige la duración del viaje que mejor te venga.",
+        stayLength: "Duración de la estancia",
+        daysLabel: "días",
         options: {
           weekend: { label: "Fin de semana", description: "2–3 días" },
           short: { label: "Viaje corto", description: "4–5 días" },
@@ -1303,26 +1423,65 @@ export const translations = {
         heading: "¿Desde dónde viajas?",
         subtitle:
           "Más adelante usaremos esta información para estimar opciones y costes de viaje realistas.",
+        startingPoint: "Punto de partida",
         modes: {
-          currentLocation: "Usar mi ubicación actual",
-          manual: "Introducir una ciudad manualmente",
+          currentLocation: {
+            label: "Ubicación actual",
+            description: "Usar este dispositivo",
+          },
+          manual: {
+            label: "Elegir manualmente",
+            description: "Buscar o colocar un marcador",
+          },
         },
-        cityAndCountry: "Ciudad y país",
-        manualPlaceholder: "Timișoara, Rumanía",
-        requestingLocation: "Solicitando tu ubicación actual…",
-        currentLocationSelected: "Ubicación actual seleccionada",
-        locationPermissionHelper:
-          "Pulsa la opción de ubicación para solicitar permiso al navegador.",
+        current: {
+          locatingLabel: "Buscando tu ubicación",
+          locating: "Buscando tu punto de partida aproximado…",
+          selectedLabel: "Ubicación actual",
+          resolvedStatus: "Ubicación actual encontrada.",
+          approximate: "Ubicación aproximada",
+          permissionHelper:
+            "El navegador te pedirá permiso para usar la ubicación de este dispositivo.",
+          retry: "Intentar de nuevo",
+          chooseManual: "Elegir manualmente",
+        },
+        manual: {
+          heading: "Elige tu punto de partida",
+          searchLabel: "Buscar una ubicación",
+          searchPlaceholder: "Busca una ciudad, zona o lugar",
+          searchHint: "Introduce al menos 3 caracteres.",
+          queryTooShort: "Escribe al menos 3 caracteres para buscar.",
+          searching: "Buscando ubicaciones…",
+          resultsLabel: "Sugerencias de ubicaciones",
+          noResults: "No hemos encontrado ubicaciones que coincidan.",
+          selectedLabel: "Ubicación seleccionada",
+          mapHelper: "Arrastra el mapa para ajustar tu punto de partida.",
+          resolving: "Actualizando la ubicación seleccionada…",
+          mapLoading: "Cargando mapa…",
+        },
         errors: {
           unavailableInBrowser:
             "La ubicación no está disponible en este navegador.",
           generic: "No hemos podido obtener tu ubicación actual.",
           permissionDenied:
-            "Se ha denegado el permiso de ubicación. Puedes introducir una ciudad.",
+            "Se ha denegado el permiso de ubicación. Puedes elegir una ubicación manualmente.",
           unavailable:
-            "Tu ubicación no está disponible en este momento. Inténtalo de nuevo o introduce una ciudad.",
+            "Tu ubicación no está disponible en este momento. Inténtalo de nuevo o elige manualmente.",
           timeout:
-            "Se agotó el tiempo de espera de la solicitud de ubicación. Inténtalo de nuevo o introduce una ciudad.",
+            "Se agotó el tiempo de espera de la solicitud de ubicación. Inténtalo de nuevo o elige manualmente.",
+          reverseGeocode:
+            "Hemos encontrado las coordenadas, pero no hemos podido identificar la ubicación. Inténtalo de nuevo o elige manualmente.",
+          search:
+            "Ahora mismo no podemos buscar ubicaciones. Inténtalo de nuevo.",
+          map:
+            "No se ha podido cargar el mapa. Aun así, puedes elegir una ubicación en los resultados de búsqueda.",
+        },
+        accessibility: {
+          retryCurrent: "Volver a intentar la ubicación actual",
+          chooseManual: "Elegir una ubicación manualmente",
+          selectSuggestion: "Seleccionar {location}",
+          map: "Mapa interactivo para ajustar tu punto de partida",
+          centerPin: "Punto seleccionado en el centro del mapa",
         },
       },
       q9: {
@@ -1655,6 +1814,9 @@ export const translations = {
       },
       q7: {
         heading: "Wie lange möchtest du bleiben?",
+        subtitle: "Wähle die Reisedauer, die sich für dich richtig anfühlt.",
+        stayLength: "Aufenthaltsdauer",
+        daysLabel: "Tage",
         options: {
           weekend: { label: "Wochenende", description: "2–3 Tage" },
           short: { label: "Kurztrip", description: "4–5 Tage" },
@@ -1670,26 +1832,66 @@ export const translations = {
         heading: "Wo startest du deine Reise?",
         subtitle:
           "Diese Angabe verwenden wir später, um realistische Reiseoptionen und Kosten zu schätzen.",
+        startingPoint: "Startpunkt",
         modes: {
-          currentLocation: "Meinen aktuellen Standort verwenden",
-          manual: "Stadt manuell eingeben",
+          currentLocation: {
+            label: "Aktueller Standort",
+            description: "Dieses Gerät verwenden",
+          },
+          manual: {
+            label: "Manuell auswählen",
+            description: "Suchen oder eine Markierung setzen",
+          },
         },
-        cityAndCountry: "Stadt und Land",
-        manualPlaceholder: "Timișoara, Rumänien",
-        requestingLocation: "Dein aktueller Standort wird ermittelt…",
-        currentLocationSelected: "Aktueller Standort ausgewählt",
-        locationPermissionHelper:
-          "Klicke auf die Standortoption, um die Browserberechtigung anzufordern.",
+        current: {
+          locatingLabel: "Standort wird ermittelt",
+          locating: "Wir ermitteln deinen ungefähren Startpunkt…",
+          selectedLabel: "Aktueller Standort",
+          resolvedStatus: "Aktueller Standort gefunden.",
+          approximate: "Ungefährer Standort",
+          permissionHelper:
+            "Dein Browser fragt nach der Berechtigung, den Standort dieses Geräts zu verwenden.",
+          retry: "Erneut versuchen",
+          chooseManual: "Stattdessen manuell auswählen",
+        },
+        manual: {
+          heading: "Wähle deinen Startpunkt",
+          searchLabel: "Standort suchen",
+          searchPlaceholder: "Stadt, Gebiet oder Ort suchen",
+          searchHint: "Gib mindestens 3 Zeichen ein.",
+          queryTooShort: "Gib mindestens 3 Zeichen ein, um zu suchen.",
+          searching: "Standorte werden gesucht…",
+          resultsLabel: "Standortvorschläge",
+          noResults: "Keine passenden Standorte gefunden.",
+          selectedLabel: "Ausgewählter Standort",
+          mapHelper:
+            "Verschiebe die Karte, um deinen Startpunkt genauer festzulegen.",
+          resolving: "Ausgewählter Standort wird aktualisiert…",
+          mapLoading: "Karte wird geladen…",
+        },
         errors: {
           unavailableInBrowser:
             "Die Standortbestimmung ist in diesem Browser nicht verfügbar.",
           generic: "Dein aktueller Standort konnte nicht ermittelt werden.",
           permissionDenied:
-            "Die Standortberechtigung wurde verweigert. Du kannst stattdessen eine Stadt eingeben.",
+            "Die Standortberechtigung wurde verweigert. Du kannst stattdessen einen Standort manuell auswählen.",
           unavailable:
-            "Dein Standort ist derzeit nicht verfügbar. Versuche es erneut oder gib eine Stadt ein.",
+            "Dein Standort ist derzeit nicht verfügbar. Versuche es erneut oder wähle ihn manuell aus.",
           timeout:
-            "Die Standortanfrage hat zu lange gedauert. Versuche es erneut oder gib eine Stadt ein.",
+            "Die Standortanfrage hat zu lange gedauert. Versuche es erneut oder wähle den Standort manuell aus.",
+          reverseGeocode:
+            "Wir haben die Koordinaten gefunden, konnten den Standort aber nicht bestimmen. Versuche es erneut oder wähle ihn manuell aus.",
+          search:
+            "Standorte können gerade nicht gesucht werden. Versuche es erneut.",
+          map:
+            "Die Karte konnte nicht geladen werden. Du kannst weiterhin einen Standort aus den Suchergebnissen auswählen.",
+        },
+        accessibility: {
+          retryCurrent: "Aktuellen Standort erneut ermitteln",
+          chooseManual: "Standort manuell auswählen",
+          selectSuggestion: "{location} auswählen",
+          map: "Interaktive Karte zur Feinabstimmung deines Startpunkts",
+          centerPin: "Ausgewählter Punkt in der Kartenmitte",
         },
       },
       q9: {
@@ -2034,6 +2236,9 @@ export const translations = {
       },
       q7: {
         heading: "Combien de temps souhaitez-vous rester ?",
+        subtitle: "Choisissez la durée de voyage qui vous convient.",
+        stayLength: "Durée du séjour",
+        daysLabel: "jours",
         options: {
           weekend: { label: "Week-end", description: "2–3 jours" },
           short: { label: "Court séjour", description: "4–5 jours" },
@@ -2049,26 +2254,66 @@ export const translations = {
         heading: "D’où partez-vous ?",
         subtitle:
           "Nous utiliserons cette information plus tard pour estimer des options de voyage et des coûts réalistes.",
+        startingPoint: "Point de départ",
         modes: {
-          currentLocation: "Utiliser ma position actuelle",
-          manual: "Saisir une ville manuellement",
+          currentLocation: {
+            label: "Position actuelle",
+            description: "Utiliser cet appareil",
+          },
+          manual: {
+            label: "Choisir manuellement",
+            description: "Rechercher ou placer un repère",
+          },
         },
-        cityAndCountry: "Ville et pays",
-        manualPlaceholder: "Timișoara, Roumanie",
-        requestingLocation: "Recherche de votre position actuelle…",
-        currentLocationSelected: "Position actuelle sélectionnée",
-        locationPermissionHelper:
-          "Cliquez sur l’option de localisation pour autoriser l’accès dans votre navigateur.",
+        current: {
+          locatingLabel: "Localisation en cours",
+          locating: "Recherche de votre point de départ approximatif…",
+          selectedLabel: "Position actuelle",
+          resolvedStatus: "Position actuelle trouvée.",
+          approximate: "Position approximative",
+          permissionHelper:
+            "Votre navigateur vous demandera l’autorisation d’utiliser la position de cet appareil.",
+          retry: "Réessayer",
+          chooseManual: "Choisir manuellement",
+        },
+        manual: {
+          heading: "Choisissez votre point de départ",
+          searchLabel: "Rechercher un lieu",
+          searchPlaceholder: "Rechercher une ville, une zone ou un lieu",
+          searchHint: "Saisissez au moins 3 caractères.",
+          queryTooShort:
+            "Saisissez au moins 3 caractères pour lancer la recherche.",
+          searching: "Recherche de lieux…",
+          resultsLabel: "Suggestions de lieux",
+          noResults: "Aucun lieu correspondant n’a été trouvé.",
+          selectedLabel: "Lieu sélectionné",
+          mapHelper: "Déplacez la carte pour affiner votre point de départ.",
+          resolving: "Mise à jour du lieu sélectionné…",
+          mapLoading: "Chargement de la carte…",
+        },
         errors: {
           unavailableInBrowser:
             "La géolocalisation n’est pas disponible dans ce navigateur.",
           generic: "Nous n’avons pas pu obtenir votre position actuelle.",
           permissionDenied:
-            "L’accès à votre position a été refusé. Vous pouvez saisir une ville à la place.",
+            "L’accès à votre position a été refusé. Vous pouvez choisir un lieu manuellement.",
           unavailable:
-            "Votre position est actuellement indisponible. Réessayez ou saisissez une ville.",
+            "Votre position est actuellement indisponible. Réessayez ou choisissez-la manuellement.",
           timeout:
-            "La demande de localisation a expiré. Réessayez ou saisissez une ville.",
+            "La demande de localisation a expiré. Réessayez ou choisissez un lieu manuellement.",
+          reverseGeocode:
+            "Nous avons trouvé les coordonnées, mais pas pu identifier le lieu. Réessayez ou choisissez-le manuellement.",
+          search:
+            "La recherche de lieux est indisponible pour le moment. Réessayez.",
+          map:
+            "Impossible de charger la carte. Vous pouvez tout de même choisir un lieu dans les résultats de recherche.",
+        },
+        accessibility: {
+          retryCurrent: "Réessayer de localiser votre position actuelle",
+          chooseManual: "Choisir un lieu manuellement",
+          selectSuggestion: "Sélectionner {location}",
+          map: "Carte interactive pour affiner votre point de départ",
+          centerPin: "Point sélectionné au centre de la carte",
         },
       },
       q9: {
