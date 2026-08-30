@@ -13,6 +13,12 @@ import type {
   TravelMonth,
   TripType,
 } from "@/types/tripPreferences";
+import type {
+  CountryCode,
+  DestinationId,
+  DestinationTag,
+  MatchReasonCode,
+} from "@/types/destination";
 
 export const supportedLanguages = [
   { code: "en", name: "English", shortLabel: "EN" },
@@ -268,19 +274,54 @@ type QuestionNineTranslation = {
   };
 };
 
-type SummaryTranslation = {
+type ResultsTranslation = {
   heading: string;
-  categories: Record<QuestionNumber, string>;
-  enteredAs: string;
-  totalAmount: string;
-  perTravellerAmount: string;
-  petFriendlyRequired: string;
-  dateRange: string;
-  flexibleDates: string;
-  calculatedFromExactDates: string;
-  currentLocation: string;
-  nextStepNote: string;
-  continueToMatching: string;
+  subtitle: string;
+  resultCount: NounForms;
+  alternativeCount: NounForms;
+  noExactMatches: string;
+  recommendedDestinations: string;
+  filters: {
+    title: string;
+    regionLabel: string;
+    editPreferences: string;
+    showAll: string;
+    hide: string;
+    from: string;
+    totalBudget: string;
+    perTravellerBudget: string;
+    more: string;
+    categories: Record<QuestionNumber, string>;
+  };
+  edit: {
+    backToResults: string;
+    updateResults: string;
+  };
+  sort: {
+    label: string;
+    bestMatch: string;
+    closest: string;
+  };
+  card: {
+    match: string;
+    distance: string;
+    distanceAccessible: string;
+    why: string;
+    viewTrip: string;
+    hideTrip: string;
+    detailPrototype: string;
+  };
+  prototypeNote: string;
+  reasons: Record<MatchReasonCode, string>;
+  destinations: Record<
+    DestinationId,
+    {
+      city: string;
+      description: string;
+    }
+  >;
+  countries: Record<CountryCode, string>;
+  tags: Record<DestinationTag, string>;
 };
 
 export type Translation = {
@@ -297,7 +338,7 @@ export type Translation = {
     q7: QuestionSevenTranslation;
     q8: QuestionEightTranslation;
     q9: QuestionNineTranslation;
-    summary: SummaryTranslation;
+    results: ResultsTranslation;
   };
 };
 
@@ -692,30 +733,214 @@ export const translations = {
           clearAll: "Clear all travel options",
         },
       },
-      summary: {
-        heading: "Your base trip preferences",
-        categories: {
-          1: "Trip type",
-          2: "Travellers",
-          3: "Budget",
-          4: "Accommodation",
-          5: "Meals",
-          6: "When",
-          7: "Duration",
-          8: "Origin",
-          9: "Transport",
+      results: {
+        heading: "Destinations matched to your trip",
+        subtitle:
+          "Based on your travel style, budget, timing and starting point.",
+        resultCount: {
+          one: "{count} destination matches your preferences",
+          other: "{count} destinations match your preferences",
         },
-        enteredAs: "Entered as {mode}",
-        totalAmount: "{amount} {currency} total",
-        perTravellerAmount: "{amount} {currency} per traveller",
-        petFriendlyRequired: "Pet-friendly accommodation required",
-        dateRange: "{departure} to {return}",
-        flexibleDates: "Flexible dates",
-        calculatedFromExactDates: "calculated from exact dates",
-        currentLocation: "Current location ({coordinates})",
-        nextStepNote:
-          "Next, TripMatch will use these preferences to evaluate realistic destinations and transport options.",
-        continueToMatching: "Continue to destination matching",
+        alternativeCount: {
+          one: "{count} closest alternative",
+          other: "{count} closest alternatives",
+        },
+        noExactMatches:
+          "No exact matches, so we're showing the closest alternatives.",
+        recommendedDestinations: "Recommended destinations",
+        filters: {
+          title: "Your trip",
+          regionLabel: "Trip filters",
+          editPreferences: "Edit preferences",
+          showAll: "All filters ({count})",
+          hide: "Hide filters",
+          from: "From {location}",
+          totalBudget: "{amount} {currency} total",
+          perTravellerBudget: "{amount} {currency} per traveller",
+          more: "+{count}",
+          categories: {
+            1: "Trip type",
+            2: "Travellers",
+            3: "Budget",
+            4: "Accommodation",
+            5: "Meals",
+            6: "When",
+            7: "Duration",
+            8: "Origin",
+            9: "Transport",
+          },
+        },
+        edit: {
+          backToResults: "Back to results",
+          updateResults: "Update results",
+        },
+        sort: {
+          label: "Sort destinations",
+          bestMatch: "Best match",
+          closest: "Closest",
+        },
+        card: {
+          match: "{score}% match",
+          distance: "≈ {distance} km away",
+          distanceAccessible:
+            "Approximately {distance} kilometres away in a straight line",
+          why: "Why it matches",
+          viewTrip: "View trip",
+          hideTrip: "Hide details",
+          detailPrototype:
+            "A detailed trip plan for this destination will be added in a future iteration.",
+        },
+        prototypeNote:
+          "Prototype recommendations — live prices and availability are not connected yet.",
+        reasons: {
+          tripType: "Strong match for {tripType} trips",
+          tripSubtype: "Matches your {tripSubtype} preference",
+          budget: "Fits your chosen budget",
+          timing: "Good seasonal fit for your travel timing",
+          duration: "Good fit for a {duration} stay",
+          transport: "Works with your selected transport: {transport}",
+          accommodation: "Matches your accommodation preferences",
+          travellerGroup: "Well suited to your group: {group}",
+          familyFriendly: "Suitable for families",
+          petFriendly: "Suitable for travelling with pets",
+          meals: "Works with your preferred meal style",
+        },
+        destinations: {
+          innsbruck: {
+            city: "Innsbruck",
+            description:
+              "An alpine city framed by dramatic peaks and easy access to mountain trails.",
+          },
+          salzburg: {
+            city: "Salzburg",
+            description:
+              "A graceful historic city pairing baroque culture with nearby alpine scenery.",
+          },
+          vienna: {
+            city: "Vienna",
+            description:
+              "An elegant cultural capital known for grand architecture, museums and café life.",
+          },
+          prague: {
+            city: "Prague",
+            description:
+              "A walkable historic city of river views, Gothic landmarks and lively evenings.",
+          },
+          budapest: {
+            city: "Budapest",
+            description:
+              "A vibrant Danube city blending thermal baths, architecture and nightlife.",
+          },
+          ljubljana: {
+            city: "Ljubljana",
+            description:
+              "A relaxed, green capital with riverside culture and nature close at hand.",
+          },
+          bled: {
+            city: "Bled",
+            description:
+              "A serene lakeside base surrounded by forests and the Julian Alps.",
+          },
+          brasov: {
+            city: "Brașov",
+            description:
+              "A storybook Transylvanian city with mountain trails beyond its old town.",
+          },
+          zakopane: {
+            city: "Zakopane",
+            description:
+              "A lively gateway to the Tatra Mountains, suited to hiking and alpine breaks.",
+          },
+          munich: {
+            city: "Munich",
+            description:
+              "A polished Bavarian city offering museums, events and quick alpine escapes.",
+          },
+          dubrovnik: {
+            city: "Dubrovnik",
+            description:
+              "A fortified Adriatic city with historic lanes and striking coastal views.",
+          },
+          split: {
+            city: "Split",
+            description:
+              "A lively Dalmatian base combining ancient streets, beaches and island access.",
+          },
+          barcelona: {
+            city: "Barcelona",
+            description:
+              "A Mediterranean city where architecture, beaches, food and nightlife meet.",
+          },
+          lisbon: {
+            city: "Lisbon",
+            description:
+              "A sunlit hill city with tiled streets, Atlantic views and a rich food scene.",
+          },
+          amsterdam: {
+            city: "Amsterdam",
+            description:
+              "A canal-lined cultural city with museums, neighbourhood life and easy rail links.",
+          },
+          krakow: {
+            city: "Kraków",
+            description:
+              "A characterful historic city with rich culture, food and accessible day trips.",
+          },
+          venice: {
+            city: "Venice",
+            description:
+              "A singular lagoon city of canals, palaces and deeply atmospheric streets.",
+          },
+          interlaken: {
+            city: "Interlaken",
+            description:
+              "A scenic alpine base between lakes, built for outdoor days and mountain views.",
+          },
+          nice: {
+            city: "Nice",
+            description:
+              "A relaxed Riviera city combining the Mediterranean coast with art and old-town charm.",
+          },
+          edinburgh: {
+            city: "Edinburgh",
+            description:
+              "A dramatic historic capital of castle views, festivals and rugged nearby landscapes.",
+          },
+        },
+        countries: {
+          AT: "Austria",
+          CZ: "Czechia",
+          HU: "Hungary",
+          SI: "Slovenia",
+          RO: "Romania",
+          PL: "Poland",
+          DE: "Germany",
+          HR: "Croatia",
+          ES: "Spain",
+          PT: "Portugal",
+          NL: "Netherlands",
+          IT: "Italy",
+          CH: "Switzerland",
+          FR: "France",
+          GB: "United Kingdom",
+        },
+        tags: {
+          alpine: "Alpine",
+          architecture: "Architecture",
+          arts: "Arts",
+          beach: "Beach",
+          coastal: "Coastal",
+          events: "Events",
+          familyFriendly: "Family-friendly",
+          food: "Food",
+          historic: "Historic",
+          lakes: "Lakes",
+          nature: "Nature",
+          nightlife: "Nightlife",
+          outdoors: "Outdoors",
+          railFriendly: "Rail-friendly",
+          romantic: "Romantic",
+        },
       },
     },
   },
@@ -1126,31 +1351,216 @@ export const translations = {
           clearAll: "Deselectează toate opțiunile de transport",
         },
       },
-      summary: {
-        heading: "Preferințele de bază pentru călătoria ta",
-        categories: {
-          1: "Tipul călătoriei",
-          2: "Călători",
-          3: "Buget",
-          4: "Cazare",
-          5: "Mese",
-          6: "Perioadă",
-          7: "Durată",
-          8: "Plecare",
-          9: "Transport",
+      results: {
+        heading: "Destinații potrivite pentru călătoria ta",
+        subtitle:
+          "Pe baza stilului tău de călătorie, a bugetului, perioadei și punctului de plecare.",
+        resultCount: {
+          one: "{count} destinație se potrivește preferințelor tale",
+          other: "{count} destinații se potrivesc preferințelor tale",
         },
-        enteredAs: "Introdus ca {mode}",
-        totalAmount: "{amount} {currency} în total",
-        perTravellerAmount: "{amount} {currency} per călător",
-        petFriendlyRequired:
-          "Este necesară o cazare care acceptă animale de companie",
-        dateRange: "{departure} – {return}",
-        flexibleDates: "Date flexibile",
-        calculatedFromExactDates: "calculată pe baza datelor exacte",
-        currentLocation: "Locația actuală ({coordinates})",
-        nextStepNote:
-          "În continuare, TripMatch va folosi aceste preferințe pentru a evalua destinații și opțiuni de transport realiste.",
-        continueToMatching: "Continuă către potrivirea destinațiilor",
+        alternativeCount: {
+          one: "{count} alternativă apropiată",
+          other: "{count} alternative apropiate",
+        },
+        noExactMatches:
+          "Nu am găsit potriviri exacte, așa că îți arătăm cele mai apropiate alternative.",
+        recommendedDestinations: "Destinații recomandate",
+        filters: {
+          title: "Călătoria ta",
+          regionLabel: "Filtrele călătoriei",
+          editPreferences: "Editează preferințele",
+          showAll: "Toate filtrele ({count})",
+          hide: "Ascunde filtrele",
+          from: "Plecare din {location}",
+          totalBudget: "{amount} {currency} în total",
+          perTravellerBudget: "{amount} {currency} per călător",
+          more: "+{count}",
+          categories: {
+            1: "Tipul călătoriei",
+            2: "Călători",
+            3: "Buget",
+            4: "Cazare",
+            5: "Mese",
+            6: "Perioadă",
+            7: "Durată",
+            8: "Plecare",
+            9: "Transport",
+          },
+        },
+        edit: {
+          backToResults: "Înapoi la rezultate",
+          updateResults: "Actualizează rezultatele",
+        },
+        sort: {
+          label: "Sortează destinațiile",
+          bestMatch: "Cea mai bună potrivire",
+          closest: "Cele mai apropiate",
+        },
+        card: {
+          match: "{score}% potrivire",
+          distance: "≈ {distance} km distanță",
+          distanceAccessible:
+            "La aproximativ {distance} kilometri în linie dreaptă",
+          why: "De ce ți se potrivește",
+          viewTrip: "Vezi călătoria",
+          hideTrip: "Ascunde detaliile",
+          detailPrototype:
+            "Un plan detaliat pentru această destinație va fi adăugat într-o versiune viitoare.",
+        },
+        prototypeNote:
+          "Recomandări prototip — prețurile și disponibilitatea în timp real nu sunt conectate încă.",
+        reasons: {
+          tripType:
+            "Se potrivește foarte bine călătoriilor de tip {tripType}",
+          tripSubtype: "Se potrivește preferinței tale: {tripSubtype}",
+          budget: "Se potrivește bugetului ales",
+          timing: "Este o alegere bună pentru perioada selectată",
+          duration: "Se potrivește unei șederi de {duration}",
+          transport:
+            "Compatibilă cu opțiunea ta de transport: {transport}",
+          accommodation: "Se potrivește preferințelor tale de cazare",
+          travellerGroup: "Potrivită pentru grupul tău: {group}",
+          familyFriendly: "Potrivită pentru familii",
+          petFriendly: "Potrivită pentru călătorii cu animale de companie",
+          meals: "Se potrivește stilului de masă preferat",
+        },
+        destinations: {
+          innsbruck: {
+            city: "Innsbruck",
+            description:
+              "Un oraș alpin încadrat de vârfuri spectaculoase, cu acces ușor la trasee montane.",
+          },
+          salzburg: {
+            city: "Salzburg",
+            description:
+              "Un oraș istoric elegant, unde cultura barocă întâlnește peisajul alpin din apropiere.",
+          },
+          vienna: {
+            city: "Viena",
+            description:
+              "O capitală culturală rafinată, cunoscută pentru arhitectură monumentală, muzee și cafenele.",
+          },
+          prague: {
+            city: "Praga",
+            description:
+              "Un oraș istoric ușor de explorat pe jos, cu priveliști spre râu, repere gotice și seri animate.",
+          },
+          budapest: {
+            city: "Budapesta",
+            description:
+              "Un oraș vibrant pe Dunăre, cu băi termale, arhitectură remarcabilă și viață de noapte.",
+          },
+          ljubljana: {
+            city: "Ljubljana",
+            description:
+              "O capitală verde și relaxată, cu atmosferă pe malul râului și natură aproape.",
+          },
+          bled: {
+            city: "Bled",
+            description:
+              "O destinație liniștită pe malul lacului, înconjurată de păduri și Alpii Iulieni.",
+          },
+          brasov: {
+            city: "Brașov",
+            description:
+              "Un oraș transilvănean de poveste, cu trasee montane dincolo de centrul vechi.",
+          },
+          zakopane: {
+            city: "Zakopane",
+            description:
+              "O poartă animată spre Munții Tatra, potrivită pentru drumeții și escapade alpine.",
+          },
+          munich: {
+            city: "München",
+            description:
+              "Un oraș bavarez rafinat, cu muzee, evenimente și acces rapid spre Alpi.",
+          },
+          dubrovnik: {
+            city: "Dubrovnik",
+            description:
+              "Un oraș fortificat la Adriatica, cu străduțe istorice și priveliști spectaculoase spre coastă.",
+          },
+          split: {
+            city: "Split",
+            description:
+              "O bază dalmată animată, unde străzile antice se îmbină cu plajele și accesul spre insule.",
+          },
+          barcelona: {
+            city: "Barcelona",
+            description:
+              "Un oraș mediteraneean în care arhitectura, plajele, gastronomia și viața de noapte se întâlnesc.",
+          },
+          lisbon: {
+            city: "Lisabona",
+            description:
+              "Un oraș luminos pe coline, cu străzi placate cu azulejos, priveliști atlantice și gastronomie bogată.",
+          },
+          amsterdam: {
+            city: "Amsterdam",
+            description:
+              "Un oraș cultural străbătut de canale, cu muzee, cartiere vii și legături feroviare bune.",
+          },
+          krakow: {
+            city: "Cracovia",
+            description:
+              "Un oraș istoric plin de caracter, cu o cultură bogată, gastronomie și excursii de o zi accesibile.",
+          },
+          venice: {
+            city: "Veneția",
+            description:
+              "Un oraș unic în lagună, cu canale, palate și străzi pline de atmosferă.",
+          },
+          interlaken: {
+            city: "Interlaken",
+            description:
+              "O bază alpină spectaculoasă între lacuri, ideală pentru zile în aer liber și panorame montane.",
+          },
+          nice: {
+            city: "Nisa",
+            description:
+              "Un oraș relaxat pe Riviera, unde coasta mediteraneeană întâlnește arta și farmecul centrului vechi.",
+          },
+          edinburgh: {
+            city: "Edinburgh",
+            description:
+              "O capitală istorică spectaculoasă, cu priveliști spre castel, festivaluri și peisaje sălbatice în apropiere.",
+          },
+        },
+        countries: {
+          AT: "Austria",
+          CZ: "Cehia",
+          HU: "Ungaria",
+          SI: "Slovenia",
+          RO: "România",
+          PL: "Polonia",
+          DE: "Germania",
+          HR: "Croația",
+          ES: "Spania",
+          PT: "Portugalia",
+          NL: "Țările de Jos",
+          IT: "Italia",
+          CH: "Elveția",
+          FR: "Franța",
+          GB: "Regatul Unit",
+        },
+        tags: {
+          alpine: "Alpin",
+          architecture: "Arhitectură",
+          arts: "Artă",
+          beach: "Plajă",
+          coastal: "Litoral",
+          events: "Evenimente",
+          familyFriendly: "Potrivit pentru familii",
+          food: "Gastronomie",
+          historic: "Istorie",
+          lakes: "Lacuri",
+          nature: "Natură",
+          nightlife: "Viață de noapte",
+          outdoors: "Activități în aer liber",
+          railFriendly: "Accesibil cu trenul",
+          romantic: "Romantic",
+        },
       },
     },
   },
@@ -1551,30 +1961,215 @@ export const translations = {
           clearAll: "Deseleccionar todas las opciones de transporte",
         },
       },
-      summary: {
-        heading: "Tus preferencias básicas de viaje",
-        categories: {
-          1: "Tipo de viaje",
-          2: "Viajeros",
-          3: "Presupuesto",
-          4: "Alojamiento",
-          5: "Comidas",
-          6: "Fechas",
-          7: "Duración",
-          8: "Origen",
-          9: "Transporte",
+      results: {
+        heading: "Destinos que encajan con tu viaje",
+        subtitle:
+          "Según tu estilo de viaje, presupuesto, fechas y punto de partida.",
+        resultCount: {
+          one: "{count} destino coincide con tus preferencias",
+          other: "{count} destinos coinciden con tus preferencias",
         },
-        enteredAs: "Introducido como {mode}",
-        totalAmount: "{amount} {currency} en total",
-        perTravellerAmount: "{amount} {currency} por viajero",
-        petFriendlyRequired: "Se necesita un alojamiento que admita mascotas",
-        dateRange: "{departure} – {return}",
-        flexibleDates: "Fechas flexibles",
-        calculatedFromExactDates: "calculada a partir de las fechas exactas",
-        currentLocation: "Ubicación actual ({coordinates})",
-        nextStepNote:
-          "A continuación, TripMatch usará estas preferencias para evaluar destinos y opciones de transporte realistas.",
-        continueToMatching: "Continuar con la búsqueda de destinos",
+        alternativeCount: {
+          one: "{count} alternativa cercana",
+          other: "{count} alternativas cercanas",
+        },
+        noExactMatches:
+          "No hay coincidencias exactas, así que te mostramos las alternativas más cercanas.",
+        recommendedDestinations: "Destinos recomendados",
+        filters: {
+          title: "Tu viaje",
+          regionLabel: "Filtros de tu viaje",
+          editPreferences: "Editar preferencias",
+          showAll: "Todos los filtros ({count})",
+          hide: "Ocultar filtros",
+          from: "Desde {location}",
+          totalBudget: "{amount} {currency} en total",
+          perTravellerBudget: "{amount} {currency} por viajero",
+          more: "+{count}",
+          categories: {
+            1: "Tipo de viaje",
+            2: "Viajeros",
+            3: "Presupuesto",
+            4: "Alojamiento",
+            5: "Comidas",
+            6: "Fechas",
+            7: "Duración",
+            8: "Origen",
+            9: "Transporte",
+          },
+        },
+        edit: {
+          backToResults: "Volver a los resultados",
+          updateResults: "Actualizar resultados",
+        },
+        sort: {
+          label: "Ordenar destinos",
+          bestMatch: "Mejor coincidencia",
+          closest: "Más cercanos",
+        },
+        card: {
+          match: "{score}% de coincidencia",
+          distance: "≈ {distance} km de distancia",
+          distanceAccessible:
+            "Aproximadamente a {distance} kilómetros en línea recta",
+          why: "Por qué encaja contigo",
+          viewTrip: "Ver viaje",
+          hideTrip: "Ocultar detalles",
+          detailPrototype:
+            "En una próxima versión añadiremos un plan detallado para este destino.",
+        },
+        prototypeNote:
+          "Recomendaciones de prototipo — los precios y la disponibilidad en tiempo real aún no están conectados.",
+        reasons: {
+          tripType: "Gran opción para viajes de tipo {tripType}",
+          tripSubtype: "Encaja con tu preferencia: {tripSubtype}",
+          budget: "Se ajusta al presupuesto elegido",
+          timing: "Buena opción para las fechas seleccionadas",
+          duration: "Buena opción para una estancia de {duration}",
+          transport:
+            "Compatible con tu opción de transporte: {transport}",
+          accommodation: "Encaja con tus preferencias de alojamiento",
+          travellerGroup: "Adecuado para tu grupo: {group}",
+          familyFriendly: "Adecuado para familias",
+          petFriendly: "Adecuado para viajar con mascotas",
+          meals: "Encaja con tu estilo de comidas preferido",
+        },
+        destinations: {
+          innsbruck: {
+            city: "Innsbruck",
+            description:
+              "Una ciudad alpina rodeada de cumbres espectaculares y con fácil acceso a senderos de montaña.",
+          },
+          salzburg: {
+            city: "Salzburgo",
+            description:
+              "Una elegante ciudad histórica que combina la cultura barroca con paisajes alpinos cercanos.",
+          },
+          vienna: {
+            city: "Viena",
+            description:
+              "Una refinada capital cultural conocida por su arquitectura monumental, sus museos y sus cafés.",
+          },
+          prague: {
+            city: "Praga",
+            description:
+              "Una ciudad histórica fácil de recorrer a pie, con vistas al río, monumentos góticos y noches animadas.",
+          },
+          budapest: {
+            city: "Budapest",
+            description:
+              "Una vibrante ciudad a orillas del Danubio que combina baños termales, arquitectura y vida nocturna.",
+          },
+          ljubljana: {
+            city: "Liubliana",
+            description:
+              "Una capital verde y tranquila, con ambiente junto al río y la naturaleza muy cerca.",
+          },
+          bled: {
+            city: "Bled",
+            description:
+              "Un sereno destino junto al lago, rodeado de bosques y los Alpes Julianos.",
+          },
+          brasov: {
+            city: "Brașov",
+            description:
+              "Una ciudad transilvana de cuento, con senderos de montaña más allá de su casco antiguo.",
+          },
+          zakopane: {
+            city: "Zakopane",
+            description:
+              "Una animada puerta de entrada a los montes Tatra, ideal para senderismo y escapadas alpinas.",
+          },
+          munich: {
+            city: "Múnich",
+            description:
+              "Una refinada ciudad bávara con museos, eventos y rápidas escapadas a los Alpes.",
+          },
+          dubrovnik: {
+            city: "Dubrovnik",
+            description:
+              "Una ciudad fortificada del Adriático con calles históricas y sorprendentes vistas costeras.",
+          },
+          split: {
+            city: "Split",
+            description:
+              "Una animada base dálmata que combina calles antiguas, playas y acceso a las islas.",
+          },
+          barcelona: {
+            city: "Barcelona",
+            description:
+              "Una ciudad mediterránea donde se unen arquitectura, playas, gastronomía y vida nocturna.",
+          },
+          lisbon: {
+            city: "Lisboa",
+            description:
+              "Una luminosa ciudad de colinas, con calles de azulejos, vistas al Atlántico y una rica gastronomía.",
+          },
+          amsterdam: {
+            city: "Ámsterdam",
+            description:
+              "Una ciudad cultural entre canales, con museos, barrios llenos de vida y buenas conexiones ferroviarias.",
+          },
+          krakow: {
+            city: "Cracovia",
+            description:
+              "Una ciudad histórica con carácter, rica cultura, gastronomía y excursiones accesibles.",
+          },
+          venice: {
+            city: "Venecia",
+            description:
+              "Una singular ciudad en la laguna, llena de canales, palacios y calles con atmósfera.",
+          },
+          interlaken: {
+            city: "Interlaken",
+            description:
+              "Una espectacular base alpina entre lagos, ideal para días al aire libre y vistas de montaña.",
+          },
+          nice: {
+            city: "Niza",
+            description:
+              "Una relajada ciudad de la Riviera que combina costa mediterránea, arte y encanto histórico.",
+          },
+          edinburgh: {
+            city: "Edimburgo",
+            description:
+              "Una imponente capital histórica con vistas al castillo, festivales y paisajes agrestes cercanos.",
+          },
+        },
+        countries: {
+          AT: "Austria",
+          CZ: "Chequia",
+          HU: "Hungría",
+          SI: "Eslovenia",
+          RO: "Rumanía",
+          PL: "Polonia",
+          DE: "Alemania",
+          HR: "Croacia",
+          ES: "España",
+          PT: "Portugal",
+          NL: "Países Bajos",
+          IT: "Italia",
+          CH: "Suiza",
+          FR: "Francia",
+          GB: "Reino Unido",
+        },
+        tags: {
+          alpine: "Alpino",
+          architecture: "Arquitectura",
+          arts: "Arte",
+          beach: "Playa",
+          coastal: "Costa",
+          events: "Eventos",
+          familyFriendly: "Para familias",
+          food: "Gastronomía",
+          historic: "Histórico",
+          lakes: "Lagos",
+          nature: "Naturaleza",
+          nightlife: "Vida nocturna",
+          outdoors: "Aire libre",
+          railFriendly: "Fácil acceso en tren",
+          romantic: "Romántico",
+        },
       },
     },
   },
@@ -1977,31 +2572,216 @@ export const translations = {
           clearAll: "Auswahl aller Reiseoptionen aufheben",
         },
       },
-      summary: {
-        heading: "Deine grundlegenden Reisepräferenzen",
-        categories: {
-          1: "Reiseart",
-          2: "Reisende",
-          3: "Budget",
-          4: "Unterkunft",
-          5: "Verpflegung",
-          6: "Reisezeit",
-          7: "Dauer",
-          8: "Abreiseort",
-          9: "Transport",
+      results: {
+        heading: "Reiseziele, die zu deiner Reise passen",
+        subtitle:
+          "Basierend auf deinem Reisestil, Budget, Reisezeitraum und Startpunkt.",
+        resultCount: {
+          one: "{count} Reiseziel passt zu deinen Präferenzen",
+          other: "{count} Reiseziele passen zu deinen Präferenzen",
         },
-        enteredAs: "Eingabe als {mode}",
-        totalAmount: "{amount} {currency} insgesamt",
-        perTravellerAmount: "{amount} {currency} pro Person",
-        petFriendlyRequired:
-          "Eine haustierfreundliche Unterkunft ist erforderlich",
-        dateRange: "{departure} – {return}",
-        flexibleDates: "Flexible Reisedaten",
-        calculatedFromExactDates: "aus den genauen Reisedaten berechnet",
-        currentLocation: "Aktueller Standort ({coordinates})",
-        nextStepNote:
-          "Als Nächstes nutzt TripMatch diese Präferenzen, um realistische Reiseziele und Transportmöglichkeiten zu bewerten.",
-        continueToMatching: "Weiter zur Reisezielauswahl",
+        alternativeCount: {
+          one: "{count} nächstliegende Alternative",
+          other: "{count} nächstliegende Alternativen",
+        },
+        noExactMatches:
+          "Es gibt keine exakten Treffer. Deshalb zeigen wir dir die nächstliegenden Alternativen.",
+        recommendedDestinations: "Empfohlene Reiseziele",
+        filters: {
+          title: "Deine Reise",
+          regionLabel: "Reisefilter",
+          editPreferences: "Präferenzen bearbeiten",
+          showAll: "Alle Filter ({count})",
+          hide: "Filter ausblenden",
+          from: "Ab {location}",
+          totalBudget: "{amount} {currency} insgesamt",
+          perTravellerBudget: "{amount} {currency} pro Person",
+          more: "+{count}",
+          categories: {
+            1: "Reiseart",
+            2: "Reisende",
+            3: "Budget",
+            4: "Unterkunft",
+            5: "Verpflegung",
+            6: "Reisezeit",
+            7: "Dauer",
+            8: "Abreiseort",
+            9: "Transport",
+          },
+        },
+        edit: {
+          backToResults: "Zurück zu den Ergebnissen",
+          updateResults: "Ergebnisse aktualisieren",
+        },
+        sort: {
+          label: "Reiseziele sortieren",
+          bestMatch: "Beste Übereinstimmung",
+          closest: "Am nächsten",
+        },
+        card: {
+          match: "{score} % Übereinstimmung",
+          distance: "≈ {distance} km entfernt",
+          distanceAccessible:
+            "Etwa {distance} Kilometer Luftlinie entfernt",
+          why: "Warum es passt",
+          viewTrip: "Reise ansehen",
+          hideTrip: "Details ausblenden",
+          detailPrototype:
+            "Ein detaillierter Reiseplan für dieses Ziel folgt in einer späteren Version.",
+        },
+        prototypeNote:
+          "Prototyp-Empfehlungen — Live-Preise und Verfügbarkeiten sind noch nicht angebunden.",
+        reasons: {
+          tripType: "Passt besonders gut zur Reiseart {tripType}",
+          tripSubtype: "Passt zu deiner Präferenz „{tripSubtype}“",
+          budget: "Passt zu deinem gewählten Budget",
+          timing: "Gute saisonale Wahl für deinen Reisezeitraum",
+          duration:
+            "Passt gut zu deiner gewünschten Reisedauer: {duration}",
+          transport:
+            "Passt zu deiner gewählten Transportoption: {transport}",
+          accommodation: "Passt zu deinen Unterkunftspräferenzen",
+          travellerGroup: "Gut geeignet für deine Gruppe: {group}",
+          familyFriendly: "Gut für Familien geeignet",
+          petFriendly: "Gut für Reisen mit Haustieren geeignet",
+          meals: "Passt zu deinen Verpflegungswünschen",
+        },
+        destinations: {
+          innsbruck: {
+            city: "Innsbruck",
+            description:
+              "Eine Alpenstadt vor dramatischen Gipfeln mit direktem Zugang zu Bergwegen.",
+          },
+          salzburg: {
+            city: "Salzburg",
+            description:
+              "Eine elegante historische Stadt, die barocke Kultur mit naher Alpenkulisse verbindet.",
+          },
+          vienna: {
+            city: "Wien",
+            description:
+              "Eine elegante Kulturmetropole mit prachtvoller Architektur, Museen und traditionsreichen Kaffeehäusern.",
+          },
+          prague: {
+            city: "Prag",
+            description:
+              "Eine gut zu Fuß erkundbare Altstadt mit Flussblick, gotischen Wahrzeichen und lebendigen Abenden.",
+          },
+          budapest: {
+            city: "Budapest",
+            description:
+              "Eine lebendige Donaustadt, die Thermalbäder, Architektur und Nachtleben verbindet.",
+          },
+          ljubljana: {
+            city: "Ljubljana",
+            description:
+              "Eine entspannte grüne Hauptstadt mit Kultur am Fluss und viel Natur in unmittelbarer Nähe.",
+          },
+          bled: {
+            city: "Bled",
+            description:
+              "Ein ruhiger Ausgangspunkt am See, umgeben von Wäldern und den Julischen Alpen.",
+          },
+          brasov: {
+            city: "Brașov",
+            description:
+              "Eine märchenhafte Stadt in Siebenbürgen mit Bergwegen gleich hinter der Altstadt.",
+          },
+          zakopane: {
+            city: "Zakopane",
+            description:
+              "Ein lebendiges Tor zur Tatra, ideal für Wanderungen und Auszeiten in den Bergen.",
+          },
+          munich: {
+            city: "München",
+            description:
+              "Eine stilvolle bayerische Stadt mit Museen, Veranstaltungen und schnellen Ausflügen in die Alpen.",
+          },
+          dubrovnik: {
+            city: "Dubrovnik",
+            description:
+              "Eine befestigte Adriastadt mit historischen Gassen und eindrucksvollen Küstenblicken.",
+          },
+          split: {
+            city: "Split",
+            description:
+              "Ein lebendiger dalmatinischer Ausgangspunkt mit antiken Gassen, Stränden und Inselverbindungen.",
+          },
+          barcelona: {
+            city: "Barcelona",
+            description:
+              "Eine Mittelmeerstadt, in der Architektur, Strände, Kulinarik und Nachtleben zusammentreffen.",
+          },
+          lisbon: {
+            city: "Lissabon",
+            description:
+              "Eine sonnige Stadt auf Hügeln mit gekachelten Gassen, Atlantikblick und vielfältiger Küche.",
+          },
+          amsterdam: {
+            city: "Amsterdam",
+            description:
+              "Eine Kulturstadt an Kanälen mit Museen, lebendigen Vierteln und guten Bahnverbindungen.",
+          },
+          krakow: {
+            city: "Krakau",
+            description:
+              "Eine charaktervolle historische Stadt mit reicher Kultur, Kulinarik und gut erreichbaren Ausflugszielen.",
+          },
+          venice: {
+            city: "Venedig",
+            description:
+              "Eine einzigartige Lagunenstadt voller Kanäle, Paläste und stimmungsvoller Gassen.",
+          },
+          interlaken: {
+            city: "Interlaken",
+            description:
+              "Ein eindrucksvoller Alpenort zwischen Seen für aktive Tage und weite Bergblicke.",
+          },
+          nice: {
+            city: "Nizza",
+            description:
+              "Eine entspannte Rivierastadt, die Mittelmeerküste, Kunst und Altstadtflair verbindet.",
+          },
+          edinburgh: {
+            city: "Edinburgh",
+            description:
+              "Eine dramatische historische Hauptstadt mit Burgblick, Festivals und rauen Landschaften in der Nähe.",
+          },
+        },
+        countries: {
+          AT: "Österreich",
+          CZ: "Tschechien",
+          HU: "Ungarn",
+          SI: "Slowenien",
+          RO: "Rumänien",
+          PL: "Polen",
+          DE: "Deutschland",
+          HR: "Kroatien",
+          ES: "Spanien",
+          PT: "Portugal",
+          NL: "Niederlande",
+          IT: "Italien",
+          CH: "Schweiz",
+          FR: "Frankreich",
+          GB: "Vereinigtes Königreich",
+        },
+        tags: {
+          alpine: "Alpen",
+          architecture: "Architektur",
+          arts: "Kunst",
+          beach: "Strand",
+          coastal: "Küste",
+          events: "Events",
+          familyFriendly: "Familienfreundlich",
+          food: "Kulinarik",
+          historic: "Historisch",
+          lakes: "Seen",
+          nature: "Natur",
+          nightlife: "Nachtleben",
+          outdoors: "Outdoor",
+          railFriendly: "Gut per Bahn erreichbar",
+          romantic: "Romantisch",
+        },
       },
     },
   },
@@ -2415,31 +3195,216 @@ export const translations = {
           clearAll: "Désélectionner toutes les options de transport",
         },
       },
-      summary: {
-        heading: "Vos préférences de voyage essentielles",
-        categories: {
-          1: "Type de voyage",
-          2: "Voyageurs",
-          3: "Budget",
-          4: "Hébergement",
-          5: "Repas",
-          6: "Dates",
-          7: "Durée",
-          8: "Départ",
-          9: "Transport",
+      results: {
+        heading: "Des destinations adaptées à votre voyage",
+        subtitle:
+          "Selon votre style de voyage, votre budget, vos dates et votre point de départ.",
+        resultCount: {
+          one: "{count} destination correspond à vos préférences",
+          other: "{count} destinations correspondent à vos préférences",
         },
-        enteredAs: "Saisi comme {mode}",
-        totalAmount: "{amount} {currency} au total",
-        perTravellerAmount: "{amount} {currency} par voyageur",
-        petFriendlyRequired:
-          "Un hébergement acceptant les animaux est nécessaire",
-        dateRange: "{departure} – {return}",
-        flexibleDates: "Dates flexibles",
-        calculatedFromExactDates: "calculée à partir des dates exactes",
-        currentLocation: "Position actuelle ({coordinates})",
-        nextStepNote:
-          "Ensuite, TripMatch utilisera ces préférences pour évaluer des destinations et des options de transport réalistes.",
-        continueToMatching: "Continuer vers la sélection des destinations",
+        alternativeCount: {
+          one: "{count} alternative proche",
+          other: "{count} alternatives proches",
+        },
+        noExactMatches:
+          "Aucune destination ne correspond exactement. Nous vous proposons donc les alternatives les plus proches.",
+        recommendedDestinations: "Destinations recommandées",
+        filters: {
+          title: "Votre voyage",
+          regionLabel: "Filtres du voyage",
+          editPreferences: "Modifier les préférences",
+          showAll: "Tous les filtres ({count})",
+          hide: "Masquer les filtres",
+          from: "Au départ de {location}",
+          totalBudget: "{amount} {currency} au total",
+          perTravellerBudget: "{amount} {currency} par voyageur",
+          more: "+{count}",
+          categories: {
+            1: "Type de voyage",
+            2: "Voyageurs",
+            3: "Budget",
+            4: "Hébergement",
+            5: "Repas",
+            6: "Dates",
+            7: "Durée",
+            8: "Départ",
+            9: "Transport",
+          },
+        },
+        edit: {
+          backToResults: "Retour aux résultats",
+          updateResults: "Mettre à jour les résultats",
+        },
+        sort: {
+          label: "Trier les destinations",
+          bestMatch: "Meilleure correspondance",
+          closest: "Les plus proches",
+        },
+        card: {
+          match: "{score} % de correspondance",
+          distance: "À ≈ {distance} km",
+          distanceAccessible:
+            "À environ {distance} kilomètres à vol d’oiseau",
+          why: "Pourquoi cette destination vous correspond",
+          viewTrip: "Voir le voyage",
+          hideTrip: "Masquer les détails",
+          detailPrototype:
+            "Un itinéraire détaillé pour cette destination sera ajouté dans une prochaine version.",
+        },
+        prototypeNote:
+          "Recommandations prototypes — les prix et disponibilités en temps réel ne sont pas encore connectés.",
+        reasons: {
+          tripType:
+            "Correspond particulièrement aux voyages de type {tripType}",
+          tripSubtype: "Correspond à votre préférence : {tripSubtype}",
+          budget: "Correspond au budget choisi",
+          timing: "Bon choix saisonnier pour vos dates",
+          duration: "Convient à un séjour de {duration}",
+          transport:
+            "Compatible avec votre mode de transport : {transport}",
+          accommodation: "Correspond à vos préférences d’hébergement",
+          travellerGroup: "Convient à votre groupe : {group}",
+          familyFriendly: "Adaptée aux familles",
+          petFriendly: "Adaptée aux voyages avec des animaux",
+          meals: "Correspond à vos préférences pour les repas",
+        },
+        destinations: {
+          innsbruck: {
+            city: "Innsbruck",
+            description:
+              "Une ville alpine encadrée de sommets spectaculaires, avec un accès facile aux sentiers de montagne.",
+          },
+          salzburg: {
+            city: "Salzbourg",
+            description:
+              "Une élégante ville historique où la culture baroque rencontre les paysages alpins voisins.",
+          },
+          vienna: {
+            city: "Vienne",
+            description:
+              "Une capitale culturelle raffinée, connue pour son architecture majestueuse, ses musées et ses cafés.",
+          },
+          prague: {
+            city: "Prague",
+            description:
+              "Une ville historique agréable à parcourir à pied, entre vues sur le fleuve, monuments gothiques et soirées animées.",
+          },
+          budapest: {
+            city: "Budapest",
+            description:
+              "Une ville vibrante sur le Danube, mêlant bains thermaux, architecture et vie nocturne.",
+          },
+          ljubljana: {
+            city: "Ljubljana",
+            description:
+              "Une capitale verte et détendue, avec une belle vie au bord de l’eau et la nature toute proche.",
+          },
+          bled: {
+            city: "Bled",
+            description:
+              "Un point de départ paisible au bord du lac, entouré de forêts et des Alpes juliennes.",
+          },
+          brasov: {
+            city: "Brașov",
+            description:
+              "Une ville transylvaine de conte de fées, avec des sentiers de montagne au-delà de sa vieille ville.",
+          },
+          zakopane: {
+            city: "Zakopane",
+            description:
+              "Une porte d’entrée animée vers les Tatras, idéale pour la randonnée et les escapades alpines.",
+          },
+          munich: {
+            city: "Munich",
+            description:
+              "Une élégante ville bavaroise avec des musées, des événements et un accès rapide aux Alpes.",
+          },
+          dubrovnik: {
+            city: "Dubrovnik",
+            description:
+              "Une cité fortifiée de l’Adriatique aux ruelles historiques et aux superbes vues côtières.",
+          },
+          split: {
+            city: "Split",
+            description:
+              "Un point de départ dalmate animé, entre rues antiques, plages et accès aux îles.",
+          },
+          barcelona: {
+            city: "Barcelone",
+            description:
+              "Une ville méditerranéenne où se rencontrent architecture, plages, gastronomie et vie nocturne.",
+          },
+          lisbon: {
+            city: "Lisbonne",
+            description:
+              "Une ville lumineuse sur les collines, aux rues carrelées, vues atlantiques et riche scène gastronomique.",
+          },
+          amsterdam: {
+            city: "Amsterdam",
+            description:
+              "Une ville culturelle bordée de canaux, avec des musées, des quartiers vivants et de bonnes liaisons ferroviaires.",
+          },
+          krakow: {
+            city: "Cracovie",
+            description:
+              "Une ville historique de caractère, riche en culture, en gastronomie et en excursions accessibles.",
+          },
+          venice: {
+            city: "Venise",
+            description:
+              "Une ville lagunaire unique, faite de canaux, de palais et de ruelles pleines d’atmosphère.",
+          },
+          interlaken: {
+            city: "Interlaken",
+            description:
+              "Un point de départ alpin spectaculaire entre deux lacs, idéal pour le plein air et les panoramas de montagne.",
+          },
+          nice: {
+            city: "Nice",
+            description:
+              "Une ville détendue de la Riviera, entre côte méditerranéenne, art et charme de la vieille ville.",
+          },
+          edinburgh: {
+            city: "Édimbourg",
+            description:
+              "Une capitale historique spectaculaire, entre vues sur le château, festivals et paysages sauvages alentour.",
+          },
+        },
+        countries: {
+          AT: "Autriche",
+          CZ: "Tchéquie",
+          HU: "Hongrie",
+          SI: "Slovénie",
+          RO: "Roumanie",
+          PL: "Pologne",
+          DE: "Allemagne",
+          HR: "Croatie",
+          ES: "Espagne",
+          PT: "Portugal",
+          NL: "Pays-Bas",
+          IT: "Italie",
+          CH: "Suisse",
+          FR: "France",
+          GB: "Royaume-Uni",
+        },
+        tags: {
+          alpine: "Alpes",
+          architecture: "Architecture",
+          arts: "Arts",
+          beach: "Plage",
+          coastal: "Littoral",
+          events: "Événements",
+          familyFriendly: "Adapté aux familles",
+          food: "Gastronomie",
+          historic: "Histoire",
+          lakes: "Lacs",
+          nature: "Nature",
+          nightlife: "Vie nocturne",
+          outdoors: "Plein air",
+          railFriendly: "Facilement accessible en train",
+          romantic: "Romantique",
+        },
       },
     },
   },

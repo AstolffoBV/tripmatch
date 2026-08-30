@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import DestinationResults from "@/components/discovery/results/DestinationResults";
+import DestinationResultsBackground from "@/components/discovery/results/DestinationResultsBackground";
 import DiscoverThemeBackground from "@/components/discovery/DiscoverThemeBackground";
 import ProgressBar from "@/components/discovery/ProgressBar";
 import QuestionFour from "@/components/discovery/QuestionFour";
@@ -358,28 +360,6 @@ function getLocalizedLocationError(
   return errors.generic;
 }
 
-function SummaryItem({
-  questionLabel,
-  title,
-  children,
-}: {
-  questionLabel: string;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-        {questionLabel}
-      </p>
-      <h2 className="mt-1 font-semibold">{title}</h2>
-      <div className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
-        {children}
-      </div>
-    </div>
-  );
-}
-
 export default function DiscoverPage() {
   const { language, copy, setLanguage } = useLanguage();
   const [currentStep, setCurrentStep] = useState<DiscoveryStep>(1);
@@ -391,6 +371,8 @@ export default function DiscoverPage() {
   const previousStepRef = useRef<DiscoveryStep>(currentStep);
   const originRequestIdRef = useRef(0);
   const originGeocodingAbortRef = useRef<AbortController | null>(null);
+  const [returnToResultsAfterEdit, setReturnToResultsAfterEdit] =
+    useState(false);
 
   useEffect(() => {
     if (previousStepRef.current !== currentStep) {
@@ -930,11 +912,35 @@ export default function DiscoverPage() {
     }
   }
 
+  function editQuestionFromResults(question: QuestionNumber) {
+    const destination =
+      question === 7 && skipDurationQuestion ? 6 : question;
+
+    setReturnToResultsAfterEdit(true);
+    goToStep(destination);
+  }
+
   function handleContinue() {
     if (
       currentStep === "summary" ||
       !isStepComplete(currentStep, preferences)
     ) {
+      return;
+    }
+
+    if (returnToResultsAfterEdit) {
+      const needsDurationAfterTimingEdit =
+        currentStep === 6 &&
+        !skipDurationQuestion &&
+        preferences.duration === null;
+
+      if (needsDurationAfterTimingEdit) {
+        goToStep(7);
+        return;
+      }
+
+      setReturnToResultsAfterEdit(false);
+      goToStep("summary");
       return;
     }
 
@@ -944,6 +950,12 @@ export default function DiscoverPage() {
   }
 
   function handleBack() {
+    if (returnToResultsAfterEdit && currentStep !== "summary") {
+      setReturnToResultsAfterEdit(false);
+      goToStep("summary");
+      return;
+    }
+
     if (currentStep === "summary") {
       goToStep(9);
       return;
@@ -991,14 +1003,6 @@ export default function DiscoverPage() {
             currency: preferences.budget.currency,
           })
         : null;
-  const selectedGroupLabel =
-    groupType === null
-      ? commonCopy.notSelected
-      : discoverCopy.q2.groups[groupType];
-  const selectedDuration =
-    preferences.duration === null
-      ? null
-      : discoverCopy.q7.options[preferences.duration];
   const currentQuestion = currentStep === "summary" ? 9 : currentStep;
   const canContinue =
     currentStep !== "summary" && isStepComplete(currentStep, preferences);
@@ -1011,6 +1015,7 @@ export default function DiscoverPage() {
   const isQuestionSeven = currentStep === 7;
   const isQuestionEight = currentStep === 8;
   const isQuestionNine = currentStep === 9;
+  const isResults = currentStep === "summary";
   const durationContextLabel =
     preferences.timing.mode === "rough" &&
     preferences.timing.month !== null &&
@@ -1077,7 +1082,9 @@ export default function DiscoverPage() {
                         ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
                         : isQuestionNine
                           ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
-                          : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
+                          : isResults
+                            ? "relative isolate min-h-screen overflow-x-clip bg-[#f5faf8] px-4 py-6 sm:px-6 sm:py-10 dark:bg-[#071a1f]"
+                            : "relative isolate min-h-screen px-4 py-10 sm:px-6 sm:py-16"
       }
     >
       {currentStep === 2 ? (
@@ -1136,6 +1143,13 @@ export default function DiscoverPage() {
         />
       ) : null}
 
+      {currentStep === "summary" ? (
+        <DestinationResultsBackground
+          tripType={preferences.tripType}
+          tripSubtype={preferences.tripSubtype}
+        />
+      ) : null}
+
       <div
         className={
           isQuestionOne
@@ -1156,7 +1170,9 @@ export default function DiscoverPage() {
                           ? "relative z-10 mx-auto max-w-[58rem]"
                           : isQuestionNine
                             ? "relative z-10 mx-auto max-w-[58rem]"
-                            : "relative z-10 mx-auto max-w-3xl"
+                            : isResults
+                              ? "relative z-10 mx-auto max-w-[74rem]"
+                              : "relative z-10 mx-auto max-w-3xl"
         }
       >
         {!isQuestionOne ? renderHeader(false) : null}
@@ -1198,19 +1214,41 @@ export default function DiscoverPage() {
                 />
               }
               shellActions={
-                <>
-                  <Link href="/" className={themedSecondaryButtonClasses}>
-                    {commonCopy.back}
-                  </Link>
-                  <button
-                    type="button"
-                    disabled={!canContinue}
-                    onClick={handleContinue}
-                    className={themedPrimaryButtonClasses}
-                  >
-                    {commonCopy.continue}
-                  </button>
-                </>
+                returnToResultsAfterEdit ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      className={themedSecondaryButtonClasses}
+                    >
+                      {discoverCopy.results.edit.backToResults}
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={!canContinue}
+                      onClick={handleContinue}
+                      className={themedPrimaryButtonClasses}
+                    >
+                      {discoverCopy.results.edit.updateResults}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/" className={themedSecondaryButtonClasses}>
+                      {commonCopy.back}
+                    </Link>
+
+                    <button
+                      type="button"
+                      disabled={!canContinue}
+                      onClick={handleContinue}
+                      className={themedPrimaryButtonClasses}
+                    >
+                      {commonCopy.continue}
+                    </button>
+                  </>
+                )
               }
               selectedTripType={preferences.tripType}
               selectedTripSubtype={preferences.tripSubtype}
@@ -1430,7 +1468,9 @@ export default function DiscoverPage() {
                   : secondaryButtonClasses
               }
             >
-              {commonCopy.back}
+              {returnToResultsAfterEdit
+                ? discoverCopy.results.edit.backToResults
+                : commonCopy.back}
             </button>
             <button
               type="button"
@@ -1449,7 +1489,9 @@ export default function DiscoverPage() {
                   : primaryButtonClasses
               }
             >
-              {commonCopy.continue}
+              {returnToResultsAfterEdit
+                ? discoverCopy.results.edit.updateResults
+                : commonCopy.continue}
             </button>
           </div>
         ) : null}
@@ -1458,169 +1500,16 @@ export default function DiscoverPage() {
           <section
             ref={stepContentRef}
             tabIndex={-1}
-            aria-labelledby="summary-title"
+            aria-labelledby="results-title"
             className="outline-none"
           >
-            <h1 id="summary-title" className="text-3xl font-bold sm:text-4xl">
-              {discoverCopy.summary.heading}
-            </h1>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <SummaryItem
-                questionLabel={questionLabel(1)}
-                title={discoverCopy.summary.categories[1]}
-              >
-                <p>
-                  {preferences.tripType === null
-                    ? commonCopy.notSelected
-                    : discoverCopy.q1.options[preferences.tripType]}
-                </p>
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(2)}
-                title={discoverCopy.summary.categories[2]}
-              >
-                <p>{selectedGroupLabel}</p>
-                <p>
-                  {formatCount(travellers.adults, commonCopy.nouns.adult)} · {formatCount(travellers.children, commonCopy.nouns.child)} · {formatCount(travellers.pets, commonCopy.nouns.pet)}
-                </p>
-                <p>
-                  {formatCount(travellers.rooms, commonCopy.nouns.bedroom)} · {formatCount(travellers.beds, commonCopy.nouns.bed)}
-                </p>
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(3)}
-                title={discoverCopy.summary.categories[3]}
-              >
-                <p>
-                  {formatMessage(discoverCopy.summary.enteredAs, {
-                    mode: discoverCopy.q3.modes[preferences.budget.mode],
-                  })}
-                </p>
-                <p>
-                  {formatMessage(discoverCopy.summary.totalAmount, {
-                    amount: formatNumber(
-                      preferences.budget.total ?? 0,
-                      numberLocale,
-                    ),
-                    currency: preferences.budget.currency,
-                  })}
-                </p>
-                <p>
-                  {formatMessage(discoverCopy.summary.perTravellerAmount, {
-                    amount: formatNumber(
-                      preferences.budget.perTraveller ?? 0,
-                      numberLocale,
-                    ),
-                    currency: preferences.budget.currency,
-                  })}
-                </p>
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(4)}
-                title={discoverCopy.summary.categories[4]}
-              >
-                <p>
-                  {preferences.accommodation
-                    .map((option) => discoverCopy.q4.options[option])
-                    .join(", ")}
-                </p>
-                {travellers.pets > 0 ? (
-                  <p>{discoverCopy.summary.petFriendlyRequired}</p>
-                ) : null}
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(5)}
-                title={discoverCopy.summary.categories[5]}
-              >
-                <p>
-                  {preferences.meals
-                    .map((option) => discoverCopy.q5.options[option])
-                    .join(", ")}
-                </p>
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(6)}
-                title={discoverCopy.summary.categories[6]}
-              >
-                {preferences.timing.mode === "exact" ? (
-                  <p>
-                    {formatMessage(discoverCopy.summary.dateRange, {
-                      departure: preferences.timing.departureDate,
-                      return: preferences.timing.returnDate,
-                    })}
-                  </p>
-                ) : null}
-                {preferences.timing.mode === "rough" ? (
-                  <p>
-                    {preferences.timing.month === null
-                      ? ""
-                      : discoverCopy.q6.months[preferences.timing.month]}{" "}
-                    {preferences.timing.year}
-                  </p>
-                ) : null}
-                {preferences.timing.mode === "flexible" ? (
-                  <p>{discoverCopy.summary.flexibleDates}</p>
-                ) : null}
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(7)}
-                title={discoverCopy.summary.categories[7]}
-              >
-                {hasExactDuration(preferences) ? (
-                  <p>
-                    {formatCount(
-                      preferences.timing.exactNights ?? 0,
-                      commonCopy.nouns.night,
-                    )}{" "}
-                    ({discoverCopy.summary.calculatedFromExactDates})
-                  </p>
-                ) : (
-                  <p>{selectedDuration?.label} — {selectedDuration?.description}</p>
-                )}
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(8)}
-                title={discoverCopy.summary.categories[8]}
-              >
-                <p>{preferences.origin.resolvedLocation.trim()}</p>
-              </SummaryItem>
-
-              <SummaryItem
-                questionLabel={questionLabel(9)}
-                title={discoverCopy.summary.categories[9]}
-              >
-                <p>
-                  {preferences.transport
-                    .map((option) => discoverCopy.q9.options[option])
-                    .join(", ")}
-                </p>
-              </SummaryItem>
-            </div>
-
-            <p className="mt-8 rounded-xl bg-gray-50 p-4 text-sm text-gray-600 dark:bg-gray-900 dark:text-gray-300">
-              {discoverCopy.summary.nextStepNote}
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <button
-                type="button"
-                onClick={() => goToStep(9)}
-                className={secondaryButtonClasses}
-              >
-                {commonCopy.back}
-              </button>
-              <button type="button" disabled className={primaryButtonClasses}>
-                {discoverCopy.summary.continueToMatching}
-              </button>
-            </div>
+            <DestinationResults
+              preferences={preferences}
+              language={language}
+              copy={copy}
+              onBack={handleBack}
+              onEditQuestion={editQuestionFromResults}
+            />
           </section>
         ) : null}
       </div>
