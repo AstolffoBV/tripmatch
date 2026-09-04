@@ -194,7 +194,7 @@ export default function LocationMap({
   }, [latitude, longitude]);
 
   return (
-    <div className="relative h-72 min-h-72 overflow-hidden rounded-[1.5rem] border border-[#bdd8d3] bg-[#deebe7] shadow-[0_20px_50px_rgba(25,77,79,0.12)] sm:h-80 sm:min-h-80 dark:border-white/12 dark:bg-[#102e33]">
+    <div className="relative h-72 min-h-72 overflow-hidden rounded-[1.5rem] border border-[#bdd8d3] bg-[#deebe7] shadow-[0_20px_50px_rgba(25,77,79,0.12)] transition duration-200 focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 motion-reduce:transition-none sm:h-80 sm:min-h-80 dark:border-white/12 dark:bg-[#102e33] dark:focus-within:border-[#70c5bf] dark:focus-within:ring-[#83d9d2]/14">
       <div
         ref={containerRef}
         role="region"
@@ -202,7 +202,7 @@ export default function LocationMap({
         aria-describedby={centerPinDescriptionId}
         aria-busy={!ready && !mapFailed}
         tabIndex={0}
-        className="size-full outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-[#35a6a2]"
+        className="size-full outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-[#35a6a2] dark:focus-visible:ring-[#83d9d2]"
       />
 
       <span id={centerPinDescriptionId} className="sr-only">

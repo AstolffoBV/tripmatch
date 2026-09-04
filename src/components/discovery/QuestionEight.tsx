@@ -376,7 +376,7 @@ export default function QuestionEight({
       ) : null}
 
       {origin.mode === "manual" ? (
-        <section className="mt-4 rounded-[1.6rem] border border-[#c5dcd8] bg-white/62 p-4 shadow-[0_18px_46px_rgba(25,77,79,0.08)] backdrop-blur-sm dark:border-white/12 dark:bg-white/[0.05] sm:p-5">
+        <section className="relative z-20 mt-4 rounded-[1.6rem] border border-[#c5dcd8] bg-white/62 p-4 shadow-[0_18px_46px_rgba(25,77,79,0.08)] backdrop-blur-sm dark:border-white/12 dark:bg-white/[0.05] sm:p-5">
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#4b666b] dark:text-[#a9c2c3]">
             {copy.manual.heading}
           </p>
@@ -407,7 +407,7 @@ export default function QuestionEight({
               onKeyDown={handleSearchKeyDown}
               placeholder={copy.manual.searchPlaceholder}
               autoComplete="off"
-              className="min-h-14 w-full rounded-[1.15rem] border border-[#bdd7d3] bg-[#fbfdfa]/90 py-3 pr-12 pl-12 text-base font-semibold text-[#153d42] shadow-sm outline-none transition placeholder:font-normal placeholder:text-[#77908f] focus:border-[#4faaa6] focus:ring-3 focus:ring-[#71c8c1]/18 dark:border-white/12 dark:bg-white/[0.06] dark:text-[#eff9f8] dark:placeholder:text-[#799b99] dark:focus:border-[#70c5bf]"
+              className="min-h-14 w-full rounded-[1.15rem] border border-[#bdd7d3] bg-[#fbfdfa]/90 py-3 pr-12 pl-12 text-base font-semibold text-[#153d42] shadow-sm outline-none transition duration-200 placeholder:font-normal placeholder:text-[#77908f] focus:border-[#4faaa6] focus:ring-3 focus:ring-[#71c8c1]/18 motion-reduce:transition-none dark:border-white/12 dark:bg-white/[0.06] dark:text-[#eff9f8] dark:placeholder:text-[#799b99] dark:focus:border-[#70c5bf] dark:focus:ring-[#83d9d2]/14"
             />
             {searchStatus === "searching" ? (
               <span className="absolute top-1/2 right-4 -translate-y-1/2">
@@ -434,7 +434,7 @@ export default function QuestionEight({
                       })}
                       onMouseEnter={() => setActiveResultIndex(index)}
                       onClick={() => selectSearchResult(result)}
-                      className={`w-full cursor-pointer rounded-xl px-3.5 py-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#1b7c83] ${
+                      className={`w-full cursor-pointer rounded-xl px-3.5 py-3 text-left transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#1b7c83] motion-reduce:transition-none dark:focus-visible:outline-[#83d9d2] ${
                         activeResultIndex === index
                           ? "bg-[#e5f3ef] dark:bg-white/10"
                           : "hover:bg-[#edf7f4] dark:hover:bg-white/7"

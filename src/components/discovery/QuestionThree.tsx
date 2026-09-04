@@ -86,9 +86,9 @@ export default function QuestionThree({
                   type="button"
                   aria-pressed={selected}
                   onClick={() => onSelectMode(option.value)}
-                  className={`min-h-12 cursor-pointer rounded-[0.85rem] px-3 py-2.5 text-sm leading-5 font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] sm:text-base ${
+                  className={`min-h-12 cursor-pointer rounded-[0.85rem] px-3 py-2.5 text-sm leading-5 font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transition-none sm:text-base dark:focus-visible:outline-[#83d9d2] ${
                     selected
-                      ? "bg-[#123f46] text-[#f5fffd] shadow-[0_10px_28px_rgba(13,64,70,0.18)]"
+                      ? "bg-[#123f46] text-[#f5fffd] shadow-[0_10px_28px_rgba(13,64,70,0.18)] hover:bg-[#0d343a] hover:shadow-[0_12px_30px_rgba(13,64,70,0.21)] dark:border-[#55c9c5] dark:bg-[#123f46] dark:text-[#f5fffd] dark:hover:bg-[#164b51] dark:hover:shadow-[0_12px_30px_rgba(0,0,0,0.2)]"
                       : "text-[#315b5f] hover:bg-white/85 hover:text-[#153e44] dark:text-[#c4dddd] dark:hover:bg-white/9 dark:hover:text-white"
                   }`}
                 >
@@ -104,7 +104,7 @@ export default function QuestionThree({
             {copy.yourBudget}
           </p>
 
-          <div className="grid min-h-[6.5rem] grid-cols-[minmax(0,1fr)_6.75rem] overflow-hidden rounded-[1.5rem] border border-[#bdd8d3] bg-white/72 shadow-[0_22px_55px_rgba(25,77,79,0.09)] backdrop-blur-sm transition focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 dark:border-white/14 dark:bg-white/[0.065] dark:focus-within:border-[#70c5bf]">
+          <div className="grid min-h-[6.5rem] grid-cols-[minmax(0,1fr)_6.75rem] overflow-hidden rounded-[1.5rem] border border-[#bdd8d3] bg-white/72 shadow-[0_22px_55px_rgba(25,77,79,0.09)] backdrop-blur-sm transition duration-200 focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 motion-reduce:transition-none dark:border-white/14 dark:bg-white/[0.065] dark:focus-within:border-[#70c5bf] dark:focus-within:ring-[#83d9d2]/14">
             <label className="flex min-w-0 items-center px-5 sm:px-7">
               <span className="sr-only">{copy.modes[budget.mode]}</span>
               <input
@@ -117,19 +117,19 @@ export default function QuestionThree({
                 aria-describedby={
                   equivalentText === null ? undefined : "budget-equivalent"
                 }
-                className="min-w-0 w-full bg-transparent text-[2rem] leading-none font-bold tracking-[-0.04em] text-[#10343a] tabular-nums outline-none placeholder:text-[#8ca4a4] sm:text-[2.5rem] dark:text-[#f3fbfa] dark:placeholder:text-[#668082]"
+                className="min-w-0 w-full appearance-none bg-transparent text-[2rem] leading-none font-bold tracking-[-0.04em] text-[#10343a] tabular-nums outline-none placeholder:text-[#8ca4a4] sm:text-[2.5rem] dark:text-[#f3fbfa] dark:placeholder:text-[#668082] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 placeholder={copy.amountPlaceholder}
               />
             </label>
 
-            <label className="relative flex items-center border-l border-[#c9deda] px-3 dark:border-white/12">
+            <label className="relative flex items-center border-l border-[#c9deda] px-3 transition-colors duration-200 hover:bg-[#f5fbf9]/70 motion-reduce:transition-none dark:border-white/12 dark:hover:bg-white/[0.04]">
               <span className="sr-only">{copy.currency}</span>
               <select
                 value={budget.currency}
                 onChange={(event) =>
                   onChangeCurrency(event.target.value as Currency)
                 }
-                className="h-full w-full cursor-pointer appearance-none bg-transparent pr-6 text-base font-bold text-[#17454a] outline-none focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#e9f7f5]"
+                className="h-full w-full cursor-pointer appearance-none bg-transparent pr-6 text-base font-bold text-[#17454a] outline-none focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#e9f7f5] dark:focus-visible:outline-[#83d9d2]"
               >
                 {currencies.map((currency) => (
                   <option key={currency} value={currency}>

@@ -40,7 +40,7 @@ body {
 }
 
 .question-step-enter {
-  animation: question-step-enter 200ms ease-out both;
+  animation: question-step-enter 200ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
