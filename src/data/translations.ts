@@ -57,6 +57,8 @@ type NounForms = {
 type CommonTranslation = {
   languageSelectorLabel: string;
   homeLabel: string;
+  switchToLightTheme: string;
+  switchToDarkTheme: string;
   back: string;
   continue: string;
   question: string;
@@ -347,6 +349,8 @@ export const translations = {
     common: {
       languageSelectorLabel: "Select language",
       homeLabel: "TripMatch home",
+      switchToLightTheme: "Switch to light theme",
+      switchToDarkTheme: "Switch to dark theme",
       back: "Back",
       continue: "Continue",
       question: "Question {number}",
@@ -388,11 +392,12 @@ export const translations = {
         reached: "{highest} of {total} questions reached",
         questionsReachedLabel: "Questions reached",
         tooltip: "{number} · {label}",
-        derivedTooltip: "{number} · {label} — {duration}",
+        derivedTooltip:
+          "{number} · {label} — {duration}, calculated automatically",
         currentQuestion: "Current question: {number}, {label}",
         goToQuestion: "Go to Question {number}: {label}",
         derivedDurationNavigation:
-          "Question 7: Duration, {duration}. Go to Question 6: When to change it.",
+          "Question 7: Duration, {duration}, calculated automatically. Go to Question 6: When to change it.",
         notVisited: "Question {number}: {label}, not yet visited",
         labels: {
           1: "Trip",
@@ -948,6 +953,8 @@ export const translations = {
     common: {
       languageSelectorLabel: "Selectează limba",
       homeLabel: "Pagina principală TripMatch",
+      switchToLightTheme: "Comută la tema luminoasă",
+      switchToDarkTheme: "Comută la tema întunecată",
       back: "Înapoi",
       continue: "Continuă",
       question: "Întrebarea {number}",
@@ -992,11 +999,12 @@ export const translations = {
         reached: "{highest} din {total} întrebări parcurse",
         questionsReachedLabel: "Întrebări parcurse",
         tooltip: "{number} · {label}",
-        derivedTooltip: "{number} · {label} — {duration}",
+        derivedTooltip:
+          "{number} · {label} — {duration}, calculată automat",
         currentQuestion: "Întrebarea curentă: {number}, {label}",
         goToQuestion: "Mergi la întrebarea {number}: {label}",
         derivedDurationNavigation:
-          "Întrebarea 7: Durată, {duration}. Mergi la întrebarea 6: Perioadă pentru a o modifica.",
+          "Întrebarea 7: Durată, {duration}, calculată automat. Mergi la întrebarea 6: Perioadă pentru a o modifica.",
         notVisited: "Întrebarea {number}: {label}, încă neparcursă",
         labels: {
           1: "Călătorie",
@@ -1568,6 +1576,8 @@ export const translations = {
     common: {
       languageSelectorLabel: "Seleccionar idioma",
       homeLabel: "Página de inicio de TripMatch",
+      switchToLightTheme: "Cambiar al tema claro",
+      switchToDarkTheme: "Cambiar al tema oscuro",
       back: "Atrás",
       continue: "Continuar",
       question: "Pregunta {number}",
@@ -1609,11 +1619,12 @@ export const translations = {
         reached: "{highest} de {total} preguntas visitadas",
         questionsReachedLabel: "Preguntas visitadas",
         tooltip: "{number} · {label}",
-        derivedTooltip: "{number} · {label} — {duration}",
+        derivedTooltip:
+          "{number} · {label} — {duration}, calculada automáticamente",
         currentQuestion: "Pregunta actual: {number}, {label}",
         goToQuestion: "Ir a la pregunta {number}: {label}",
         derivedDurationNavigation:
-          "Pregunta 7: Duración, {duration}. Ve a la pregunta 6: Fechas para cambiarla.",
+          "Pregunta 7: Duración, {duration}, calculada automáticamente. Ve a la pregunta 6: Fechas para cambiarla.",
         notVisited: "Pregunta {number}: {label}, aún no visitada",
         labels: {
           1: "Viaje",
@@ -2177,6 +2188,8 @@ export const translations = {
     common: {
       languageSelectorLabel: "Sprache auswählen",
       homeLabel: "TripMatch-Startseite",
+      switchToLightTheme: "Zum hellen Design wechseln",
+      switchToDarkTheme: "Zum dunklen Design wechseln",
       back: "Zurück",
       continue: "Weiter",
       question: "Frage {number}",
@@ -2218,11 +2231,12 @@ export const translations = {
         reached: "{highest} von {total} Fragen erreicht",
         questionsReachedLabel: "Erreichte Fragen",
         tooltip: "{number} · {label}",
-        derivedTooltip: "{number} · {label} — {duration}",
+        derivedTooltip:
+          "{number} · {label} — {duration}, automatisch berechnet",
         currentQuestion: "Aktuelle Frage: {number}, {label}",
         goToQuestion: "Zu Frage {number}: {label}",
         derivedDurationNavigation:
-          "Frage 7: Dauer, {duration}. Gehe zu Frage 6: Reisezeit, um sie zu ändern.",
+          "Frage 7: Dauer, {duration}, automatisch berechnet. Gehe zu Frage 6: Reisezeit, um sie zu ändern.",
         notVisited: "Frage {number}: {label}, noch nicht besucht",
         labels: {
           1: "Reise",
@@ -2789,6 +2803,8 @@ export const translations = {
     common: {
       languageSelectorLabel: "Choisir la langue",
       homeLabel: "Accueil TripMatch",
+      switchToLightTheme: "Passer au thème clair",
+      switchToDarkTheme: "Passer au thème sombre",
       back: "Retour",
       continue: "Continuer",
       question: "Question {number}",
@@ -2833,11 +2849,12 @@ export const translations = {
         reached: "{highest} questions sur {total} consultées",
         questionsReachedLabel: "Questions consultées",
         tooltip: "{number} · {label}",
-        derivedTooltip: "{number} · {label} — {duration}",
+        derivedTooltip:
+          "{number} · {label} — {duration}, calculée automatiquement",
         currentQuestion: "Question actuelle : {number}, {label}",
         goToQuestion: "Aller à la question {number} : {label}",
         derivedDurationNavigation:
-          "Question 7 : Durée, {duration}. Allez à la question 6 : Dates pour la modifier.",
+          "Question 7 : Durée, {duration}, calculée automatiquement. Allez à la question 6 : Dates pour la modifier.",
         notVisited: "Question {number} : {label}, pas encore consultée",
         labels: {
           1: "Voyage",

@@ -1,0 +1,152 @@
+.host {
+  width: 100%;
+  height: 0;
+}
+
+.hostWithReservedSpace {
+  height: 4rem;
+}
+
+.header {
+  position: fixed;
+  z-index: 1100;
+  isolation: isolate;
+  top: max(1rem, calc(env(safe-area-inset-top) + 0.5rem));
+  right: max(1rem, calc(env(safe-area-inset-right) + 0.5rem));
+  left: max(1rem, calc(env(safe-area-inset-left) + 0.5rem));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.header::before {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: calc(5.25rem + env(safe-area-inset-top));
+  background:
+    linear-gradient(
+      to bottom,
+      var(--header-veil-start) 0%,
+      var(--header-veil-start) 48%,
+      color-mix(in srgb, var(--header-veil-start) 32%, transparent) 70%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--header-veil-start) 0%,
+      color-mix(in srgb, var(--header-veil-start) 76%, transparent) 44%,
+      transparent 72%
+    );
+  -webkit-backdrop-filter: blur(4px) saturate(105%);
+  backdrop-filter: blur(4px) saturate(105%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 52%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 52%, transparent 100%);
+  pointer-events: none;
+  content: "";
+}
+
+.themed {
+  --header-text: var(--hero-text, #fffdf8);
+  --header-focus: var(--focus-ring, #fffdf8);
+  --header-veil-start: var(--control-background, rgba(8, 16, 20, 0.42));
+}
+
+.themed::before {
+  -webkit-backdrop-filter: blur(1.75px) saturate(105%);
+  backdrop-filter: blur(1.75px) saturate(105%);
+}
+
+.neutral {
+  --header-text: #173d42;
+  --header-focus: #1b7c83;
+  --header-veil-start: rgba(245, 250, 248, 0.78);
+}
+
+:global(html[data-theme="dark"]) .neutral {
+  --header-text: #eaf7f5;
+  --header-focus: #72d0c9;
+  --header-veil-start: rgba(7, 26, 31, 0.82);
+}
+
+.wordmark,
+.controls {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.wordmark {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border-radius: 0.4rem;
+  color: var(--header-text);
+  line-height: 1;
+  text-decoration: none;
+  text-shadow: 0 2px 16px rgba(3, 15, 18, 0.12);
+  outline: none;
+  transition:
+    color 620ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.wordmark:hover {
+  opacity: 0.78;
+  transform: translateY(-1px);
+}
+
+.wordmark:focus-visible {
+  outline: 2px solid var(--header-focus);
+  outline-offset: 4px;
+}
+
+.wordmarkTrip {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  font-size: 1.45rem;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.075em;
+  transform: skewX(-2deg) translateY(-0.01em);
+}
+
+.wordmarkMatch {
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: 1.22rem;
+  font-weight: 680;
+  letter-spacing: -0.055em;
+}
+
+.controls {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .header {
+    top: max(1.5rem, calc(env(safe-area-inset-top) + 0.5rem));
+    right: max(1.5rem, calc(env(safe-area-inset-right) + 0.5rem));
+    left: max(1.5rem, calc(env(safe-area-inset-left) + 0.5rem));
+  }
+
+  .hostWithReservedSpace {
+    height: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark {
+    transition-duration: 0ms;
+  }
+
+  .wordmark:hover {
+    transform: none;
+  }
+}

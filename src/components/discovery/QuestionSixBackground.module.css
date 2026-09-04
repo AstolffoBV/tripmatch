@@ -78,27 +78,25 @@
   );
 }
 
-@media (prefers-color-scheme: dark) {
-  .background {
-    background:
-      radial-gradient(
-        circle at 13% 20%,
-        color-mix(in srgb, var(--timing-accent) 12%, transparent),
-        transparent 25rem
-      ),
-      radial-gradient(
-        circle at 90% 78%,
-        color-mix(in srgb, var(--timing-via) 9%, transparent),
-        transparent 30rem
-      ),
-      linear-gradient(148deg, #0b2429 0%, #071a1f 49%, #0a2025 100%);
-  }
+:global(html[data-theme="dark"]) .background {
+  background:
+    radial-gradient(
+      circle at 13% 20%,
+      color-mix(in srgb, var(--timing-accent) 12%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 90% 78%,
+      color-mix(in srgb, var(--timing-via) 9%, transparent),
+      transparent 30rem
+    ),
+    linear-gradient(148deg, #0b2429 0%, #071a1f 49%, #0a2025 100%);
+}
 
-  .orbit,
-  .calendar,
-  .timeline {
-    opacity: 0.54;
-  }
+:global(html[data-theme="dark"]) .orbit,
+:global(html[data-theme="dark"]) .calendar,
+:global(html[data-theme="dark"]) .timeline {
+  opacity: 0.54;
 }
 
 @media (max-width: 640px) {

@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState, type CSSProperties } from "react";
 
-import LanguageSelector from "@/components/language/LanguageSelector";
 import { useLanguage } from "@/components/language/LanguageProvider";
+import AppHeader from "@/components/navigation/AppHeader";
 import {
   landingSceneOrder,
   type LandingScene,
@@ -72,7 +72,7 @@ export default function LandingHero() {
     activeIndex: number;
     outgoingScene: LandingScene | null;
   }>({ activeIndex: 0, outgoingScene: null });
-  const { language, copy: appCopy, setLanguage } = useLanguage();
+  const { language, copy: appCopy } = useLanguage();
 
   const activeScene = landingSceneOrder[sceneState.activeIndex];
   const copy = appCopy.landing;
@@ -117,20 +117,7 @@ export default function LandingHero() {
       />
       <div className={styles.readabilityOverlay} aria-hidden="true" />
 
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-4 px-5 py-5 sm:px-8 sm:py-7 lg:px-12">
-        <span
-          className={`${styles.themeText} text-lg font-semibold tracking-[-0.03em] sm:text-xl`}
-        >
-          {copy.brand}
-        </span>
-
-        <LanguageSelector
-          value={language}
-          label={appCopy.common.languageSelectorLabel}
-          onChange={setLanguage}
-          className={styles.languageSelect}
-        />
-      </header>
+      <AppHeader appearance="themed" />
 
       <main className="relative z-10 flex min-h-screen min-h-[100svh] items-center justify-center px-5 pt-24 pb-20 text-center sm:px-8 sm:pt-28">
         <div className="mx-auto flex w-full max-w-5xl flex-col items-center">

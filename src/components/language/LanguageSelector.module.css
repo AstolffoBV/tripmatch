@@ -4,18 +4,20 @@
 }
 
 .neutral {
-  --hero-text: #111827;
-  --control-background: rgba(255, 255, 255, 0.76);
-  --control-border: rgba(17, 24, 39, 0.18);
-  --focus-ring: #111827;
+  --hero-text: #173d42;
+  --control-background: rgba(255, 255, 255, 0.7);
+  --control-border: rgba(49, 105, 104, 0.28);
+  --focus-ring: #1b7c83;
 }
 
 .trigger {
   display: inline-flex;
   min-height: 2.75rem;
+  min-width: 4.35rem;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.35rem 0.75rem 0.35rem 0.4rem;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.72rem;
   border: 1px solid var(--control-border);
   border-radius: 999px;
   color: var(--hero-text);
@@ -50,24 +52,12 @@
 }
 
 .triggerCode {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
+  display: inline-block;
   flex: none;
-  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, currentColor 9%, transparent);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-.triggerName {
-  white-space: nowrap;
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 750;
+  letter-spacing: 0.1em;
 }
 
 .chevron {
@@ -89,13 +79,13 @@
   width: min(14.5rem, calc(100vw - 2.5rem));
   margin: 0;
   padding: 0.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(131, 193, 187, 0.24);
   border-radius: 1.15rem;
-  color: #fbf8ff;
-  background: rgba(10, 13, 22, 0.82);
+  color: #f3fbf9;
+  background: rgba(9, 36, 41, 0.9);
   box-shadow:
     0 24px 64px rgba(3, 5, 12, 0.34),
-    0 0 32px rgba(198, 151, 221, 0.1),
+    0 0 32px rgba(91, 190, 181, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   -webkit-backdrop-filter: blur(22px) saturate(135%);
   backdrop-filter: blur(22px) saturate(135%);
@@ -128,12 +118,12 @@
 }
 
 .option:focus-visible {
-  box-shadow: inset 0 0 0 1px rgba(245, 224, 255, 0.32);
+  box-shadow: inset 0 0 0 1px rgba(154, 224, 217, 0.4);
 }
 
 .option[aria-selected="true"] {
   color: #ffffff;
-  background: rgba(222, 177, 242, 0.16);
+  background: rgba(112, 205, 196, 0.18);
 }
 
 .optionCode {
@@ -183,23 +173,17 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .neutral {
-    --hero-text: #f3f4f6;
-    --control-background: rgba(17, 24, 39, 0.76);
-    --control-border: rgba(243, 244, 246, 0.2);
-    --focus-ring: #f9fafb;
-  }
+:global(html[data-theme="dark"]) .neutral {
+  --hero-text: #eaf7f5;
+  --control-background: rgba(10, 36, 41, 0.78);
+  --control-border: rgba(190, 229, 225, 0.2);
+  --focus-ring: #83d9d2;
 }
 
 @media (max-width: 480px) {
   .trigger {
-    gap: 0.4rem;
-    padding-right: 0.65rem;
-  }
-
-  .triggerName {
-    display: none;
+    min-width: 4.1rem;
+    padding-inline: 0.62rem;
   }
 }
 

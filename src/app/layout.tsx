@@ -8,6 +8,7 @@ import {
   supportedLanguages,
   type LanguageCode,
 } from "@/data/translations";
+import { themeInitializationScript } from "@/data/theme";
 
 import "./globals.css";
 
@@ -39,8 +40,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={initialLanguage}
+      data-theme="light"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{ __html: themeInitializationScript }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <LanguageProvider initialLanguage={initialLanguage}>
           {children}

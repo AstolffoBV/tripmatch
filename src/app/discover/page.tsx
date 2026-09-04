@@ -23,8 +23,8 @@ import QuestionTwo from "@/components/discovery/QuestionTwo";
 import QuestionThree from "@/components/discovery/QuestionThree";
 import QuestionThreeBackground from "@/components/discovery/QuestionThreeBackground";
 import TripTypePanels from "@/components/discovery/TripTypePanels";
-import LanguageSelector from "@/components/language/LanguageSelector";
 import { useLanguage } from "@/components/language/LanguageProvider";
+import AppHeader from "@/components/navigation/AppHeader";
 import {
   months,
   transportOptions,
@@ -119,10 +119,10 @@ const themedSecondaryButtonClasses =
   "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-white/25 bg-black/20 px-6 py-3 font-semibold text-white/90 shadow-sm backdrop-blur-md transition hover:border-white/45 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transform-none";
 
 const editorialPrimaryButtonClasses =
-  "rounded-xl bg-[#123f46] px-6 py-3 font-semibold text-white shadow-sm transition enabled:cursor-pointer enabled:hover:-translate-y-0.5 enabled:hover:bg-[#0d343a] enabled:hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] disabled:cursor-not-allowed disabled:bg-[#cfddda] disabled:text-[#718784] disabled:shadow-none motion-reduce:transform-none dark:bg-[#72d0c9] dark:text-[#092e33] dark:enabled:hover:bg-[#8bddd6] dark:disabled:bg-white/12 dark:disabled:text-white/35";
+  "inline-flex min-h-12 items-center justify-center rounded-xl bg-[#123f46] px-6 py-3 font-semibold text-white shadow-sm transition duration-200 enabled:cursor-pointer enabled:hover:-translate-y-0.5 enabled:hover:bg-[#0d343a] enabled:hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] disabled:cursor-not-allowed disabled:bg-[#cfddda] disabled:text-[#718784] disabled:shadow-none motion-reduce:transform-none motion-reduce:transition-none dark:bg-[#72d0c9] dark:text-[#092e33] dark:enabled:hover:bg-[#8bddd6] dark:disabled:bg-white/12 dark:disabled:text-white/35";
 
 const editorialSecondaryButtonClasses =
-  "cursor-pointer rounded-xl border border-[#bfd3cf] bg-white/55 px-6 py-3 font-semibold text-[#173d42] shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transform-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10";
+  "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-[#bfd3cf] bg-white/55 px-6 py-3 font-semibold text-[#173d42] shadow-sm backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10";
 
 const geolocationErrorMessages = {
   unavailableInBrowser: "Location is unavailable in this browser.",
@@ -361,7 +361,7 @@ function getLocalizedLocationError(
 }
 
 export default function DiscoverPage() {
-  const { language, copy, setLanguage } = useLanguage();
+  const { language, copy } = useLanguage();
   const [currentStep, setCurrentStep] = useState<DiscoveryStep>(1);
   const [highestVisitedQuestion, setHighestVisitedQuestion] =
     useState<QuestionNumber>(1);
@@ -1034,30 +1034,10 @@ export default function DiscoverPage() {
 
   function renderHeader(themed: boolean) {
     return (
-      <header
-        className={`flex items-center justify-between gap-4 ${
-          themed ? "" : "mb-7"
-        }`}
-      >
-        <Link
-          href="/"
-          aria-label={commonCopy.homeLabel}
-          className={`inline-flex cursor-pointer rounded-md text-lg font-semibold tracking-[-0.03em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 ${
-            themed
-              ? "text-white/95 hover:text-white focus-visible:outline-white"
-              : "text-gray-900 hover:text-gray-500 focus-visible:outline-black dark:text-gray-100 dark:hover:text-gray-400 dark:focus-visible:outline-white"
-          }`}
-        >
-          TripMatch
-        </Link>
-
-        <LanguageSelector
-          value={language}
-          label={commonCopy.languageSelectorLabel}
-          onChange={setLanguage}
-          appearance={themed ? "themed" : "neutral"}
-        />
-      </header>
+      <AppHeader
+        appearance={themed ? "themed" : "neutral"}
+        reserveSpace={!themed}
+      />
     );
   }
 
@@ -1262,7 +1242,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-2-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionTwo
               questionLabel={questionLabel(2)}
@@ -1284,7 +1264,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-3-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionThree
               questionLabel={questionLabel(3)}
@@ -1308,7 +1288,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-4-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionFour
               questionLabel={questionLabel(4)}
@@ -1333,7 +1313,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-5-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionFive
               questionLabel={questionLabel(5)}
@@ -1349,7 +1329,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-6-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionSix
               questionLabel={questionLabel(6)}
@@ -1380,7 +1360,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-7-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionSeven
               questionLabel={questionLabel(7)}
@@ -1402,7 +1382,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-8-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionEight
               questionLabel={questionLabel(8)}
@@ -1424,7 +1404,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="question-9-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <QuestionNine
               questionLabel={questionLabel(9)}
@@ -1501,7 +1481,7 @@ export default function DiscoverPage() {
             ref={stepContentRef}
             tabIndex={-1}
             aria-labelledby="results-title"
-            className="outline-none"
+            className="question-step-enter outline-none"
           >
             <DestinationResults
               preferences={preferences}

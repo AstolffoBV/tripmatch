@@ -114,27 +114,25 @@
   width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  .background {
-    background:
-      radial-gradient(
-        circle at 11% 24%,
-        color-mix(in srgb, var(--duration-accent) 12%, transparent),
-        transparent 25rem
-      ),
-      radial-gradient(
-        circle at 88% 76%,
-        color-mix(in srgb, var(--duration-via) 9%, transparent),
-        transparent 30rem
-      ),
-      linear-gradient(150deg, #0b2429 0%, #071a1f 50%, #0a2025 100%);
-  }
+:global(html[data-theme="dark"]) .background {
+  background:
+    radial-gradient(
+      circle at 11% 24%,
+      color-mix(in srgb, var(--duration-accent) 12%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 88% 76%,
+      color-mix(in srgb, var(--duration-via) 9%, transparent),
+      transparent 30rem
+    ),
+    linear-gradient(150deg, #0b2429 0%, #071a1f 50%, #0a2025 100%);
+}
 
-  .arc,
-  .timeline,
-  .progression {
-    opacity: 0.5;
-  }
+:global(html[data-theme="dark"]) .arc,
+:global(html[data-theme="dark"]) .timeline,
+:global(html[data-theme="dark"]) .progression {
+  opacity: 0.5;
 }
 
 @media (max-width: 640px) {

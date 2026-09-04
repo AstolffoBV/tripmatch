@@ -56,26 +56,24 @@
   transform: rotate(4deg);
 }
 
-@media (prefers-color-scheme: dark) {
-  .background {
-    background:
-      radial-gradient(
-        circle at 82% 18%,
-        color-mix(in srgb, var(--budget-accent) 13%, transparent),
-        transparent 26rem
-      ),
-      radial-gradient(
-        circle at 10% 86%,
-        color-mix(in srgb, var(--budget-via) 9%, transparent),
-        transparent 29rem
-      ),
-      linear-gradient(150deg, #0b2429 0%, #071a1f 52%, #0a2025 100%);
-  }
+:global(html[data-theme="dark"]) .background {
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      color-mix(in srgb, var(--budget-accent) 13%, transparent),
+      transparent 26rem
+    ),
+    radial-gradient(
+      circle at 10% 86%,
+      color-mix(in srgb, var(--budget-via) 9%, transparent),
+      transparent 29rem
+    ),
+    linear-gradient(150deg, #0b2429 0%, #071a1f 52%, #0a2025 100%);
+}
 
-  .orbit,
-  .horizon {
-    opacity: 0.52;
-  }
+:global(html[data-theme="dark"]) .orbit,
+:global(html[data-theme="dark"]) .horizon {
+  opacity: 0.52;
 }
 
 @media (max-width: 640px) {

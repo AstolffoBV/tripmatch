@@ -200,9 +200,6 @@ export default function LanguageSelector({
         <span className={selectorStyles.triggerCode} aria-hidden="true">
           {selectedLanguage.shortLabel}
         </span>
-        <span className={selectorStyles.triggerName}>
-          {selectedLanguage.name}
-        </span>
         <svg
           aria-hidden="true"
           viewBox="0 0 20 20"

@@ -98,31 +98,29 @@
     0 0 0 2rem color-mix(in srgb, var(--transport-via) 1.4%, transparent);
 }
 
-@media (prefers-color-scheme: dark) {
-  .background {
-    background:
-      radial-gradient(
-        circle at 11% 24%,
-        color-mix(in srgb, var(--transport-accent) 12%, transparent),
-        transparent 25rem
-      ),
-      radial-gradient(
-        circle at 90% 72%,
-        color-mix(in srgb, var(--transport-via) 10%, transparent),
-        transparent 31rem
-      ),
-      linear-gradient(150deg, #0b2429 0%, #071a1f 50%, #0a2025 100%);
-  }
+:global(html[data-theme="dark"]) .background {
+  background:
+    radial-gradient(
+      circle at 11% 24%,
+      color-mix(in srgb, var(--transport-accent) 12%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 90% 72%,
+      color-mix(in srgb, var(--transport-via) 10%, transparent),
+      transparent 31rem
+    ),
+    linear-gradient(150deg, #0b2429 0%, #071a1f 50%, #0a2025 100%);
+}
 
-  .orb,
-  .network,
-  .terminalRing {
-    opacity: 0.44;
-  }
+:global(html[data-theme="dark"]) .orb,
+:global(html[data-theme="dark"]) .network,
+:global(html[data-theme="dark"]) .terminalRing {
+  opacity: 0.44;
+}
 
-  .nodes {
-    fill: #0b2429;
-  }
+:global(html[data-theme="dark"]) .nodes {
+  fill: #0b2429;
 }
 
 @media (max-width: 640px) {

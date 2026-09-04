@@ -66,27 +66,25 @@
   );
 }
 
-@media (prefers-color-scheme: dark) {
-  .background {
-    background:
-      radial-gradient(
-        circle at 86% 18%,
-        color-mix(in srgb, var(--meal-accent) 12%, transparent),
-        transparent 25rem
-      ),
-      radial-gradient(
-        circle at 9% 82%,
-        color-mix(in srgb, var(--meal-via) 9%, transparent),
-        transparent 29rem
-      ),
-      linear-gradient(150deg, #0b2429 0%, #071a1f 48%, #0a2025 100%);
-  }
+:global(html[data-theme="dark"]) .background {
+  background:
+    radial-gradient(
+      circle at 86% 18%,
+      color-mix(in srgb, var(--meal-accent) 12%, transparent),
+      transparent 25rem
+    ),
+    radial-gradient(
+      circle at 9% 82%,
+      color-mix(in srgb, var(--meal-via) 9%, transparent),
+      transparent 29rem
+    ),
+    linear-gradient(150deg, #0b2429 0%, #071a1f 48%, #0a2025 100%);
+}
 
-  .orb,
-  .plate,
-  .tableLine {
-    opacity: 0.54;
-  }
+:global(html[data-theme="dark"]) .orb,
+:global(html[data-theme="dark"]) .plate,
+:global(html[data-theme="dark"]) .tableLine {
+  opacity: 0.54;
 }
 
 @media (max-width: 640px) {
