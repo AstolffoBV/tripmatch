@@ -311,7 +311,27 @@ type ResultsTranslation = {
     why: string;
     viewTrip: string;
     hideTrip: string;
-    detailPrototype: string;
+  };
+  tripPreview: {
+    heading: string;
+    setupTitle: string;
+    rhythmTitle: string;
+    focusTitle: string;
+    time: {
+      day: string;
+      days: string;
+      midTrip: string;
+      laterDays: string;
+      finalDay: string;
+    };
+    phases: {
+      arrival: { title: string; description: string };
+      mainExperience: { title: string; description: string };
+      exploreFurther: { title: string; description: string };
+      flexibleTime: { title: string; description: string };
+      finalDay: { title: string; description: string };
+    };
+    disclaimer: string;
   };
   prototypeNote: string;
   reasons: Record<MatchReasonCode, string>;
@@ -792,8 +812,48 @@ export const translations = {
           why: "Why it matches",
           viewTrip: "View trip",
           hideTrip: "Hide details",
-          detailPrototype:
-            "A detailed trip plan for this destination will be added in a future iteration.",
+        },
+        tripPreview: {
+          heading: "Your trip to {destination}",
+          setupTitle: "Trip setup",
+          rhythmTitle: "Suggested rhythm",
+          focusTitle: "Plan focus",
+          time: {
+            day: "Day {day}",
+            days: "Days {start}–{end}",
+            midTrip: "Mid trip",
+            laterDays: "Later days",
+            finalDay: "Final day",
+          },
+          phases: {
+            arrival: {
+              title: "Arrival",
+              description:
+                "Arrive in {destination} and begin the trip at an easy pace.",
+            },
+            mainExperience: {
+              title: "Main experience",
+              description:
+                "The focus for this part of the stay: {tripStyle}.",
+            },
+            exploreFurther: {
+              title: "Explore further",
+              description:
+                "Use the extra time to discover more of what makes {destination} a match.",
+            },
+            flexibleTime: {
+              title: "Flexible time",
+              description:
+                "Keep space to slow down, revisit favourites or adjust the plan.",
+            },
+            finalDay: {
+              title: "Easy finish",
+              description:
+                "Keep the last part of the trip light and leave room to adjust.",
+            },
+          },
+          disclaimer:
+            "This is a prototype trip plan. Live activities, accommodation, routes, prices and availability are not connected yet.",
         },
         prototypeNote:
           "Prototype recommendations — live prices and availability are not connected yet.",
@@ -1413,8 +1473,47 @@ export const translations = {
           why: "De ce ți se potrivește",
           viewTrip: "Vezi călătoria",
           hideTrip: "Ascunde detaliile",
-          detailPrototype:
-            "Un plan detaliat pentru această destinație va fi adăugat într-o versiune viitoare.",
+        },
+        tripPreview: {
+          heading: "Călătoria ta la {destination}",
+          setupTitle: "Detaliile călătoriei",
+          rhythmTitle: "Ritm sugerat",
+          focusTitle: "Direcția planului",
+          time: {
+            day: "Ziua {day}",
+            days: "Zilele {start}–{end}",
+            midTrip: "Mijlocul călătoriei",
+            laterDays: "Zilele următoare",
+            finalDay: "Ultima zi",
+          },
+          phases: {
+            arrival: {
+              title: "Sosire",
+              description:
+                "Ajungi la {destination} și începi călătoria într-un ritm lejer.",
+            },
+            mainExperience: {
+              title: "Experiența principală",
+              description: "În centrul acestei etape: {tripStyle}.",
+            },
+            exploreFurther: {
+              title: "Explorează mai departe",
+              description:
+                "Folosește timpul în plus pentru a descoperi mai mult din ceea ce face ca {destination} să ți se potrivească.",
+            },
+            flexibleTime: {
+              title: "Timp flexibil",
+              description:
+                "Păstrează timp pentru un ritm mai lent, pentru a reveni la ce ți-a plăcut sau pentru a ajusta planul.",
+            },
+            finalDay: {
+              title: "Încheiere în tihnă",
+              description:
+                "Păstrează ultima parte a călătoriei lejeră și lasă loc pentru ajustări.",
+            },
+          },
+          disclaimer:
+            "Acesta este un plan de călătorie prototip. Serviciile în timp real pentru activități, cazare, rute, prețuri și disponibilitate nu sunt conectate încă.",
         },
         prototypeNote:
           "Recomandări prototip — prețurile și disponibilitatea în timp real nu sunt conectate încă.",
@@ -2026,8 +2125,48 @@ export const translations = {
           why: "Por qué encaja contigo",
           viewTrip: "Ver viaje",
           hideTrip: "Ocultar detalles",
-          detailPrototype:
-            "En una próxima versión añadiremos un plan detallado para este destino.",
+        },
+        tripPreview: {
+          heading: "Tu viaje a {destination}",
+          setupTitle: "Detalles del viaje",
+          rhythmTitle: "Ritmo sugerido",
+          focusTitle: "Enfoque del plan",
+          time: {
+            day: "Día {day}",
+            days: "Días {start}–{end}",
+            midTrip: "Mitad del viaje",
+            laterDays: "Días siguientes",
+            finalDay: "Último día",
+          },
+          phases: {
+            arrival: {
+              title: "Llegada",
+              description:
+                "Llega a {destination} y empieza el viaje a un ritmo tranquilo.",
+            },
+            mainExperience: {
+              title: "Experiencia principal",
+              description:
+                "El eje de esta parte de la estancia: {tripStyle}.",
+            },
+            exploreFurther: {
+              title: "Explorar más",
+              description:
+                "Aprovecha el tiempo extra para descubrir más de lo que hace que {destination} encaje contigo.",
+            },
+            flexibleTime: {
+              title: "Tiempo flexible",
+              description:
+                "Reserva espacio para bajar el ritmo, volver a tus favoritos o ajustar el plan.",
+            },
+            finalDay: {
+              title: "Final sin prisas",
+              description:
+                "Mantén ligera la última parte del viaje y deja margen para hacer ajustes.",
+            },
+          },
+          disclaimer:
+            "Este es un plan de viaje prototipo. Las fuentes de datos en tiempo real sobre actividades, alojamiento, rutas, precios y disponibilidad aún no están conectadas.",
         },
         prototypeNote:
           "Recomendaciones de prototipo — los precios y la disponibilidad en tiempo real aún no están conectados.",
@@ -2640,8 +2779,48 @@ export const translations = {
           why: "Warum es passt",
           viewTrip: "Reise ansehen",
           hideTrip: "Details ausblenden",
-          detailPrototype:
-            "Ein detaillierter Reiseplan für dieses Ziel folgt in einer späteren Version.",
+        },
+        tripPreview: {
+          heading: "Deine Reise nach {destination}",
+          setupTitle: "Reise-Eckdaten",
+          rhythmTitle: "Vorgeschlagener Reiserhythmus",
+          focusTitle: "Schwerpunkte des Plans",
+          time: {
+            day: "Tag {day}",
+            days: "Tage {start}–{end}",
+            midTrip: "Reisemitte",
+            laterDays: "Spätere Tage",
+            finalDay: "Letzter Tag",
+          },
+          phases: {
+            arrival: {
+              title: "Ankunft",
+              description:
+                "Komm in {destination} an und gestalte den Reisestart entspannt.",
+            },
+            mainExperience: {
+              title: "Haupterlebnis",
+              description:
+                "Im Mittelpunkt dieses Reiseabschnitts: {tripStyle}.",
+            },
+            exploreFurther: {
+              title: "Mehr entdecken",
+              description:
+                "Nutze die zusätzliche Zeit, um mehr von dem zu entdecken, was {destination} zu einem passenden Ziel macht.",
+            },
+            flexibleTime: {
+              title: "Flexible Zeit",
+              description:
+                "Lass Raum, um es ruhiger angehen zu lassen, Favoriten erneut zu erleben oder den Plan anzupassen.",
+            },
+            finalDay: {
+              title: "Entspannter Abschluss",
+              description:
+                "Gestalte den letzten Teil der Reise entspannt und lass Raum für Anpassungen.",
+            },
+          },
+          disclaimer:
+            "Dieser Reiseplan ist ein Prototyp. Live-Daten zu Aktivitäten, Unterkünften, Routen, Preisen und Verfügbarkeiten sind noch nicht angebunden.",
         },
         prototypeNote:
           "Prototyp-Empfehlungen — Live-Preise und Verfügbarkeiten sind noch nicht angebunden.",
@@ -3266,8 +3445,48 @@ export const translations = {
           why: "Pourquoi cette destination vous correspond",
           viewTrip: "Voir le voyage",
           hideTrip: "Masquer les détails",
-          detailPrototype:
-            "Un itinéraire détaillé pour cette destination sera ajouté dans une prochaine version.",
+        },
+        tripPreview: {
+          heading: "Votre voyage à {destination}",
+          setupTitle: "Détails du voyage",
+          rhythmTitle: "Rythme suggéré",
+          focusTitle: "Priorités du programme",
+          time: {
+            day: "Jour {day}",
+            days: "Jours {start}–{end}",
+            midTrip: "Milieu du voyage",
+            laterDays: "Jours suivants",
+            finalDay: "Dernier jour",
+          },
+          phases: {
+            arrival: {
+              title: "Arrivée",
+              description:
+                "Arrivez à {destination} et commencez le séjour en douceur.",
+            },
+            mainExperience: {
+              title: "Expérience principale",
+              description:
+                "Au cœur de cette partie du séjour : {tripStyle}.",
+            },
+            exploreFurther: {
+              title: "Explorer davantage",
+              description:
+                "Profitez du temps supplémentaire pour découvrir ce qui rend {destination} adaptée à votre voyage.",
+            },
+            flexibleTime: {
+              title: "Temps libre",
+              description:
+                "Gardez du temps pour ralentir, revenir à vos coups de cœur ou ajuster le programme.",
+            },
+            finalDay: {
+              title: "Fin en douceur",
+              description:
+                "Terminez le voyage à un rythme tranquille, avec une marge d’adaptation.",
+            },
+          },
+          disclaimer:
+            "Ce programme de voyage est un prototype. Les données en temps réel sur les activités, les hébergements, les itinéraires, les prix et les disponibilités ne sont pas encore connectées.",
         },
         prototypeNote:
           "Recommandations prototypes — les prix et disponibilités en temps réel ne sont pas encore connectés.",

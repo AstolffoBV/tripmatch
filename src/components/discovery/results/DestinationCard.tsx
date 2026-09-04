@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import DestinationArtwork from "@/components/discovery/results/DestinationArtwork";
 import type { DestinationId, DestinationVisual } from "@/types/destination";
 
@@ -15,7 +17,7 @@ type DestinationCardProps = {
   whyLabel: string;
   viewTripLabel: string;
   hideTripLabel: string;
-  detailPrototype: string;
+  tripPreview: ReactNode;
   expanded: boolean;
   onToggleExpanded: () => void;
 };
@@ -34,12 +36,12 @@ export default function DestinationCard({
   whyLabel,
   viewTripLabel,
   hideTripLabel,
-  detailPrototype,
+  tripPreview,
   expanded,
   onToggleExpanded,
 }: DestinationCardProps) {
   const titleId = `destination-${id}-title`;
-  const detailId = `destination-${id}-prototype-detail`;
+  const detailId = `destination-${id}-trip-preview`;
 
   return (
     <article
@@ -162,7 +164,7 @@ export default function DestinationCard({
               aria-live="polite"
               className="mt-3 min-w-0 rounded-xl border border-[#c9dfdb] bg-[#eef8f5]/86 p-3.5 text-sm leading-5 break-words text-[#44666a] dark:border-white/10 dark:bg-white/[0.055] dark:text-[#bdd3d1]"
             >
-              {detailPrototype}
+              {tripPreview}
             </div>
           ) : null}
         </div>

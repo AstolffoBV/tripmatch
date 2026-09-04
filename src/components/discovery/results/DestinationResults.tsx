@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import DestinationCard from "@/components/discovery/results/DestinationCard";
+import DestinationTripPreview from "@/components/discovery/results/DestinationTripPreview";
 import TripFilters from "@/components/discovery/results/TripFilters";
 import { demoDestinations } from "@/data/destinations";
 import {
@@ -245,6 +246,7 @@ export default function DestinationResults({
             const tags = match.destination.tags
               .slice(0, 4)
               .map((tag) => resultsCopy.tags[tag]);
+            const reasons = strongestReasons(match, copy);
 
             return (
               <li key={match.destination.id} className="min-w-0">
@@ -258,11 +260,19 @@ export default function DestinationResults({
                   distanceLabel={distanceLabel}
                   distanceAccessibleLabel={distanceAccessibleLabel}
                   tags={tags}
-                  reasons={strongestReasons(match, copy)}
+                  reasons={reasons}
                   whyLabel={resultsCopy.card.why}
                   viewTripLabel={resultsCopy.card.viewTrip}
                   hideTripLabel={resultsCopy.card.hideTrip}
-                  detailPrototype={resultsCopy.card.detailPrototype}
+                  tripPreview={
+                    <DestinationTripPreview
+                      destinationName={destinationCopy.city}
+                      preferences={preferences}
+                      language={language}
+                      copy={copy}
+                      tags={tags}
+                    />
+                  }
                   expanded={expandedDestination === match.destination.id}
                   onToggleExpanded={() =>
                     setExpandedDestination((current) =>
