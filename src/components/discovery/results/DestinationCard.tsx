@@ -48,26 +48,26 @@ export default function DestinationCard({
     >
       <DestinationArtwork visual={visual} />
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <header className="flex min-w-0 items-start justify-between gap-4">
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-6">
+        <header className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:justify-between sm:gap-4">
           <div className="min-w-0">
             <p className="text-[0.66rem] font-bold uppercase tracking-[0.2em] text-[#5e7b7f] dark:text-[#a8c3c1]">
               {country}
             </p>
             <h3
               id={titleId}
-              className="mt-1 text-[1.75rem] leading-tight font-bold tracking-[-0.04em] text-[#10363c] dark:text-[#f2fbf9]"
+              className="mt-1 break-words text-[1.75rem] leading-tight font-bold tracking-[-0.04em] text-[#10363c] dark:text-[#f2fbf9]"
             >
               {city}
             </h3>
           </div>
 
-          <span className="shrink-0 rounded-full border border-[#66bbb5]/45 bg-[#123f46] px-3 py-1.5 text-sm font-bold whitespace-nowrap text-white shadow-sm dark:bg-[#72d0c9] dark:text-[#092e33]">
+          <span className="max-w-full shrink-0 rounded-full border border-[#66bbb5]/45 bg-[#123f46] px-3 py-1.5 text-center text-sm leading-5 font-bold break-words text-white shadow-sm sm:whitespace-nowrap dark:bg-[#72d0c9] dark:text-[#092e33]">
             {matchLabel}
           </span>
         </header>
 
-        <p className="mt-3 text-sm leading-6 text-[#4b686c] dark:text-[#b7cecc]">
+        <p className="mt-3 break-words text-sm leading-6 text-[#4b686c] dark:text-[#b7cecc]">
           {description}
         </p>
 
@@ -75,7 +75,7 @@ export default function DestinationCard({
           {tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-full border border-[#c9dfdb] bg-[#eaf6f3]/88 px-2.5 py-1 text-xs font-semibold text-[#315e62] dark:border-white/10 dark:bg-white/[0.07] dark:text-[#b9d9d6]"
+              className="max-w-full rounded-full border border-[#c9dfdb] bg-[#eaf6f3]/88 px-2.5 py-1 text-xs font-semibold break-words text-[#315e62] dark:border-white/10 dark:bg-white/[0.07] dark:text-[#b9d9d6]"
             >
               {tag}
             </li>
@@ -85,14 +85,16 @@ export default function DestinationCard({
         {distanceLabel !== null && distanceAccessibleLabel !== null ? (
           <p
             aria-label={distanceAccessibleLabel}
-            className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#315e62] dark:text-[#b9d9d6]"
+            className="mt-4 inline-flex max-w-full min-w-0 items-center gap-2 text-sm font-semibold text-[#315e62] dark:text-[#b9d9d6]"
           >
             <span aria-hidden="true" className="flex items-center gap-1">
               <span className="size-1.5 rounded-full bg-[#3a8e8d] dark:bg-[#73d1ca]" />
               <span className="h-px w-5 bg-[#80b8b3] dark:bg-[#68aaa5]" />
               <span className="size-1.5 rounded-full border border-[#3a8e8d] dark:border-[#73d1ca]" />
             </span>
-            <span aria-hidden="true">{distanceLabel}</span>
+            <span aria-hidden="true" className="min-w-0 break-words">
+              {distanceLabel}
+            </span>
           </p>
         ) : null}
 
@@ -120,7 +122,7 @@ export default function DestinationCard({
                     />
                   </svg>
                 </span>
-                <span>{reason}</span>
+                <span className="min-w-0 break-words">{reason}</span>
               </li>
             ))}
           </ul>
@@ -132,7 +134,7 @@ export default function DestinationCard({
             aria-expanded={expanded}
             aria-controls={detailId}
             onClick={onToggleExpanded}
-            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#123f46] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 hover:bg-[#0d343a] hover:shadow-md motion-reduce:transform-none motion-reduce:transition-none dark:bg-[#72d0c9] dark:text-[#092e33] dark:hover:bg-[#8bddd6]"
+            className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#123f46] px-4 py-2.5 text-center text-sm leading-5 font-semibold text-white shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 hover:bg-[#0d343a] hover:shadow-md motion-reduce:transform-none motion-reduce:transition-none dark:bg-[#72d0c9] dark:text-[#092e33] dark:hover:bg-[#8bddd6] dark:focus-visible:outline-[#83d9d2] sm:w-fit"
           >
             {expanded ? hideTripLabel : viewTripLabel}
             <svg
@@ -158,7 +160,7 @@ export default function DestinationCard({
               id={detailId}
               role="region"
               aria-live="polite"
-              className="mt-3 rounded-xl border border-[#c9dfdb] bg-[#eef8f5]/86 p-3.5 text-sm leading-5 text-[#44666a] dark:border-white/10 dark:bg-white/[0.055] dark:text-[#bdd3d1]"
+              className="mt-3 min-w-0 rounded-xl border border-[#c9dfdb] bg-[#eef8f5]/86 p-3.5 text-sm leading-5 break-words text-[#44666a] dark:border-white/10 dark:bg-white/[0.055] dark:text-[#bdd3d1]"
             >
               {detailPrototype}
             </div>

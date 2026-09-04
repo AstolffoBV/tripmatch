@@ -172,16 +172,16 @@ export default function TripFilters({
   return (
     <aside
       aria-labelledby="trip-filters-title"
-      className="mt-7 rounded-[1.5rem] border border-[#c4dcd8] bg-white/68 p-4 shadow-[0_16px_42px_rgba(18,70,72,0.08)] backdrop-blur-sm dark:border-white/12 dark:bg-white/[0.055] sm:p-5"
+      className="mt-7 min-w-0 rounded-[1.5rem] border border-[#c4dcd8] bg-white/68 p-4 shadow-[0_16px_42px_rgba(18,70,72,0.08)] backdrop-blur-sm dark:border-white/12 dark:bg-white/[0.055] sm:p-5"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[#537075] dark:text-[#aac5c4]">
             {resultsCopy.filters.regionLabel}
           </p>
           <h2
             id="trip-filters-title"
-            className="mt-1 text-xl font-bold tracking-[-0.03em] text-[#12383e] dark:text-[#f0faf8]"
+            className="mt-1 break-words text-xl font-bold tracking-[-0.03em] text-[#12383e] dark:text-[#f0faf8]"
           >
             {resultsCopy.filters.title}
           </h2>
@@ -196,13 +196,13 @@ export default function TripFilters({
               firstFilterButtonRef.current?.focus();
             });
           }}
-          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-[#bfd3cf] bg-white/58 px-4 py-2.5 text-sm font-semibold text-[#173d42] shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10 sm:w-auto"
+          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-[#bfd3cf] bg-white/58 px-4 py-2.5 text-center text-sm leading-5 font-semibold text-[#173d42] shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10 dark:focus-visible:outline-[#83d9d2] sm:w-auto"
         >
           {resultsCopy.filters.editPreferences}
         </button>
       </div>
 
-      <ul id={filterListId} className="mt-4 flex flex-wrap gap-2">
+      <ul id={filterListId} className="mt-4 flex min-w-0 flex-wrap gap-2">
         {filters.map((filter, index) => {
           const category = resultsCopy.filters.categories[filter.question];
           const fullValue = filter.fullValue ?? filter.value;
@@ -220,7 +220,7 @@ export default function TripFilters({
                 title={fullValue}
                 aria-label={`${resultsCopy.filters.editPreferences}: ${category}: ${fullValue}`}
                 onClick={() => onEditQuestion(filter.question)}
-                className="inline-flex min-h-10 max-w-full min-w-0 cursor-pointer items-center gap-2 rounded-full border border-[#c7dcd8] bg-[#f8fcfb]/88 px-3 py-2 text-sm text-[#244e52] shadow-[0_4px_14px_rgba(26,77,79,0.04)] transition hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transform-none motion-reduce:transition-none dark:border-white/12 dark:bg-white/[0.06] dark:text-[#dceceb] dark:hover:border-[#71bbb5] dark:hover:bg-white/[0.09]"
+                className="inline-flex min-h-11 max-w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-full border border-[#c7dcd8] bg-[#f8fcfb]/88 px-3 py-2 text-sm text-[#244e52] shadow-[0_4px_14px_rgba(26,77,79,0.04)] transition hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transform-none motion-reduce:transition-none dark:border-white/12 dark:bg-white/[0.06] dark:text-[#dceceb] dark:hover:border-[#71bbb5] dark:hover:bg-white/[0.09] dark:focus-visible:outline-[#83d9d2] sm:min-h-10"
             >
               <span
                 aria-hidden="true"
@@ -264,7 +264,7 @@ export default function TripFilters({
         aria-expanded={showAllOnMobile}
         aria-controls={filterListId}
         onClick={() => setShowAllOnMobile((current) => !current)}
-        className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-full px-2 py-1 text-sm font-semibold text-[#286a6d] transition hover:text-[#123f46] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transition-none dark:text-[#83d5cf] dark:hover:text-[#b2eee9] sm:hidden"
+        className="mt-3 inline-flex min-h-11 max-w-full cursor-pointer items-center gap-2 rounded-full px-2 py-1 text-left text-sm font-semibold text-[#286a6d] transition hover:text-[#123f46] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transition-none dark:text-[#83d5cf] dark:hover:text-[#b2eee9] dark:focus-visible:outline-[#83d9d2] sm:hidden"
       >
         <span
           aria-hidden="true"

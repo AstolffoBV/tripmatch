@@ -132,7 +132,11 @@ export default function QuestionThree({
                 className="h-full w-full cursor-pointer appearance-none bg-transparent pr-6 text-base font-bold text-[#17454a] outline-none focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#e9f7f5] dark:focus-visible:outline-[#83d9d2]"
               >
                 {currencies.map((currency) => (
-                  <option key={currency} value={currency}>
+                  <option
+                    key={currency}
+                    value={currency}
+                    className="bg-white text-[#17454a] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                  >
                     {currency}
                   </option>
                 ))}

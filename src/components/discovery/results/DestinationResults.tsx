@@ -111,19 +111,19 @@ export default function DestinationResults({
   });
 
   return (
-    <div className="relative text-[#102f35] dark:text-[#edf8f7]">
+    <div className="relative min-w-0 text-[#102f35] dark:text-[#edf8f7]">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <header className="max-w-[58rem]">
           <h1
             id="results-title"
-            className="max-w-[58rem] text-[2.5rem] leading-[1.04] font-bold tracking-[-0.045em] text-[#0f3036] sm:text-[3.5rem] dark:text-[#f4fbfa]"
+            className="max-w-[58rem] break-words text-[2.5rem] leading-[1.04] font-bold tracking-[-0.045em] text-[#0f3036] sm:text-[3.5rem] dark:text-[#f4fbfa]"
           >
             {resultsCopy.heading}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[#4b666b] sm:text-lg dark:text-[#b4cbca]">
             {resultsCopy.subtitle}
           </p>
-          <p className="mt-4 inline-flex rounded-full border border-[#bddbd6] bg-[#e9f6f2]/78 px-3.5 py-2 text-sm font-semibold text-[#315e62] shadow-sm backdrop-blur-sm dark:border-[#63aaa4]/25 dark:bg-[#10383d]/62 dark:text-[#c9e4e1]">
+          <p className="mt-4 inline-flex max-w-full rounded-full border border-[#bddbd6] bg-[#e9f6f2]/78 px-3.5 py-2 text-sm leading-5 font-semibold break-words text-[#315e62] shadow-sm backdrop-blur-sm dark:border-[#63aaa4]/25 dark:bg-[#10383d]/62 dark:text-[#c9e4e1]">
             {resultCountLabel}
           </p>
         </header>
@@ -131,7 +131,7 @@ export default function DestinationResults({
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex min-h-11 w-fit shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#bfd3cf] bg-white/55 px-4 py-2.5 text-sm font-semibold text-[#173d42] shadow-sm backdrop-blur-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10"
+          className="inline-flex min-h-11 w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#bfd3cf] bg-white/55 px-4 py-2.5 text-sm font-semibold text-[#173d42] shadow-sm backdrop-blur-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 hover:border-[#72aaa5] hover:bg-white motion-reduce:transform-none motion-reduce:transition-none dark:border-white/15 dark:bg-white/6 dark:text-[#eaf7f5] dark:hover:border-[#71bbb5] dark:hover:bg-white/10 dark:focus-visible:outline-[#83d9d2] sm:w-fit"
         >
           <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" className="size-4">
             <path
@@ -166,10 +166,10 @@ export default function DestinationResults({
 
       <section aria-labelledby="recommended-destinations-title" className="mt-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
+          <div className="min-w-0">
             <h2
               id="recommended-destinations-title"
-              className="text-2xl font-bold tracking-[-0.035em] text-[#12383e] dark:text-[#f0faf8]"
+              className="break-words text-2xl font-bold tracking-[-0.035em] text-[#12383e] dark:text-[#f0faf8]"
             >
               {resultsCopy.recommendedDestinations}
             </h2>
@@ -186,11 +186,21 @@ export default function DestinationResults({
                 onChange={(event) =>
                   setSort(event.target.value as DestinationSort)
                 }
-                className="min-h-11 w-full cursor-pointer appearance-none rounded-xl border border-[#bfd3cf] bg-white/75 py-2.5 pr-10 pl-4 text-sm font-semibold normal-case tracking-normal text-[#173d42] shadow-sm transition hover:border-[#72aaa5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:border-white/15 dark:bg-[#123238]/85 dark:text-[#eaf7f5] sm:min-w-44"
+                className="min-h-11 w-full cursor-pointer appearance-none rounded-xl border border-[#bfd3cf] bg-white/75 py-2.5 pr-10 pl-4 text-sm font-semibold normal-case tracking-normal text-[#173d42] shadow-sm transition hover:border-[#72aaa5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transition-none dark:border-white/15 dark:bg-[#123238]/85 dark:text-[#eaf7f5] dark:focus-visible:outline-[#83d9d2] sm:min-w-44"
               >
-                <option value="bestMatch">{resultsCopy.sort.bestMatch}</option>
+                <option
+                  value="bestMatch"
+                  className="bg-white text-[#173d42] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                >
+                  {resultsCopy.sort.bestMatch}
+                </option>
                 {hasDistance ? (
-                  <option value="closest">{resultsCopy.sort.closest}</option>
+                  <option
+                    value="closest"
+                    className="bg-white text-[#173d42] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                  >
+                    {resultsCopy.sort.closest}
+                  </option>
                 ) : null}
               </select>
               <svg

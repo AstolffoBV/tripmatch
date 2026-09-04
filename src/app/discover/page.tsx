@@ -376,7 +376,8 @@ export default function DiscoverPage() {
 
   useEffect(() => {
     if (previousStepRef.current !== currentStep) {
-      stepContentRef.current?.focus();
+      window.scrollTo(0, 0);
+      stepContentRef.current?.focus({ preventScroll: true });
     }
 
     previousStepRef.current = currentStep;
