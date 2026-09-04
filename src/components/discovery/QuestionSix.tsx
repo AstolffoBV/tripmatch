@@ -302,9 +302,19 @@ export default function QuestionSix({
                 onChange={(event) => onChangeMonth(event.target.value)}
                 className="mt-1 min-h-9 w-full cursor-pointer appearance-none bg-transparent pr-8 text-base font-bold text-[#143a3f] outline-none focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#eff9f8]"
               >
-                <option value="">{copy.selectMonth}</option>
+                <option
+                  value=""
+                  className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                >
+                  {copy.selectMonth}
+                </option>
+
                 {months.map((month) => (
-                  <option key={month} value={month}>
+                  <option
+                    key={month}
+                    value={month}
+                    className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                  >
                     {copy.months[month]}
                   </option>
                 ))}
@@ -321,9 +331,19 @@ export default function QuestionSix({
                 onChange={(event) => onChangeYear(event.target.value)}
                 className="mt-1 min-h-9 w-full cursor-pointer appearance-none bg-transparent pr-8 text-base font-bold text-[#143a3f] outline-none focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#eff9f8]"
               >
-                <option value="">{copy.selectYear}</option>
+                <option
+                  value=""
+                  className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                >
+                  {copy.selectYear}
+                </option>
+
                 {availableYears.map((year) => (
-                  <option key={year} value={year}>
+                  <option
+                    key={year}
+                    value={year}
+                    className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
+                  >
                     {year}
                   </option>
                 ))}
