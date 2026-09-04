@@ -25,15 +25,15 @@ export default function DurationCard({
       aria-label={`${label}: ${description}`}
       aria-pressed={selected}
       onClick={onClick}
-      className={`group relative flex min-h-[9.75rem] w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-[1.35rem] border p-4 text-left shadow-[0_14px_36px_rgba(24,75,77,0.07)] transition-[transform,border-color,background-color,box-shadow,color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none sm:min-h-[10.25rem] ${
+      className={`group relative flex min-h-[9.75rem] w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-[1.35rem] border p-4 text-left shadow-[0_14px_36px_rgba(24,75,77,0.07)] transition-[transform,border-color,background-color,box-shadow,color] duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none sm:min-h-[10.25rem] dark:focus-visible:outline-[#83d9d2] ${
         selected
-          ? "border-[#55c9c5] bg-[#123f46] text-white shadow-[0_18px_42px_rgba(12,70,76,0.2)] ring-1 ring-[#78d8d2]/45"
-          : "border-[#c7dcd8] bg-white/72 text-[#143a3f] backdrop-blur-sm hover:border-[#75aaa6] hover:bg-white/92 hover:shadow-[0_18px_42px_rgba(24,75,77,0.12)] dark:border-white/12 dark:bg-white/[0.055] dark:text-[#eff9f8] dark:hover:border-[#66aaa4]/55 dark:hover:bg-white/[0.08]"
+          ? "border-[#55c9c5] bg-[#123f46] text-white shadow-[0_18px_42px_rgba(12,70,76,0.2)] hover:border-[#76ddd7] hover:shadow-[0_19px_44px_rgba(12,70,76,0.22)]"
+          : "border-[#cbdeda] bg-white/72 text-[#143a3f] backdrop-blur-sm hover:border-[#72b8b3] hover:bg-white/92 hover:shadow-[0_18px_42px_rgba(24,75,77,0.12)] dark:border-white/12 dark:bg-white/[0.065] dark:text-[#eff9f8] dark:hover:border-[#58aaa8] dark:hover:bg-white/10"
       }`}
     >
       <span
         aria-hidden="true"
-        className={`absolute top-3.5 right-3.5 grid size-6 place-items-center rounded-full border transition-[opacity,transform,background-color] duration-300 ${
+        className={`absolute top-3.5 right-3.5 grid size-6 place-items-center rounded-full border transition-[opacity,transform,background-color] duration-200 ${
           selected
             ? "scale-100 border-[#7de0da]/70 bg-[#67c9c4]/18 text-[#9aeae4] opacity-100"
             : "scale-90 border-transparent bg-transparent text-transparent opacity-0"
@@ -85,7 +85,7 @@ export default function DurationCard({
           return (
             <span
               key={segment}
-              className={`h-1.5 min-w-0 flex-1 rounded-full transition-colors duration-300 ${
+              className={`h-1.5 min-w-0 flex-1 rounded-full transition-colors duration-200 ${
                 active
                   ? selected
                     ? "bg-[#7ee0da]"

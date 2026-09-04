@@ -101,10 +101,10 @@ export default function TravellerGroupCard({
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`group relative min-h-40 w-full cursor-pointer overflow-hidden rounded-[1.35rem] border p-4 text-left shadow-sm transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-1 ${
+      className={`group relative min-h-40 w-full cursor-pointer overflow-hidden rounded-[1.35rem] border p-4 text-left shadow-sm transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none dark:focus-visible:outline-[#83d9d2] ${
         selected
-          ? "border-[#56c9c5] bg-[#123f46] text-[#f5fffd] shadow-[0_18px_40px_rgba(12,70,76,0.2)]"
-          : "border-[#cfe0dc] bg-white/75 text-[#14383d] hover:border-[#73bdb8] hover:bg-white hover:shadow-[0_16px_34px_rgba(21,75,77,0.1)] dark:border-white/12 dark:bg-white/7 dark:text-[#edf9f7] dark:hover:border-[#58aaa8] dark:hover:bg-white/10"
+          ? "border-[#55c9c5] bg-[#123f46] text-[#f5fffd] shadow-[0_16px_38px_rgba(12,70,76,0.18)] hover:border-[#76ddd7] hover:shadow-[0_17px_40px_rgba(12,70,76,0.2)]"
+          : "border-[#cbdeda] bg-white/72 text-[#14383d] hover:border-[#72b8b3] hover:bg-white hover:shadow-[0_14px_32px_rgba(21,75,77,0.09)] dark:border-white/12 dark:bg-white/[0.065] dark:text-[#edf9f7] dark:hover:border-[#58aaa8] dark:hover:bg-white/10"
       }`}
     >
       <span

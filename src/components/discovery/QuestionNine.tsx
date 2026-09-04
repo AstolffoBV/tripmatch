@@ -93,9 +93,9 @@ export default function QuestionNine({
             }
             aria-pressed={allSelected}
             onClick={onToggleAll}
-            className={`inline-flex min-h-10 w-fit cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold shadow-sm transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#1b7c83] motion-safe:hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none ${
+            className={`inline-flex min-h-10 w-fit cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold shadow-sm transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#1b7c83] dark:focus-visible:outline-[#83d9d2] motion-safe:hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none ${
               allSelected
-                ? "border-[#55c9c5] bg-[#123f46] text-[#f4fffd] shadow-[0_10px_24px_rgba(12,70,76,0.16)]"
+                ? "border-[#55c9c5] bg-[#123f46] text-[#f4fffd] shadow-[0_10px_24px_rgba(12,70,76,0.16)] hover:border-[#76ddd7] hover:shadow-[0_12px_28px_rgba(12,70,76,0.19)]"
                 : "border-[#bfd7d3] bg-white/64 text-[#28585c] hover:border-[#72aaa5] hover:bg-white dark:border-white/14 dark:bg-white/[0.06] dark:text-[#d7e9e7] dark:hover:border-[#71bbb5] dark:hover:bg-white/10"
             }`}
           >

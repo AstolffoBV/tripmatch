@@ -246,9 +246,9 @@ export default function QuestionSix({
                     type="button"
                     aria-pressed={selected}
                     onClick={() => onChangeDateFlexibility(days)}
-                    className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] ${
+                    className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] motion-reduce:transition-none dark:focus-visible:outline-[#83d9d2] ${
                       selected
-                        ? "border-[#55c9c5] bg-[#123f46] text-white shadow-[0_8px_20px_rgba(12,70,76,0.16)]"
+                        ? "border-[#55c9c5] bg-[#123f46] text-white shadow-[0_8px_20px_rgba(12,70,76,0.16)] hover:border-[#76ddd7]"
                         : "border-[#c5dcd8] bg-white/75 text-[#315b5f] hover:border-[#72b8b3] hover:bg-white dark:border-white/12 dark:bg-white/6 dark:text-[#c5dedd] dark:hover:border-[#58aaa8] dark:hover:bg-white/10"
                     }`}
                   >
