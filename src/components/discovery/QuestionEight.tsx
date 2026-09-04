@@ -105,7 +105,9 @@ export default function QuestionEight({
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
   const [activeResultIndex, setActiveResultIndex] = useState(-1);
   const [isResolvingMap, setIsResolvingMap] = useState(false);
-  const confirmedSearchRef = useRef(origin.manualLocation);
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState(
+    origin.manualLocation,
+  );
   const mapRequestIdRef = useRef(0);
   const mapAbortRef = useRef<AbortController | null>(null);
   const activeModeRef = useRef(origin.mode);
@@ -121,7 +123,7 @@ export default function QuestionEight({
 
     const query = searchQuery.trim();
 
-    if (query.length < 3 || query === confirmedSearchRef.current) {
+    if (query.length < 3 || query === confirmedSearchQuery) {
       return;
     }
 
@@ -154,7 +156,7 @@ export default function QuestionEight({
       window.clearTimeout(timeoutId);
       controller.abort();
     };
-  }, [language, origin.mode, searchQuery]);
+  }, [confirmedSearchQuery, language, origin.mode, searchQuery]);
 
   useEffect(() => {
     return () => {
@@ -163,7 +165,7 @@ export default function QuestionEight({
   }, []);
 
   function selectSearchResult(result: LocationResult) {
-    confirmedSearchRef.current = result.label;
+    setConfirmedSearchQuery(result.label);
     setSearchQuery(result.label);
     setSearchResults([]);
     setSearchStatus("idle");
@@ -234,7 +236,7 @@ export default function QuestionEight({
           return;
         }
 
-        confirmedSearchRef.current = result.label;
+        setConfirmedSearchQuery(result.label);
         setSearchQuery(result.label);
         onSelectManualLocation(result);
       } catch (error) {
@@ -266,7 +268,7 @@ export default function QuestionEight({
     origin.resolvedLocation.trim().length > 0;
   const isConfirmedManualQuery =
     hasResolvedManualLocation &&
-    searchQuery.trim() === confirmedSearchRef.current.trim();
+    searchQuery.trim() === confirmedSearchQuery.trim();
 
   return (
     <div className="relative text-[#102f35] dark:text-[#edf8f7]">
