@@ -8,7 +8,10 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
 } from "react";
+import { createPortal } from "react-dom";
 
 import OriginModeCard from "@/components/discovery/OriginModeCard";
 import type { Translation } from "@/data/translations";
@@ -23,6 +26,11 @@ import type {
   OriginPreferences,
 } from "@/types/tripPreferences";
 import { formatMessage } from "@/utils/translations";
+import {
+  measurePopup,
+  observePopupPosition,
+  type PopupPosition,
+} from "@/utils/popupPosition";
 
 const LocationMap = dynamic(
   () => import("@/components/discovery/LocationMap"),
@@ -52,6 +60,63 @@ function LoadingSpinner() {
       aria-hidden="true"
       className="size-5 animate-spin rounded-full border-2 border-[#79c8c1]/35 border-t-[#2b8585] motion-reduce:animate-none dark:border-[#7bd2ca]/25 dark:border-t-[#83d9d2]"
     />
+  );
+}
+
+function SuggestionPopup({
+  anchorRef,
+  id,
+  label,
+  activeIndex,
+  children,
+}: {
+  anchorRef: RefObject<HTMLInputElement | null>;
+  id: string;
+  label: string;
+  activeIndex: number;
+  children: ReactNode;
+}) {
+  const menuRef = useRef<HTMLUListElement>(null);
+  const [position, setPosition] = useState<PopupPosition | null>(null);
+
+  useEffect(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+
+    return observePopupPosition(
+      anchor,
+      () => menuRef.current,
+      () => setPosition(measurePopup(anchor, 288, 0, 8)),
+    );
+  }, [anchorRef]);
+
+  useEffect(() => {
+    const menu = menuRef.current;
+    const option = menu?.children[activeIndex];
+    if (!menu || !(option instanceof HTMLElement)) return;
+
+    // Reveal keyboard highlights inside the list without scrolling the question.
+    const bottom = option.offsetTop + option.offsetHeight;
+    if (option.offsetTop < menu.scrollTop) menu.scrollTop = option.offsetTop;
+    else if (bottom > menu.scrollTop + menu.clientHeight) {
+      menu.scrollTop = bottom - menu.clientHeight;
+    }
+  }, [activeIndex, position?.maxHeight]);
+
+  if (position === null) return null;
+
+  return createPortal(
+    <ul
+      ref={menuRef}
+      id={id}
+      role="listbox"
+      aria-label={label}
+      style={position}
+      className="fixed z-[2100] overflow-y-auto overscroll-contain rounded-[1.15rem] border border-[#bdd7d3] bg-[#fbfdfa] p-1.5 break-words [overflow-wrap:anywhere] shadow-[0_24px_60px_rgba(15,65,68,0.24)] dark:border-white/15 dark:bg-[#102a2f]"
+    >
+      {children}
+    </ul>,
+    document.body,
   );
 }
 
@@ -100,6 +165,7 @@ export default function QuestionEight({
   onManualMapMoveError,
 }: QuestionEightProps) {
   const listboxId = useId();
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState(origin.manualLocation);
   const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
@@ -397,6 +463,7 @@ export default function QuestionEight({
               </svg>
             </span>
             <input
+              ref={searchInputRef}
               id={`${listboxId}-input`}
               type="search"
               role="combobox"
@@ -418,11 +485,11 @@ export default function QuestionEight({
             ) : null}
 
             {searchResults.length > 0 ? (
-              <ul
+              <SuggestionPopup
+                anchorRef={searchInputRef}
                 id={listboxId}
-                role="listbox"
-                aria-label={copy.manual.resultsLabel}
-                className="absolute z-[2100] mt-2 max-h-72 w-full overflow-y-auto rounded-[1.15rem] border border-[#bdd7d3] bg-[#fbfdfa] p-1.5 shadow-[0_24px_60px_rgba(15,65,68,0.24)] dark:border-white/15 dark:bg-[#102a2f]"
+                label={copy.manual.resultsLabel}
+                activeIndex={activeResultIndex}
               >
                 {searchResults.map((result, index) => (
                   <li key={result.id} role="presentation">
@@ -453,7 +520,7 @@ export default function QuestionEight({
                     </button>
                   </li>
                 ))}
-              </ul>
+              </SuggestionPopup>
             ) : null}
           </div>
 

@@ -173,6 +173,13 @@ type QuestionFiveTranslation = {
 
 type QuestionSixTranslation = {
   heading: string;
+  calendar: {
+    chooseDate: string;
+    previousMonth: string;
+    nextMonth: string;
+    clearDate: string;
+    closeCalendar: string;
+  };
   travelTiming: string;
   modes: Record<TimingMode, string>;
   modeTitles: Record<TimingMode, string>;
@@ -596,6 +603,13 @@ export const translations = {
       },
       q6: {
         heading: "When do you want to travel?",
+        calendar: {
+          chooseDate: "Choose a date",
+          previousMonth: "Previous month",
+          nextMonth: "Next month",
+          clearDate: "Clear date",
+          closeCalendar: "Close calendar",
+        },
         travelTiming: "Travel timing",
         modes: {
           exact: "I know my exact dates",
@@ -1250,6 +1264,13 @@ export const translations = {
       },
       q6: {
         heading: "Când vrei să călătorești?",
+        calendar: {
+          chooseDate: "Alege o dată",
+          previousMonth: "Luna precedentă",
+          nextMonth: "Luna următoare",
+          clearDate: "Șterge data",
+          closeCalendar: "Închide calendarul",
+        },
         travelTiming: "Perioada călătoriei",
         modes: {
           exact: "Știu datele exacte",
@@ -1903,6 +1924,13 @@ export const translations = {
       },
       q6: {
         heading: "¿Cuándo quieres viajar?",
+        calendar: {
+          chooseDate: "Elige una fecha",
+          previousMonth: "Mes anterior",
+          nextMonth: "Mes siguiente",
+          clearDate: "Borrar fecha",
+          closeCalendar: "Cerrar calendario",
+        },
         travelTiming: "Fechas del viaje",
         modes: {
           exact: "Sé las fechas exactas",
@@ -2555,6 +2583,13 @@ export const translations = {
       },
       q6: {
         heading: "Wann möchtest du reisen?",
+        calendar: {
+          chooseDate: "Datum auswählen",
+          previousMonth: "Vorheriger Monat",
+          nextMonth: "Nächster Monat",
+          clearDate: "Datum löschen",
+          closeCalendar: "Kalender schließen",
+        },
         travelTiming: "Reisezeitraum",
         modes: {
           exact: "Ich kenne meine genauen Reisedaten",
@@ -3221,6 +3256,13 @@ export const translations = {
       },
       q6: {
         heading: "Quand souhaitez-vous voyager ?",
+        calendar: {
+          chooseDate: "Choisir une date",
+          previousMonth: "Mois précédent",
+          nextMonth: "Mois suivant",
+          clearDate: "Effacer la date",
+          closeCalendar: "Fermer le calendrier",
+        },
         travelTiming: "Période du voyage",
         modes: {
           exact: "Je connais mes dates exactes",

@@ -1,10 +1,13 @@
 import TimingModeCard from "@/components/discovery/TimingModeCard";
+import DatePicker from "@/components/forms/DatePicker";
+import SelectDropdown from "@/components/forms/SelectDropdown";
+import { useLanguage } from "@/components/language/LanguageProvider";
 import {
   dateFlexibilityOptions,
   months,
   timingModeOptions,
 } from "@/data/discoveryOptions";
-import type { Translation } from "@/data/translations";
+import { languageLocales, type Translation } from "@/data/translations";
 import type {
   DateFlexibilityDays,
   TimingMode,
@@ -29,35 +32,6 @@ type QuestionSixProps = {
   onChangeMonth: (value: string) => void;
   onChangeYear: (value: string) => void;
 };
-
-function CalendarFieldIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      viewBox="0 0 24 24"
-      className="size-5"
-    >
-      <rect
-        x="3.5"
-        y="5"
-        width="17"
-        height="15"
-        rx="3"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <path
-        d="M3.5 9h17M8 3.5v3M16 3.5v3"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.8"
-      />
-    </svg>
-  );
-}
 
 function FlexibleDatesIcon() {
   return (
@@ -89,25 +63,6 @@ function FlexibleDatesIcon() {
   );
 }
 
-function SelectChevron() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 20 20"
-      fill="none"
-      className="pointer-events-none absolute right-4 bottom-4 size-4 text-[#527276] dark:text-[#a9c4c3]"
-    >
-      <path
-        d="m6 8 4 4 4-4"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.7"
-      />
-    </svg>
-  );
-}
-
 export default function QuestionSix({
   questionLabel,
   copy,
@@ -122,6 +77,7 @@ export default function QuestionSix({
   onChangeMonth,
   onChangeYear,
 }: QuestionSixProps) {
+  const { language } = useLanguage();
   const flexibilitySummary =
     exactNightsLabel === null
       ? null
@@ -179,44 +135,23 @@ export default function QuestionSix({
           </p>
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <label className="rounded-[1.15rem] border border-[#c5dcd8] bg-[#f9fcfa]/90 px-4 py-3 shadow-sm transition focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 dark:border-white/12 dark:bg-white/[0.055] dark:focus-within:border-[#70c5bf]">
-              <span className="block text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#567176] dark:text-[#abc3c3]">
-                {copy.departureDate}
-              </span>
-              <span className="mt-1.5 flex items-center gap-3 text-[#2a7377] dark:text-[#8ed7d1]">
-                <CalendarFieldIcon />
-                <input
-                  type="date"
-                  value={timing.departureDate}
-                  onChange={(event) =>
-                    onChangeExactDate("departureDate", event.target.value)
-                  }
-                  className="min-h-8 min-w-0 flex-1 cursor-pointer bg-transparent text-base font-bold text-[#143a3f] outline-none [color-scheme:light] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#eff9f8] dark:[color-scheme:dark]"
-                />
-              </span>
-            </label>
-
-            <label className="rounded-[1.15rem] border border-[#c5dcd8] bg-[#f9fcfa]/90 px-4 py-3 shadow-sm transition focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 dark:border-white/12 dark:bg-white/[0.055] dark:focus-within:border-[#70c5bf]">
-              <span className="block text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#567176] dark:text-[#abc3c3]">
-                {copy.returnDate}
-              </span>
-              <span className="mt-1.5 flex items-center gap-3 text-[#2a7377] dark:text-[#8ed7d1]">
-                <CalendarFieldIcon />
-                <input
-                  type="date"
-                  min={minimumReturnDate}
-                  value={timing.returnDate}
-                  onChange={(event) =>
-                    onChangeExactDate("returnDate", event.target.value)
-                  }
-                  aria-invalid={exactDatesAreInvalid}
-                  aria-describedby={
-                    exactDatesAreInvalid ? "return-date-error" : undefined
-                  }
-                  className="min-h-8 min-w-0 flex-1 cursor-pointer bg-transparent text-base font-bold text-[#143a3f] outline-none [color-scheme:light] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#eff9f8] dark:[color-scheme:dark]"
-                />
-              </span>
-            </label>
+            <DatePicker
+              label={copy.departureDate}
+              value={timing.departureDate}
+              locale={languageLocales[language]}
+              copy={copy.calendar}
+              onChange={(value) => onChangeExactDate("departureDate", value)}
+            />
+            <DatePicker
+              label={copy.returnDate}
+              value={timing.returnDate}
+              min={minimumReturnDate}
+              locale={languageLocales[language]}
+              copy={copy.calendar}
+              invalid={exactDatesAreInvalid}
+              describedBy={exactDatesAreInvalid ? "return-date-error" : undefined}
+              onChange={(value) => onChangeExactDate("returnDate", value)}
+            />
           </div>
 
           {exactDatesAreInvalid ? (
@@ -293,63 +228,30 @@ export default function QuestionSix({
           </p>
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <label className="relative rounded-[1.15rem] border border-[#c5dcd8] bg-[#f9fcfa]/90 px-4 py-3 shadow-sm transition focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 dark:border-white/12 dark:bg-white/[0.055] dark:focus-within:border-[#70c5bf]">
-              <span className="block text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#567176] dark:text-[#abc3c3]">
-                {copy.month}
-              </span>
-              <select
-                value={timing.month ?? ""}
-                onChange={(event) => onChangeMonth(event.target.value)}
-                className="mt-1 min-h-9 w-full cursor-pointer appearance-none bg-transparent pr-8 text-base font-bold text-[#143a3f] outline-none focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#eff9f8]"
-              >
-                <option
-                  value=""
-                  className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
-                >
-                  {copy.selectMonth}
-                </option>
-
-                {months.map((month) => (
-                  <option
-                    key={month}
-                    value={month}
-                    className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
-                  >
-                    {copy.months[month]}
-                  </option>
-                ))}
-              </select>
-              <SelectChevron />
-            </label>
-
-            <label className="relative rounded-[1.15rem] border border-[#c5dcd8] bg-[#f9fcfa]/90 px-4 py-3 shadow-sm transition focus-within:border-[#4faaa6] focus-within:ring-3 focus-within:ring-[#71c8c1]/18 dark:border-white/12 dark:bg-white/[0.055] dark:focus-within:border-[#70c5bf]">
-              <span className="block text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[#567176] dark:text-[#abc3c3]">
-                {copy.year}
-              </span>
-              <select
-                value={timing.year ?? ""}
-                onChange={(event) => onChangeYear(event.target.value)}
-                className="mt-1 min-h-9 w-full cursor-pointer appearance-none bg-transparent pr-8 text-base font-bold text-[#143a3f] outline-none focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b7c83] dark:text-[#eff9f8]"
-              >
-                <option
-                  value=""
-                  className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
-                >
-                  {copy.selectYear}
-                </option>
-
-                {availableYears.map((year) => (
-                  <option
-                    key={year}
-                    value={year}
-                    className="bg-white text-[#143a3f] dark:bg-[#102f35] dark:text-[#edf8f7]"
-                  >
-                    {year}
-                  </option>
-                ))}
-              </select>
-              <SelectChevron />
-            </label>
+            <SelectDropdown
+              label={copy.month}
+              value={timing.month ?? ""}
+              options={[
+                { value: "", label: copy.selectMonth },
+                ...months.map((month) => ({
+                  value: month,
+                  label: copy.months[month],
+                })),
+              ]}
+              onChange={onChangeMonth}
+            />
+            <SelectDropdown
+              label={copy.year}
+              value={timing.year?.toString() ?? ""}
+              options={[
+                { value: "", label: copy.selectYear },
+                ...availableYears.map((year) => ({
+                  value: year.toString(),
+                  label: year.toString(),
+                })),
+              ]}
+              onChange={onChangeYear}
+            />
           </div>
         </section>
       ) : null}
